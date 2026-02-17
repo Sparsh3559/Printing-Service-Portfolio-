@@ -7,16 +7,16 @@ export default function Navbar() {
     <>
       {/* NAVBAR */}
       <nav className="nav">
-        
-        {/* LEFT — Hamburger (mobile only) */}
+
+        {/* Hamburger (mobile only) */}
         <button className="hamburger" onClick={() => setOpen(true)}>
           ☰
         </button>
 
-        {/* LOGO */}
+        {/* Logo */}
         <div className="logo">ApparelTech</div>
 
-        {/* DESKTOP MENU */}
+        {/* Desktop menu */}
         <div className="menu">
           <a>CATEGORIES</a>
           <a>CATALOGUE</a>
@@ -25,19 +25,17 @@ export default function Navbar() {
           <a>CONTACT</a>
         </div>
 
-        {/* SEARCH */}
+        {/* Search */}
         <input
           className="search"
           placeholder="Search for products"
         />
 
-        {/* RIGHT ICONS */}
-        <div className="icons">
-          👤 ❤️ 🛍️
-        </div>
+        {/* Icons */}
+        <div className="icons">👤 ❤️ 🛍️</div>
       </nav>
 
-      {/* OVERLAY */}
+      {/* Overlay */}
       {open && (
         <div
           className="overlay"
@@ -45,7 +43,7 @@ export default function Navbar() {
         />
       )}
 
-      {/* MOBILE DRAWER */}
+      {/* Drawer */}
       <div className={`drawer ${open ? "open" : ""}`}>
         <button className="close" onClick={() => setOpen(false)}>
           ✕
@@ -61,32 +59,40 @@ export default function Navbar() {
         <MenuItem text="STORY" />
         <MenuItem text="BLOG" />
         <MenuItem text="CONTACT" />
-        <MenuItem text="WISHLIST" />
-        <MenuItem text="COMPARE" />
         <MenuItem text="LOGIN / REGISTER" />
       </div>
 
       {/* STYLES */}
       <style>{`
-        
+
+        /* REMOVE DARK BAR — GLOBAL RESET */
+        body {
+          margin: 0;
+          background: white;
+        }
+
+        /* NAVBAR */
         .nav {
           height: 64px;
           display: flex;
           align-items: center;
           padding: 0 16px;
-          background: #e7f0ed;
+          background: #e7f0ed; /* light green */
           border-bottom: 1px solid #ddd;
           position: sticky;
           top: 0;
           z-index: 1000;
           gap: 16px;
+          color: #1a1a1a;
         }
 
         .logo {
           font-weight: bold;
           font-size: 20px;
+          color: #1a1a1a;
         }
 
+        /* Desktop menu */
         .menu {
           display: none;
           gap: 20px;
@@ -96,8 +102,10 @@ export default function Navbar() {
         .menu a {
           cursor: pointer;
           font-weight: 500;
+          color: #1a1a1a;
         }
 
+        /* Search */
         .search {
           display: none;
           padding: 8px 12px;
@@ -105,23 +113,28 @@ export default function Navbar() {
           border: 1px solid #ccc;
           flex: 1;
           max-width: 300px;
+          background: white;
         }
 
+        /* Icons */
         .icons {
           margin-left: auto;
           display: flex;
           gap: 12px;
           font-size: 18px;
+          color: #1a1a1a;
         }
 
+        /* Hamburger */
         .hamburger {
           font-size: 24px;
           background: none;
           border: none;
           cursor: pointer;
+          color: black;
         }
 
-        /* DESKTOP VIEW */
+        /* Desktop view */
         @media (min-width: 768px) {
           .hamburger {
             display: none;
@@ -136,7 +149,7 @@ export default function Navbar() {
           }
         }
 
-        /* OVERLAY */
+        /* Overlay */
         .overlay {
           position: fixed;
           inset: 0;
@@ -144,7 +157,7 @@ export default function Navbar() {
           z-index: 999;
         }
 
-        /* DRAWER */
+        /* Drawer */
         .drawer {
           position: fixed;
           top: 0;
@@ -168,6 +181,7 @@ export default function Navbar() {
           border: none;
           margin-bottom: 12px;
           cursor: pointer;
+          color: black;
         }
 
         .drawer-search {
@@ -190,6 +204,7 @@ function MenuItem({ text }) {
         padding: "16px 8px",
         borderBottom: "1px solid #eee",
         fontWeight: 500,
+        color: "#1a1a1a",
       }}
     >
       {text}
