@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
-import TShirtPage from "./pages/TShirtPage";
+import TShirtPrinting from "./pages/TshirtPrinting";
 
 import "./App.css";
 
@@ -11,7 +11,7 @@ function App() {
       <div className="app">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/tshirt-printing" element={<TShirtPage />} />
+          <Route path="/tshirt-printing" element={<TShirtPrinting />} />
         </Routes>
       </div>
     </BrowserRouter>
