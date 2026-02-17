@@ -2,9 +2,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
 import TShirtPrinting from "./pages/TshirtPrinting";
-import MugPrinting from "./pages/TshirtPrinting";
-import CorporatePrinting from "./pages/TshirtPrinting";
-import BannerPrinting from "./pages/TshirtPrinting";
+import MugPrinting from "./pages/MugPrinting";
+import CorporatePrinting from "./pages/CorporatePrinting";
+import BannerPrinting from "./pages/BannerPrinting";
 
 import "./App.css";
 
