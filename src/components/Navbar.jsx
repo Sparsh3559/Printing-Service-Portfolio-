@@ -18,7 +18,7 @@ export default function Navbar() {
         </button>
 
         {/* Logo */}
-        <div className="logo">ApparelTech</div>
+        <div className="logo">PrintCraft</div>
 
         {/* Desktop menu */}
         <div className="menu">
