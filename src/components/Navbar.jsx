@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 export default function Navbar() {
   const [open, setOpen] = useState(false);
 
-  // Prevent body scroll when drawer open
+  // Lock scroll when menu open
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "auto";
   }, [open]);
@@ -12,25 +12,44 @@ export default function Navbar() {
     <>
       {/* NAVBAR */}
       <nav className="nav">
+        {/* Mobile hamburger */}
         <button className="hamburger" onClick={() => setOpen(true)}>
           ☰
         </button>
 
+        {/* Logo */}
         <div className="logo">ApparelTech</div>
 
-        <div className="icons">
-          <span>👤</span>
-          <span>❤️</span>
-          <span>🛍️</span>
+        {/* Desktop menu */}
+        <div className="menu">
+          <span>CATEGORIES</span>
+          <span>CATALOGUE</span>
+          <span>STORY</span>
+          <span>BLOG</span>
+          <span>CONTACT</span>
+        </div>
+
+        {/* Search + Icons */}
+        <div className="right">
+          <input
+            className="search"
+            placeholder="Search for products"
+          />
+
+          <div className="icons">
+            <span>👤</span>
+            <span>❤️</span>
+            <span>🛍️</span>
+          </div>
         </div>
       </nav>
 
-      {/* OVERLAY */}
+      {/* Overlay */}
       {open && (
-        <div className="overlay" onClick={() => setOpen(false)}></div>
+        <div className="overlay" onClick={() => setOpen(false)} />
       )}
 
-      {/* DRAWER */}
+      {/* Mobile Drawer */}
       <aside className={`drawer ${open ? "open" : ""}`}>
         <button className="close" onClick={() => setOpen(false)}>
           ✕
@@ -46,8 +65,6 @@ export default function Navbar() {
         <div className="drawer-item">STORY</div>
         <div className="drawer-item">BLOG</div>
         <div className="drawer-item">CONTACT</div>
-        <div className="drawer-item">WISHLIST</div>
-        <div className="drawer-item">COMPARE</div>
         <div className="drawer-item">LOGIN / REGISTER</div>
       </aside>
 
@@ -58,28 +75,62 @@ export default function Navbar() {
         .nav {
           position: sticky;
           top: 0;
-          height: 64px;
+          height: 70px;
           background: #e8f2ed;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 0 16px;
+          padding: 0 20px;
           z-index: 1001;
           border-bottom: 1px solid #ddd;
+          gap: 20px;
         }
 
         .logo {
           font-weight: 700;
-          font-size: 18px;
+          font-size: 20px;
           color: #222;
+          white-space: nowrap;
+        }
+
+        /* Desktop menu */
+        .menu {
+          display: none;
+          gap: 24px;
+          font-weight: 500;
+          color: #333;
+        }
+
+        .menu span {
+          cursor: pointer;
+        }
+
+        .menu span:hover {
+          color: #000;
+        }
+
+        /* Right side */
+        .right {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+        }
+
+        .search {
+          display: none;
+          padding: 8px 14px;
+          border-radius: 20px;
+          border: 1px solid #ccc;
+          outline: none;
         }
 
         .icons span {
-          margin-left: 14px;
+          margin-left: 6px;
           font-size: 18px;
           cursor: pointer;
         }
 
+        /* Hamburger */
         .hamburger {
           font-size: 22px;
           background: none;
@@ -88,7 +139,7 @@ export default function Navbar() {
           color: black;
         }
 
-        /* OVERLAY */
+        /* Overlay */
         .overlay {
           position: fixed;
           inset: 0;
@@ -96,7 +147,7 @@ export default function Navbar() {
           z-index: 1000;
         }
 
-        /* DRAWER — FULLY HIDDEN FIX */
+        /* Drawer */
         .drawer {
           position: fixed;
           top: 0;
@@ -106,7 +157,7 @@ export default function Navbar() {
           height: 100%;
           background: white;
           padding: 20px 16px;
-          transform: translateX(-100%);  /* ⭐ key fix */
+          transform: translateX(-100%);
           transition: transform 0.3s ease;
           z-index: 1001;
           overflow-y: auto;
@@ -117,7 +168,6 @@ export default function Navbar() {
           transform: translateX(0);
         }
 
-        /* CLOSE BUTTON */
         .close {
           position: absolute;
           top: 16px;
@@ -126,10 +176,8 @@ export default function Navbar() {
           border: none;
           font-size: 22px;
           cursor: pointer;
-          color: #333;
         }
 
-        /* SEARCH */
         .drawer-search {
           width: 100%;
           box-sizing: border-box;
@@ -139,22 +187,32 @@ export default function Navbar() {
           margin: 48px 0 20px 0;
           background: #f5f5f5;
           outline: none;
-          font-size: 14px;
         }
 
         .drawer-item {
           padding: 16px 8px;
           border-bottom: 1px solid #eee;
           font-weight: 500;
-          color: #222;
           cursor: pointer;
         }
 
-        /* DESKTOP */
+        /* ================= DESKTOP VIEW ================= */
+
         @media (min-width: 768px) {
+
           .hamburger {
             display: none;
           }
+
+          .menu {
+            display: flex;
+          }
+
+          .search {
+            display: block;
+            width: 260px;
+          }
+
         }
 
       `}</style>
