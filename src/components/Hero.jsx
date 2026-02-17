@@ -41,25 +41,36 @@ export default function Hero() {
         </div>
   
         <style>{`
+          /* ===== HERO SECTION ===== */
+  
           .hero {
             width: 100%;
-            min-height: 85vh;
+  
+            /* Full screen below navbar */
+            height: calc(100vh - 64px);
+            min-height: 520px;
+  
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-            text-align: center;
+            justify-content: flex-start;
   
-            background: linear-gradient(
-                rgba(0, 0, 0, 0.45),
-                rgba(0, 0, 0, 0.45)
+            padding: 40px 20px;
+  
+            background:
+              linear-gradient(
+                rgba(0, 0, 0, 0.55),
+                rgba(0, 0, 0, 0.55)
               ),
               url("https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=1920");
   
             background-size: cover;
-            background-position: center;
+            background-position: 70% center; /* better desktop composition */
+            background-repeat: no-repeat;
+  
             color: white;
           }
+  
+          /* ===== CONTENT ===== */
   
           .hero-content {
             max-width: 700px;
@@ -78,11 +89,13 @@ export default function Hero() {
             margin-bottom: 28px;
           }
   
+          /* ===== BUTTONS ===== */
+  
           .hero-buttons {
             display: flex;
             gap: 14px;
-            justify-content: center;
             flex-wrap: wrap;
+            justify-content: center;
           }
   
           .primary {
@@ -107,13 +120,12 @@ export default function Hero() {
             cursor: pointer;
           }
   
-          /* Desktop */
+          /* ===== DESKTOP ===== */
   
           @media (min-width: 768px) {
             .hero {
+              padding: 80px clamp(40px, 8vw, 120px);
               text-align: left;
-              padding: 80px 60px;
-              justify-content: flex-start;
             }
   
             .hero h1 {
@@ -126,6 +138,17 @@ export default function Hero() {
   
             .hero-buttons {
               justify-content: flex-start;
+            }
+          }
+  
+          /* ===== MOBILE ===== */
+  
+          @media (max-width: 767px) {
+            .hero {
+              justify-content: center;
+              text-align: center;
+              background-position: center;
+              min-height: 80vh;
             }
           }
         `}</style>
