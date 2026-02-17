@@ -12,6 +12,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/tshirt-printing" element={<TShirtPrinting />} />
+          <Route path="/mug-printing" element={<MugPrinting />} />
+          <Route path="/corporate-printing" element={<CorporatePrinting />} />
+          <Route path="/banner-printing" element={<BannerPrinting />} />
         </Routes>
       </div>
     </BrowserRouter>
