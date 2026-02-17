@@ -21,6 +21,7 @@ export default function Home() {
                 key={service.id}
                 title={service.title}
                 image={service.image}
+                path={service.path}   
               />
             ))}
           </div>
@@ -28,6 +29,8 @@ export default function Home() {
       </section>
 
       <WhatsAppButton />
+
+      <Footer />
 
       <style>{`
         .services-section {
@@ -66,7 +69,6 @@ export default function Home() {
           }
         }
       `}</style>
-      <Footer/>
     </>
   );
 }
