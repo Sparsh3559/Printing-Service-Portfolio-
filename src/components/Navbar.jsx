@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+
+  // Prevent body scroll when drawer open
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "auto";
+  }, [open]);
 
   return (
     <>
@@ -26,7 +31,7 @@ export default function Navbar() {
       )}
 
       {/* DRAWER */}
-      <div className={`drawer ${open ? "open" : ""}`}>
+      <aside className={`drawer ${open ? "open" : ""}`}>
         <button className="close" onClick={() => setOpen(false)}>
           ✕
         </button>
@@ -44,16 +49,17 @@ export default function Navbar() {
         <div className="drawer-item">WISHLIST</div>
         <div className="drawer-item">COMPARE</div>
         <div className="drawer-item">LOGIN / REGISTER</div>
-      </div>
+      </aside>
 
       {/* STYLES */}
       <style>{`
+
         /* NAVBAR */
         .nav {
           position: sticky;
           top: 0;
           height: 64px;
-          background: #e8f2ed;   /* light green */
+          background: #e8f2ed;
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -74,7 +80,6 @@ export default function Navbar() {
           cursor: pointer;
         }
 
-        /* HAMBURGER */
         .hamburger {
           font-size: 22px;
           background: none;
@@ -87,44 +92,51 @@ export default function Navbar() {
         .overlay {
           position: fixed;
           inset: 0;
-          background: rgba(0,0,0,0.4);
-          z-index: 999;
+          background: rgba(0,0,0,0.45);
+          z-index: 1000;
         }
 
-        /* DRAWER */
+        /* DRAWER — FULLY HIDDEN FIX */
         .drawer {
           position: fixed;
           top: 0;
-          left: -85%;
+          left: 0;
           width: 85%;
+          max-width: 320px;
           height: 100%;
           background: white;
           padding: 20px 16px;
-          transition: left 0.3s ease;
-          z-index: 1000;
+          transform: translateX(-100%);  /* ⭐ key fix */
+          transition: transform 0.3s ease;
+          z-index: 1001;
           overflow-y: auto;
+          box-shadow: 2px 0 12px rgba(0,0,0,0.2);
         }
 
         .drawer.open {
-          left: 0;
+          transform: translateX(0);
         }
 
+        /* CLOSE BUTTON */
         .close {
+          position: absolute;
+          top: 16px;
+          right: 16px;
           background: none;
           border: none;
-          font-size: 20px;
-          margin-bottom: 16px;
+          font-size: 22px;
           cursor: pointer;
+          color: #333;
         }
 
-        /* SEARCH INPUT — FIXED */
+        /* SEARCH */
         .drawer-search {
           width: 100%;
-          box-sizing: border-box;  /* ⭐ prevents overflow */
+          box-sizing: border-box;
           padding: 12px 16px;
           border-radius: 24px;
           border: 1px solid #ddd;
-          margin-bottom: 20px;
+          margin: 48px 0 20px 0;
           background: #f5f5f5;
           outline: none;
           font-size: 14px;
@@ -138,12 +150,13 @@ export default function Navbar() {
           cursor: pointer;
         }
 
-        /* DESKTOP NAV */
+        /* DESKTOP */
         @media (min-width: 768px) {
           .hamburger {
             display: none;
           }
         }
+
       `}</style>
     </>
   );
