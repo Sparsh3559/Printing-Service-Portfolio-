@@ -7,43 +7,25 @@ export default function Navbar() {
     <>
       {/* NAVBAR */}
       <nav className="nav">
-
-        {/* Hamburger (mobile only) */}
         <button className="hamburger" onClick={() => setOpen(true)}>
           ☰
         </button>
 
-        {/* Logo */}
         <div className="logo">ApparelTech</div>
 
-        {/* Desktop menu */}
-        <div className="menu">
-          <a>CATEGORIES</a>
-          <a>CATALOGUE</a>
-          <a>STORY</a>
-          <a>BLOG</a>
-          <a>CONTACT</a>
+        <div className="icons">
+          <span>👤</span>
+          <span>❤️</span>
+          <span>🛍️</span>
         </div>
-
-        {/* Search */}
-        <input
-          className="search"
-          placeholder="Search for products"
-        />
-
-        {/* Icons */}
-        <div className="icons">👤 ❤️ 🛍️</div>
       </nav>
 
-      {/* Overlay */}
+      {/* OVERLAY */}
       {open && (
-        <div
-          className="overlay"
-          onClick={() => setOpen(false)}
-        />
+        <div className="overlay" onClick={() => setOpen(false)}></div>
       )}
 
-      {/* Drawer */}
+      {/* DRAWER */}
       <div className={`drawer ${open ? "open" : ""}`}>
         <button className="close" onClick={() => setOpen(false)}>
           ✕
@@ -54,102 +36,54 @@ export default function Navbar() {
           placeholder="Search for products"
         />
 
-        <MenuItem text="CATEGORIES" />
-        <MenuItem text="CATALOGUE" />
-        <MenuItem text="STORY" />
-        <MenuItem text="BLOG" />
-        <MenuItem text="CONTACT" />
-        <MenuItem text="LOGIN / REGISTER" />
+        <div className="drawer-item">CATEGORIES</div>
+        <div className="drawer-item">CATALOGUE</div>
+        <div className="drawer-item">STORY</div>
+        <div className="drawer-item">BLOG</div>
+        <div className="drawer-item">CONTACT</div>
+        <div className="drawer-item">WISHLIST</div>
+        <div className="drawer-item">COMPARE</div>
+        <div className="drawer-item">LOGIN / REGISTER</div>
       </div>
 
       {/* STYLES */}
       <style>{`
-
-        /* REMOVE DARK BAR — GLOBAL RESET */
-        body {
-          margin: 0;
-          background: white;
-        }
-
         /* NAVBAR */
         .nav {
-          height: 64px;
-          display: flex;
-          align-items: center;
-          padding: 0 16px;
-          background: #e7f0ed; /* light green */
-          border-bottom: 1px solid #ddd;
           position: sticky;
           top: 0;
-          z-index: 1000;
-          gap: 16px;
-          color: #1a1a1a;
+          height: 64px;
+          background: #e8f2ed;   /* light green */
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 16px;
+          z-index: 1001;
+          border-bottom: 1px solid #ddd;
         }
 
         .logo {
-          font-weight: bold;
-          font-size: 20px;
-          color: #1a1a1a;
-        }
-
-        /* Desktop menu */
-        .menu {
-          display: none;
-          gap: 20px;
-          margin-left: 20px;
-        }
-
-        .menu a {
-          cursor: pointer;
-          font-weight: 500;
-          color: #1a1a1a;
-        }
-
-        /* Search */
-        .search {
-          display: none;
-          padding: 8px 12px;
-          border-radius: 20px;
-          border: 1px solid #ccc;
-          flex: 1;
-          max-width: 300px;
-          background: white;
-        }
-
-        /* Icons */
-        .icons {
-          margin-left: auto;
-          display: flex;
-          gap: 12px;
+          font-weight: 700;
           font-size: 18px;
-          color: #1a1a1a;
+          color: #222;
         }
 
-        /* Hamburger */
+        .icons span {
+          margin-left: 14px;
+          font-size: 18px;
+          cursor: pointer;
+        }
+
+        /* HAMBURGER */
         .hamburger {
-          font-size: 24px;
+          font-size: 22px;
           background: none;
           border: none;
           cursor: pointer;
           color: black;
         }
 
-        /* Desktop view */
-        @media (min-width: 768px) {
-          .hamburger {
-            display: none;
-          }
-
-          .menu {
-            display: flex;
-          }
-
-          .search {
-            display: block;
-          }
-        }
-
-        /* Overlay */
+        /* OVERLAY */
         .overlay {
           position: fixed;
           inset: 0;
@@ -157,7 +91,7 @@ export default function Navbar() {
           z-index: 999;
         }
 
-        /* Drawer */
+        /* DRAWER */
         .drawer {
           position: fixed;
           top: 0;
@@ -165,7 +99,7 @@ export default function Navbar() {
           width: 85%;
           height: 100%;
           background: white;
-          padding: 16px;
+          padding: 20px 16px;
           transition: left 0.3s ease;
           z-index: 1000;
           overflow-y: auto;
@@ -176,38 +110,41 @@ export default function Navbar() {
         }
 
         .close {
-          font-size: 24px;
           background: none;
           border: none;
-          margin-bottom: 12px;
+          font-size: 20px;
+          margin-bottom: 16px;
           cursor: pointer;
-          color: black;
         }
 
+        /* SEARCH INPUT — FIXED */
         .drawer-search {
           width: 100%;
-          padding: 12px;
-          border-radius: 20px;
+          box-sizing: border-box;  /* ⭐ prevents overflow */
+          padding: 12px 16px;
+          border-radius: 24px;
           border: 1px solid #ddd;
           margin-bottom: 20px;
+          background: #f5f5f5;
+          outline: none;
+          font-size: 14px;
         }
 
+        .drawer-item {
+          padding: 16px 8px;
+          border-bottom: 1px solid #eee;
+          font-weight: 500;
+          color: #222;
+          cursor: pointer;
+        }
+
+        /* DESKTOP NAV */
+        @media (min-width: 768px) {
+          .hamburger {
+            display: none;
+          }
+        }
       `}</style>
     </>
-  );
-}
-
-function MenuItem({ text }) {
-  return (
-    <div
-      style={{
-        padding: "16px 8px",
-        borderBottom: "1px solid #eee",
-        fontWeight: 500,
-        color: "#1a1a1a",
-      }}
-    >
-      {text}
-    </div>
   );
 }
