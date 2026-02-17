@@ -3,6 +3,7 @@ import Hero from "../components/Hero";
 import WhatsAppButton from "../components/WhatsAppButton";
 import ServiceCard from "../components/ServiceCard";
 import { services } from "../data/services";
+import Footer from "../components/Footer";
 
 export default function Home() {
   return (
@@ -65,6 +66,7 @@ export default function Home() {
           }
         }
       `}</style>
+      <Footer/>
     </>
   );
 }

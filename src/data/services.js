@@ -22,5 +22,5 @@ export const services = [
       title: "Banner & Poster Printing",
       image:
         "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=800",
-    },
+    }
   ];
