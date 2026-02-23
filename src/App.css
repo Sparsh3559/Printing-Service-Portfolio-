@@ -1,27 +1,26 @@
+/* ============================= */
 /* GLOBAL APP STYLES */
+/* ============================= */
 
-/* Full screen layout */
-
-.app {
-  width: 100%;
-  min-height: 100vh;
-  background: transparent;   /* ✅ IMPORTANT */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-/* GLOBAL WEBSITE BACKGROUND */
+/* App wrapper — MUST be transparent */
+.app {
+  min-height: 100vh;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+}
 
-body {
-  margin: 0;
-
-  background-image: url("https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1920");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  /* Fixed background while scrolling */
-  background-attachment: fixed;
-
-  font-family: sans-serif;
+/* Remove default spacing */
+* {
+  box-sizing: border-box;
 }
 
 /* Links */
@@ -38,9 +37,20 @@ button {
   cursor: pointer;
 }
 
-/* Images responsive */
+/* Responsive images */
 
 img {
   max-width: 100%;
   display: block;
+}
+
+/* ============================= */
+/* OPTIONAL GLASS EFFECT CARDS */
+/* ============================= */
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(8px);
+  border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
 }

@@ -1,27 +1,34 @@
-/* RESET */
+/* ============================= */
+/* GLOBAL WEBSITE BACKGROUND */
+/* ============================= */
 
-* {
+html,
+body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-}
-
-html, body, #root {
-  width: 100%;
   height: 100%;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
-/* Remove dark background from template */
+/* ===== FULL PAGE BACKGROUND IMAGE ===== */
 
 body {
-  font-family: system-ui, sans-serif;
-  background: #ffffff;
-  color: #222;
+  background:
+    linear-gradient(
+      rgba(255, 255, 255, 0.88),
+      rgba(255, 255, 255, 0.88)
+    ),
+    url("https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1920");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
-/* Ensure full width container */
+/* Smooth font rendering */
 
-#root {
-  width: 100%;
-  min-height: 100vh;
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
