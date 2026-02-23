@@ -9,9 +9,20 @@
 }
 
 /* Remove any default spacing */
+/* GLOBAL WEBSITE BACKGROUND */
+
 body {
   margin: 0;
-  padding: 0;
+
+  background-image: url("https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1920");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Makes background fixed while scrolling */
+  background-attachment: fixed;
+
+  font-family: sans-serif;
 }
 
 /* Links */
