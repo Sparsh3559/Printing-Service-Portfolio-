@@ -1,72 +1,125 @@
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px 40px;
-    background: white;
-    border-bottom: 1px solid #eee;
-    position: relative;
-    z-index: 1000;
+/* ===== WRAPPER ===== */
+
+.nav-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #eee;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ===== TOP BAR ===== */
+
+.nav-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 60px;
+}
+
+/* LOGO */
+
+.logo {
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+/* CENTER NAV */
+
+.nav-center {
+  display: flex;
+  gap: 32px;
+}
+
+.nav-item {
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  padding: 6px 0;
+  transition: color 0.2s;
+}
+
+.nav-item:hover {
+  color: #000;
+}
+
+/* Underline animation */
+
+.nav-item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 0;
+  height: 2px;
+  background: #000;
+  transition: width 0.25s;
+}
+
+.nav-item:hover::after {
+  width: 100%;
+}
+
+/* ACTION BUTTONS */
+
+.nav-actions button {
+  background: none;
+  border: none;
+  font-weight: 500;
+  margin-left: 16px;
+  cursor: pointer;
+}
+
+/* ===== MEGA MENU ===== */
+
+.mega-menu {
+  width: 100%;
+  background: #fff;
+  border-top: 1px solid #eee;
+  padding: 40px 60px;
+  animation: fadeDown 0.2s ease;
+}
+
+@keyframes fadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
-  .logo {
-    font-weight: bold;
-    font-size: 22px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .nav-links {
-    display: flex;
-    gap: 40px;
-    list-style: none;
-  }
-  
-  .menu-item {
-    position: relative;
-    font-weight: 500;
-    cursor: pointer;
-  }
-  
-  /* ======================
-     MEGA MENU PANEL
-  ====================== */
-  
-  .mega-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 900px;
-    background: white;
-    padding: 30px;
-    display: none;
-  
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    border-radius: 8px;
-  
-    grid-template-columns: repeat(3, 1fr);
-    gap: 40px;
-  }
-  
-  .menu-item:hover .mega-menu {
-    display: grid;
-  }
-  
-  /* COLUMN */
-  
-  .mega-column h4 {
-    margin-bottom: 12px;
-    font-size: 16px;
-    font-weight: 600;
-  }
-  
-  .mega-column a {
-    display: block;
-    margin-bottom: 8px;
-    color: #555;
-    text-decoration: none;
-    font-size: 14px;
-  }
-  
-  .mega-column a:hover {
-    color: #000;
-    text-decoration: underline;
-  }
+}
+
+.mega-content {
+  display: flex;
+  gap: 80px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.mega-column h4 {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.mega-column a {
+  display: block;
+  text-decoration: none;
+  color: #111;
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  transition: color 0.2s;
+}
+
+.mega-column a:hover {
+  color: #0071e3;
+}
