@@ -61,6 +61,9 @@ export default function Navbar() {
         <div className="nav-actions">
           <button>Support</button>
           <button>Login</button>
+          <h1 className="text-5xl font-bold text-red-500">
+            Tailwind is working 🔥
+          </h1>
         </div>
       </div>
 
