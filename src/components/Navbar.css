@@ -8,6 +8,7 @@
   backdrop-filter: blur(12px);
   border-bottom: 1px solid #eee;
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  position: relative;
 }
 
 /* ===== TOP BAR ===== */
@@ -77,11 +78,25 @@
 /* ===== MEGA MENU ===== */
 
 .mega-menu {
+  position: absolute;   /* FLOAT */
+  top: 100%;            /* just below navbar */
+  left: 0;
   width: 100%;
+  z-index: 998;
+
   background: #fff;
   border-top: 1px solid #eee;
+
   padding: 40px 60px;
-  animation: fadeDown 0.2s ease;
+
+  /* Smooth animation */
+  opacity: 0;
+  transform: translateY(-10px) scale(0.98);
+  pointer-events: none;
+
+  transition:
+    opacity 0.25s cubic-bezier(.4,0,.2,1),
+    transform 0.25s cubic-bezier(.4,0,.2,1);
 }
 
 @keyframes fadeDown {
@@ -122,4 +137,10 @@
 
 .mega-column a:hover {
   color: #0071e3;
+}
+
+.mega-menu.active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
 }

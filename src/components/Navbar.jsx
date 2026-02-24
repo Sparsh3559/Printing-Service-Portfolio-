@@ -65,27 +65,29 @@ export default function Navbar() {
       </div>
 
       {/* ===== MEGA MENU ===== */}
-      {menu.map((item) =>
-        active === item.name ? (
-          <div key={item.name} className="mega-menu">
-            <div className="mega-content">
-              {Object.entries(item.sections).map(
-                ([title, links]) => (
-                  <div key={title} className="mega-column">
-                    <h4>{title}</h4>
+      {menu.map((item) => (
+        <div
+          key={item.name}
+          className={`mega-menu ${active === item.name ? "active" : ""
+            }`}
+        >
+          <div className="mega-content">
+            {Object.entries(item.sections).map(
+              ([title, links]) => (
+                <div key={title} className="mega-column">
+                  <h4>{title}</h4>
 
-                    {links.map((link) => (
-                      <a key={link} href="#">
-                        {link}
-                      </a>
-                    ))}
-                  </div>
-                )
-              )}
-            </div>
+                  {links.map((link) => (
+                    <a key={link} href="#">
+                      {link}
+                    </a>
+                  ))}
+                </div>
+              )
+            )}
           </div>
-        ) : null
-      )}
+        </div>
+      ))}
     </header>
   );
 }
