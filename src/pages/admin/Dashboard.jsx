@@ -1,4 +1,4 @@
-import AdminLayout from "@/components/AdminLayout"
+import AdminLayout from "../../../components/AdminLayout"
 import { Card } from "@/components/ui/card"
 
 export default function Dashboard() {

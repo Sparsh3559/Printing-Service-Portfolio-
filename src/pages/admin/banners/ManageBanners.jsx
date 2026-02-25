@@ -1,4 +1,4 @@
-import AdminLayout from "../../components/AdminLayout"
+import AdminLayout from "../../../components/AdminLayout"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
