@@ -1,4 +1,4 @@
-import AdminLayout from "../../components/AdminLayout"
+import AdminLayout from "@/components/AdminLayout"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -12,6 +12,7 @@ export default function AddProduct() {
   return (
     <AdminLayout>
       <h1 className="text-2xl font-semibold mb-6">
+
         Add New Product
       </h1>
 
