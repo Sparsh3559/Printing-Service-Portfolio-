@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, Outlet } from "react-router-dom"
 import {
   LayoutDashboard,
   PackagePlus,
@@ -8,14 +8,14 @@ import {
 } from "lucide-react"
 
 const navItems = [
-  { to: "/admin",             label: "Dashboard",          icon: LayoutDashboard },
-  { to: "/admin/add-product", label: "Add Product",         icon: PackagePlus     },
-  { to: "/admin/products",    label: "Manage Products",     icon: Package         },
-  { to: "/admin/categories",  label: "Categories",          icon: Tag             },
-  { to: "/admin/banners",     label: "Banners",             icon: Image           },
+  { to: "/admin",             label: "Dashboard",      icon: LayoutDashboard },
+  { to: "/admin/add-product", label: "Add Product",    icon: PackagePlus     },
+  { to: "/admin/products",    label: "Manage Products",icon: Package         },
+  { to: "/admin/categories",  label: "Categories",     icon: Tag             },
+  { to: "/admin/banners",     label: "Banners",        icon: Image           },
 ]
 
-export default function AdminLayout({ children }) {
+export default function AdminLayout() {
   const { pathname } = useLocation()
 
   return (
@@ -27,9 +27,10 @@ export default function AdminLayout({ children }) {
 
         <nav className="flex flex-col gap-1">
           {navItems.map(({ to, label, icon: Icon }) => {
-            // exact match for dashboard, startsWith for others
             const isActive =
-              to === "/admin" ? pathname === "/admin" : pathname.startsWith(to)
+              to === "/admin"
+                ? pathname === "/admin"
+                : pathname.startsWith(to)
 
             return (
               <Link
@@ -51,7 +52,7 @@ export default function AdminLayout({ children }) {
 
       {/* ── Main content ── */}
       <main className="flex-1 p-8 overflow-auto">
-        {children}
+        <Outlet />
       </main>
 
     </div>
