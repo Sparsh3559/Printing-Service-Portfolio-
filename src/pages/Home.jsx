@@ -6,6 +6,8 @@ import WhatsAppButton from "../components/WhatsAppButton"
 import Footer from "../components/Footer"
 import Trustbar from "../components/Trustbar"
 import Promosection from "../components/Promosection"
+import HowWeWork from "../components/HowWeWork"
+import Testimonials from "../components/Testimonials"
 import { services } from "../data/services"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
@@ -204,6 +206,8 @@ export default function Home() {
         ]}
       />
 
+      <HowWeWork />
+      <Testimonials />
       <WhatsAppButton />
       <Footer />
     </>
