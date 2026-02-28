@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, Outlet } from "react-router-dom"
 import {
   LayoutDashboard,
   PackagePlus,
@@ -15,7 +15,7 @@ const navItems = [
   { to: "/admin/banners",     label: "Banners",             icon: Image           },
 ]
 
-export default function AdminLayout({ children }) {
+export default function AdminLayout() {
   const { pathname } = useLocation()
 
   return (
@@ -51,7 +51,7 @@ export default function AdminLayout({ children }) {
 
       {/* ── Main content ── */}
       <main className="flex-1 p-8 overflow-auto">
-        {children}
+        <Outlet />
       </main>
 
     </div>

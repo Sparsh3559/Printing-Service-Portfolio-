@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import AdminLayout from "@/components/AdminLayout"
+import AdminLayout from "../../../components/AdminLayout"
 import { Card } from "@/components/ui/card"
 import { Package, Tag, Image, TrendingUp, Star, Loader2 } from "lucide-react"
 import { supabase } from "@/lib/supabase"
