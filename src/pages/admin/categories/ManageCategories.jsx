@@ -1,190 +1,337 @@
-import { useState, useEffect } from "react"
-import AdminLayout from "../../../components/AdminLayout"
+import { useState, useEffect, useRef } from "react"
+import AdminLayout from "@/components/AdminLayout"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
-import { Package, Tag, Image, TrendingUp, Star, Loader2 } from "lucide-react"
+import {
+  Trash2, Plus, Loader2, Pencil, Check, X,
+  ChevronDown, ChevronUp, Tag, FolderOpen
+} from "lucide-react"
 import { supabase } from "@/lib/supabase"
 
-function StatCard({ icon: Icon, label, value, color }) {
-  return (
-    <Card className="p-6 flex items-start gap-4">
-      <div className={`p-3 rounded-xl ${color}`}>
-        <Icon size={20} className="text-white" />
-      </div>
-      <div>
-        <p className="text-sm text-muted-foreground">{label}</p>
-        <p className="text-3xl font-bold mt-0.5">
-          {value === null ? (
-            <Loader2 size={22} className="animate-spin text-muted-foreground mt-1" />
-          ) : (
-            value
-          )}
-        </p>
-      </div>
-    </Card>
-  )
-}
+export default function ManageCategories() {
+  const [categories, setCategories] = useState([])
+  const [children, setChildren] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [expanded, setExpanded] = useState({})
 
-export default function Dashboard() {
-  const [counts, setCounts] = useState({
-    products: null,
-    categories: null,
-    banners: null,
-    featured: null,
-  })
-  const [recentProducts, setRecentProducts] = useState([])
-  const [loadingRecent, setLoadingRecent] = useState(true)
+  // Add state
+  const [newCat, setNewCat] = useState("")
+  const [newSub, setNewSub] = useState("")
+  const [selectedParent, setSelectedParent] = useState("")
+  const [addingCat, setAddingCat] = useState(false)
+  const [addingSub, setAddingSub] = useState(false)
 
-  // ── Fetch counts ──────────────────────────────────────────────────────────
-  async function fetchCounts() {
-    const [products, categories, banners, featured] = await Promise.all([
-      supabase.from("Products").select("*", { count: "exact", head: true }),
-      supabase.from("Categories").select("*", { count: "exact", head: true }),
-      supabase.from("Banners").select("*", { count: "exact", head: true }),
-      supabase.from("Products").select("*", { count: "exact", head: true }).eq("is_featured", true),
-    ])
+  // Edit state
+  const [editingId, setEditingId] = useState(null)
+  const [editName, setEditName] = useState("")
+  const [savingEdit, setSavingEdit] = useState(false)
+  const [deletingId, setDeletingId] = useState(null)
 
-    setCounts({
-      products: products.count ?? 0,
-      categories: categories.count ?? 0,
-      banners: banners.count ?? 0,
-      featured: featured.count ?? 0,
-    })
+  const editRef = useRef()
+
+  // ── Fetch ─────────────────────────────────────────────────────────────────
+  async function fetchAll() {
+    const { data, error } = await supabase
+      .from("Categories")
+      .select("*")
+      .order("name")
+    if (error) { console.error(error); return }
+    setCategories(data.filter((c) => c.parent_id === null))
+    setChildren(data.filter((c) => c.parent_id !== null))
+    setLoading(false)
   }
 
-  // ── Fetch recent products ─────────────────────────────────────────────────
-  async function fetchRecent() {
-    const { data } = await supabase
-      .from("Products")
-      .select("id, name, price, image_url, is_featured, created_at, Categories(name)")
-      .order("created_at", { ascending: false })
-      .limit(5)
-    if (data) setRecentProducts(data)
-    setLoadingRecent(false)
-  }
-
-  useEffect(() => {
-    fetchCounts()
-    fetchRecent()
-  }, [])
+  useEffect(() => { fetchAll() }, [])
 
   // ── Realtime ──────────────────────────────────────────────────────────────
   useEffect(() => {
     const channel = supabase
-      .channel("dashboard-realtime")
-      .on("postgres_changes", { event: "*", schema: "public", table: "Products" }, () => {
-        fetchCounts()
-        fetchRecent()
-      })
-      .on("postgres_changes", { event: "*", schema: "public", table: "Categories" }, fetchCounts)
-      .on("postgres_changes", { event: "*", schema: "public", table: "Banners" }, fetchCounts)
+      .channel("categories-v2")
+      .on("postgres_changes", { event: "*", schema: "public", table: "Categories" }, fetchAll)
       .subscribe()
-
     return () => supabase.removeChannel(channel)
   }, [])
 
+  useEffect(() => {
+    if (editingId && editRef.current) editRef.current.focus()
+  }, [editingId])
+
+  // ── Add parent ────────────────────────────────────────────────────────────
+  async function addCategory() {
+    if (!newCat.trim()) return
+    setAddingCat(true)
+    const { error } = await supabase
+      .from("Categories")
+      .insert({ name: newCat.trim(), parent_id: null })
+    if (error) alert(error.message)
+    else setNewCat("")
+    setAddingCat(false)
+  }
+
+  // ── Add sub ───────────────────────────────────────────────────────────────
+  async function addSubCategory() {
+    if (!newSub.trim() || !selectedParent) return
+    setAddingSub(true)
+    const { error } = await supabase
+      .from("Categories")
+      .insert({ name: newSub.trim(), parent_id: Number(selectedParent) })
+    if (error) alert(error.message)
+    else {
+      setNewSub("")
+      setExpanded((prev) => ({ ...prev, [selectedParent]: true }))
+    }
+    setAddingSub(false)
+  }
+
+  // ── Rename ────────────────────────────────────────────────────────────────
+  function startEdit(item) {
+    setEditingId(item.id)
+    setEditName(item.name)
+  }
+
+  async function saveEdit(id) {
+    if (!editName.trim()) return
+    setSavingEdit(true)
+    const { error } = await supabase
+      .from("Categories")
+      .update({ name: editName.trim() })
+      .eq("id", id)
+    if (error) alert(error.message)
+    else setEditingId(null)
+    setSavingEdit(false)
+  }
+
+  function cancelEdit() {
+    setEditingId(null)
+    setEditName("")
+  }
+
+  // ── Delete ────────────────────────────────────────────────────────────────
+  async function deleteCategory(id, name) {
+    if (!confirm(`Delete "${name}"? This cannot be undone.`)) return
+    setDeletingId(id)
+    const { error } = await supabase.from("Categories").delete().eq("id", id)
+    if (error) alert(error.message)
+    setDeletingId(null)
+  }
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  const childrenOf = (parentId) => children.filter((c) => c.parent_id === parentId)
+  const toggleExpand = (id) => setExpanded((prev) => ({ ...prev, [id]: !prev[id] }))
+  const onKey = (e, fn) => e.key === "Enter" && fn()
+
+  // ── UI ────────────────────────────────────────────────────────────────────
   return (
     <AdminLayout>
       <div className="mb-8">
-        <h1 className="text-3xl font-semibold">Dashboard</h1>
+        <h1 className="text-2xl font-semibold">Categories</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Live overview of your print store.
+          {categories.length} categories · {children.length} sub-categories · Changes sync live.
         </p>
       </div>
 
-      {/* ── Stat cards ── */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-10">
-        <StatCard
-          icon={Package}
-          label="Total Products"
-          value={counts.products}
-          color="bg-blue-500"
-        />
-        <StatCard
-          icon={Tag}
-          label="Categories"
-          value={counts.categories}
-          color="bg-violet-500"
-        />
-        <StatCard
-          icon={Image}
-          label="Active Banners"
-          value={counts.banners}
-          color="bg-emerald-500"
-        />
-        <StatCard
-          icon={Star}
-          label="Featured Products"
-          value={counts.featured}
-          color="bg-amber-500"
-        />
-      </div>
+      {/* ── Add Forms ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-10">
 
-      {/* ── Recent products ── */}
-      <div>
-        <div className="flex items-center gap-2 mb-4">
-          <TrendingUp size={16} className="text-muted-foreground" />
-          <h2 className="text-base font-semibold">Recently Added Products</h2>
-        </div>
-
-        {loadingRecent ? (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 size={14} className="animate-spin" /> Loading…
+        {/* Add Category */}
+        <Card className="p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="p-1.5 bg-violet-100 rounded-lg">
+              <FolderOpen size={15} className="text-violet-600" />
+            </div>
+            <h2 className="font-medium text-sm">Add Category</h2>
           </div>
-        ) : recentProducts.length === 0 ? (
-          <Card className="p-8 text-center text-sm text-muted-foreground">
-            No products yet. Go to <strong>Add Product</strong> to get started.
-          </Card>
-        ) : (
-          <Card className="divide-y overflow-hidden">
-            {recentProducts.map((p) => (
-              <div key={p.id} className="flex items-center gap-4 p-4 hover:bg-muted/40 transition-colors">
-                {/* Thumbnail */}
-                {p.image_url ? (
-                  <img
-                    src={p.image_url}
-                    alt={p.name}
-                    className="w-11 h-11 rounded-lg object-cover flex-shrink-0"
-                  />
-                ) : (
-                  <div className="w-11 h-11 rounded-lg bg-muted flex-shrink-0" />
-                )}
+          <div className="flex gap-2">
+            <Input
+              placeholder="e.g. Apparel"
+              value={newCat}
+              onChange={(e) => setNewCat(e.target.value)}
+              onKeyDown={(e) => onKey(e, addCategory)}
+            />
+            <Button
+              onClick={addCategory}
+              disabled={addingCat || !newCat.trim()}
+              size="sm"
+              className="flex-shrink-0"
+            >
+              {addingCat
+                ? <Loader2 size={13} className="animate-spin" />
+                : <Plus size={13} />}
+            </Button>
+          </div>
+        </Card>
 
-                {/* Name + category */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="font-medium text-sm truncate">{p.name}</p>
-                    {p.is_featured && (
-                      <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-medium flex-shrink-0">
-                        Featured
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {p.Categories?.name ?? "Uncategorized"}
-                  </p>
-                </div>
-
-                {/* Price */}
-                <div className="text-sm font-medium flex-shrink-0">
-                  {p.price != null
-                    ? `₹${Number(p.price).toLocaleString("en-IN")}`
-                    : <span className="text-muted-foreground">—</span>
-                  }
-                </div>
-
-                {/* Date */}
-                <div className="text-xs text-muted-foreground flex-shrink-0 hidden sm:block">
-                  {new Date(p.created_at).toLocaleDateString("en-IN", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </div>
-              </div>
-            ))}
-          </Card>
-        )}
+        {/* Add Sub-Category */}
+        <Card className="p-5 lg:col-span-2">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="p-1.5 bg-blue-100 rounded-lg">
+              <Tag size={15} className="text-blue-600" />
+            </div>
+            <h2 className="font-medium text-sm">Add Sub-Category</h2>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <select
+              className="border rounded-md px-3 py-2 text-sm bg-background"
+              value={selectedParent}
+              onChange={(e) => setSelectedParent(e.target.value)}
+            >
+              <option value="">Select parent…</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+            <Input
+              className="flex-1 min-w-[150px]"
+              placeholder="e.g. Polo T-Shirts"
+              value={newSub}
+              onChange={(e) => setNewSub(e.target.value)}
+              onKeyDown={(e) => onKey(e, addSubCategory)}
+            />
+            <Button
+              onClick={addSubCategory}
+              disabled={addingSub || !newSub.trim() || !selectedParent}
+              size="sm"
+            >
+              {addingSub
+                ? <Loader2 size={13} className="animate-spin mr-1" />
+                : <Plus size={13} className="mr-1" />}
+              Add
+            </Button>
+          </div>
+        </Card>
       </div>
+
+      {/* ── List ── */}
+      {loading ? (
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 size={15} className="animate-spin" /> Loading…
+        </div>
+      ) : categories.length === 0 ? (
+        <Card className="p-10 text-center text-sm text-muted-foreground">
+          No categories yet. Add your first one above.
+        </Card>
+      ) : (
+        <div className="space-y-3">
+          {categories.map((cat) => {
+            const subs = childrenOf(cat.id)
+            const isExpanded = expanded[cat.id] ?? true
+            const isEditingThis = editingId === cat.id
+
+            return (
+              <Card key={cat.id} className="overflow-hidden">
+
+                {/* ── Parent row ── */}
+                <div className="flex items-center gap-3 px-5 py-4">
+                  <button
+                    onClick={() => toggleExpand(cat.id)}
+                    className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0"
+                  >
+                    {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  </button>
+
+                  {isEditingThis ? (
+                    <div className="flex items-center gap-2 flex-1">
+                      <Input
+                        ref={editRef}
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") saveEdit(cat.id)
+                          if (e.key === "Escape") cancelEdit()
+                        }}
+                        className="h-8 text-sm font-medium max-w-xs"
+                      />
+                      <button onClick={() => saveEdit(cat.id)} disabled={savingEdit} className="text-green-600 hover:text-green-700">
+                        {savingEdit ? <Loader2 size={15} className="animate-spin" /> : <Check size={15} />}
+                      </button>
+                      <button onClick={cancelEdit} className="text-muted-foreground hover:text-foreground">
+                        <X size={15} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex-1 min-w-0">
+                      <span className="font-semibold">{cat.name}</span>
+                      <span className="ml-2 text-xs text-muted-foreground">
+                        {subs.length} sub-categor{subs.length === 1 ? "y" : "ies"}
+                      </span>
+                    </div>
+                  )}
+
+                  {!isEditingThis && (
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => startEdit(cat)} title="Rename">
+                        <Pencil size={14} />
+                      </Button>
+                      <Button
+                        variant="ghost" size="icon"
+                        className="h-8 w-8 text-destructive hover:text-destructive"
+                        disabled={deletingId === cat.id}
+                        onClick={() => deleteCategory(cat.id, cat.name)}
+                      >
+                        {deletingId === cat.id
+                          ? <Loader2 size={14} className="animate-spin" />
+                          : <Trash2 size={14} />}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
+                {/* ── Sub-category chips ── */}
+                {isExpanded && subs.length > 0 && (
+                  <div className="border-t bg-muted/30 px-5 py-3 flex flex-wrap gap-2">
+                    {subs.map((sub) => {
+                      const isEditingSub = editingId === sub.id
+                      return isEditingSub ? (
+                        <div key={sub.id} className="flex items-center gap-1 bg-background border rounded-full px-3 py-1">
+                          <input
+                            ref={editRef}
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") saveEdit(sub.id)
+                              if (e.key === "Escape") cancelEdit()
+                            }}
+                            className="text-sm outline-none w-28 bg-transparent"
+                          />
+                          <button onClick={() => saveEdit(sub.id)} className="text-green-600">
+                            {savingEdit ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} />}
+                          </button>
+                          <button onClick={cancelEdit} className="text-muted-foreground">
+                            <X size={12} />
+                          </button>
+                        </div>
+                      ) : (
+                        <div
+                          key={sub.id}
+                          className="group flex items-center gap-1 bg-background border px-3 py-1 rounded-full text-sm hover:border-primary/50 transition-colors"
+                        >
+                          <span>{sub.name}</span>
+                          <button
+                            onClick={() => startEdit(sub)}
+                            className="ml-1 text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <Pencil size={10} />
+                          </button>
+                          <button
+                            onClick={() => deleteCategory(sub.id, sub.name)}
+                            disabled={deletingId === sub.id}
+                            className="text-muted-foreground hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            {deletingId === sub.id
+                              ? <Loader2 size={10} className="animate-spin" />
+                              : <X size={10} />}
+                          </button>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </Card>
+            )
+          })}
+        </div>
+      )}
     </AdminLayout>
   )
 }
