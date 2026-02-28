@@ -217,8 +217,8 @@ export default function Navbar() {
 
       {/* ── Desktop categories bar ── */}
       <div className="hidden md:flex justify-center border-t bg-white">
-        <NavigationMenu>
-          <NavigationMenuList>
+        <NavigationMenu className="max-w-full">
+          <NavigationMenuList className="flex-wrap justify-center">
             {NAV_CATEGORIES.map((cat) => (
               <NavigationMenuItem key={cat.label}>
                 <NavigationMenuTrigger className="text-sm font-medium">
@@ -226,30 +226,26 @@ export default function Navbar() {
                 </NavigationMenuTrigger>
 
                 <NavigationMenuContent>
-                  {/* Multi-column mega menu */}
-                  <div
-                    className="p-6 flex gap-8"
-                    style={{ width: `${Math.min(cat.sections.length, 4) * 200}px` }}
-                  >
-                    {cat.sections.map((sec) => (
-                      <div key={sec.heading} className="min-w-[160px]">
-                        {/* Section heading — bold */}
-                        <p className="text-xs font-bold uppercase tracking-widest text-zinc-900 mb-3 border-b pb-1.5">
-                          {sec.heading}
-                        </p>
-                        <ul className="space-y-1.5">
-                          {sec.items.map((item) => (
-                            <li key={item}>
-                              <NavigationMenuLink
-                                className="block text-sm text-zinc-500 hover:text-zinc-900 cursor-pointer transition-colors leading-snug"
-                              >
-                                {item}
-                              </NavigationMenuLink>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
+                  {/* Mega menu — max 4 cols per row, centered */}
+                  <div className="p-6 w-[860px]">
+                    <div className="grid grid-cols-4 gap-x-8 gap-y-6">
+                      {cat.sections.map((sec) => (
+                        <div key={sec.heading}>
+                          <p className="text-xs font-bold uppercase tracking-widest text-zinc-900 mb-3 border-b pb-1.5">
+                            {sec.heading}
+                          </p>
+                          <ul className="space-y-1.5">
+                            {sec.items.map((item) => (
+                              <li key={item}>
+                                <NavigationMenuLink className="block text-sm text-zinc-500 hover:text-zinc-900 cursor-pointer transition-colors leading-snug">
+                                  {item}
+                                </NavigationMenuLink>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
