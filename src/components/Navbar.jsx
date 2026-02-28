@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
+import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -11,40 +12,119 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { ChevronDown, ChevronRight } from "lucide-react"
-import { supabase } from "@/lib/supabase"
+
+// ── Hardcoded category data ───────────────────────────────────────────────────
+const NAV_CATEGORIES = [
+  {
+    label: "Custom Apparel",
+    sections: [
+      {
+        heading: "Polo T-Shirts",
+        items: [
+          "Polo Matty 240 GSM",
+          "Polo Matty 180 GSM",
+          "Spoon Matty",
+          "Shape Matty",
+          "Premium Cotton Collar T-Shirt",
+          "Collar Tipping Polo T-Shirt",
+        ],
+      },
+      {
+        heading: "Round Neck T-Shirts",
+        items: [
+          "Round Neck Cotton T-Shirt",
+          "French Terry T-Shirt",
+          "Off Shoulder T-Shirt",
+          "Down Sleeve Round Neck Cotton T-Shirt",
+          "Polyester Round Neck T-Shirt",
+          "Dot Net Round Neck T-Shirt",
+          "Dryfit Round Neck T-Shirt",
+          "Polyester Holi Fabric T-Shirt",
+        ],
+      },
+      {
+        heading: "Winter Collection",
+        items: ["Hoodies", "Sweat Shirt"],
+      },
+      {
+        heading: "Sports Apparel",
+        items: [
+          "Custom Sport Round Neck T-Shirt",
+          "Custom Sport Collar T-Shirt",
+          "Custom Sport Stand Collar T-Shirt",
+          "Customer Sport Kit Jersey",
+          "Custom Sport Sandow",
+          "Sport Honeycomb T-Shirt Stand Collar",
+        ],
+      },
+      {
+        heading: "Cap",
+        items: ["Cotton Cap", "Sporty Cap"],
+      },
+    ],
+  },
+  {
+    label: "Drinkware",
+    sections: [
+      {
+        heading: "Water Bottles",
+        items: [
+          "Sublimation Sipper Water Bottle 600ml / 700ml",
+          "Temperature Bottle",
+          "Stainless Steel Water Bottle",
+          "Stainless Steel Sports Water Bottle",
+          "Metallic Bottle",
+          "Corporate Stainless Steel Water Bottle",
+          "Premium Sporty Hydration Stainless Steel Water Bottle",
+          "Premium Stainless Steel Water Bottle",
+          "Office Water Bottle",
+        ],
+      },
+      {
+        heading: "Tumbler & Thermos",
+        items: [
+          "Sublimation Thermos",
+          "Vacuum Flask Set",
+          "Cup Tumbler",
+          "Vacuum Insulated Steel Tumbler with Handle & Straw",
+        ],
+      },
+      {
+        heading: "Ceramic Mugs",
+        items: [
+          "Simple White Coffee Mug 11oz",
+          "Simple White Coffee Mug 6oz",
+          "Simple Heart Handle Mug",
+          "Simple Full Heart Handle Mug",
+          "Page Mug",
+          "Heart Handle Page Mug",
+          "Heart Handle 3 Tone Mug",
+          "3 Tone Two Color Mug",
+          "Magic Mug",
+          "Heart Handle Magic Mug",
+          "Full Heart Handle Magic Mug",
+          "Neon Mug",
+          "Silver & Gold Mug",
+          "Frosted Mug",
+          "Glass Mug",
+          "Beer Mug",
+          "Tea Mug",
+        ],
+      },
+    ],
+  },
+]
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
-  const [categories, setCategories] = useState([])   // parent categories
-  const [children, setChildren] = useState([])        // subcategories
   const [expandedMobile, setExpandedMobile] = useState({})
+  const [expandedSection, setExpandedSection] = useState({})
 
-  // ── Fetch categories ──────────────────────────────────────────────────────
-  async function fetchCategories() {
-    const { data, error } = await supabase
-      .from("Categories")
-      .select("*")
-      .order("name")
-    if (error || !data) return
-    setCategories(data.filter((c) => c.parent_id === null))
-    setChildren(data.filter((c) => c.parent_id !== null))
-  }
+  const toggleMobile = (label) =>
+    setExpandedMobile((prev) => ({ ...prev, [label]: !prev[label] }))
 
-  useEffect(() => { fetchCategories() }, [])
-
-  // ── Realtime — navbar updates when admin adds/removes categories ──────────
-  useEffect(() => {
-    const channel = supabase
-      .channel("navbar-categories")
-      .on("postgres_changes", { event: "*", schema: "public", table: "Categories" }, fetchCategories)
-      .subscribe()
-    return () => supabase.removeChannel(channel)
-  }, [])
-
-  const subsOf = (parentId) => children.filter((c) => c.parent_id === parentId)
-
-  const toggleMobile = (id) =>
-    setExpandedMobile((prev) => ({ ...prev, [id]: !prev[id] }))
+  const toggleSection = (key) =>
+    setExpandedSection((prev) => ({ ...prev, [key]: !prev[key] }))
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b">
@@ -60,53 +140,68 @@ export default function Navbar() {
 
           {/* ── Mobile drawer ── */}
           <SheetContent side="left" className="w-80 overflow-y-auto">
-            <div className="space-y-2 mt-6">
-              <h2 className="text-lg font-bold px-2 mb-4">Categories</h2>
+            <div className="space-y-1 mt-6 pb-8">
+              <h2 className="text-lg font-bold px-3 mb-5">Categories</h2>
 
-              {categories.length === 0 ? (
-                <p className="text-sm text-muted-foreground px-2">No categories yet.</p>
-              ) : (
-                categories.map((cat) => {
-                  const subs = subsOf(cat.id)
-                  const isOpen = expandedMobile[cat.id]
-                  return (
-                    <div key={cat.id}>
-                      <button
-                        onClick={() => subs.length > 0 && toggleMobile(cat.id)}
-                        className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-muted text-sm font-medium transition-colors"
-                      >
-                        <span>{cat.name}</span>
-                        {subs.length > 0 && (
-                          isOpen
-                            ? <ChevronDown size={15} className="text-muted-foreground" />
-                            : <ChevronRight size={15} className="text-muted-foreground" />
-                        )}
-                      </button>
+              {NAV_CATEGORIES.map((cat) => {
+                const isOpen = expandedMobile[cat.label]
+                return (
+                  <div key={cat.label}>
+                    {/* Parent */}
+                    <button
+                      onClick={() => toggleMobile(cat.label)}
+                      className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-zinc-50 text-sm font-semibold transition-colors"
+                    >
+                      <span>{cat.label}</span>
+                      {isOpen
+                        ? <ChevronDown size={15} className="text-zinc-400" />
+                        : <ChevronRight size={15} className="text-zinc-400" />}
+                    </button>
 
-                      {/* Mobile subcategories */}
-                      {isOpen && subs.length > 0 && (
-                        <div className="ml-4 mt-1 space-y-1 border-l pl-3">
-                          {subs.map((sub) => (
-                            <button
-                              key={sub.id}
-                              onClick={() => setOpen(false)}
-                              className="w-full text-left px-2 py-2 text-sm text-muted-foreground hover:text-foreground rounded-md hover:bg-muted transition-colors"
-                            >
-                              {sub.name}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )
-                })
-              )}
+                    {/* Sections */}
+                    {isOpen && (
+                      <div className="ml-3 border-l pl-3 mt-1 space-y-2 mb-2">
+                        {cat.sections.map((sec) => {
+                          const secKey = cat.label + sec.heading
+                          const secOpen = expandedSection[secKey] ?? true
+                          return (
+                            <div key={sec.heading}>
+                              <button
+                                onClick={() => toggleSection(secKey)}
+                                className="w-full flex items-center justify-between px-2 py-1.5 text-xs font-bold uppercase tracking-wider text-zinc-500 hover:text-zinc-900 transition-colors"
+                              >
+                                {sec.heading}
+                                {secOpen
+                                  ? <ChevronDown size={12} />
+                                  : <ChevronRight size={12} />}
+                              </button>
+                              {secOpen && (
+                                <div className="ml-2 space-y-0.5">
+                                  {sec.items.map((item) => (
+                                    <button
+                                      key={item}
+                                      onClick={() => setOpen(false)}
+                                      className="w-full text-left px-2 py-1.5 text-sm text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 rounded transition-colors"
+                                    >
+                                      {item}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </SheetContent>
         </Sheet>
 
         {/* Logo */}
-        <div className="text-xl font-bold">PRINT HUB</div>
+        <div className="text-xl font-bold tracking-tight">PRINT HUB</div>
 
         {/* Search */}
         <div className="hidden md:flex flex-1 max-w-xl mx-6">
@@ -124,34 +219,41 @@ export default function Navbar() {
       <div className="hidden md:flex justify-center border-t bg-white">
         <NavigationMenu>
           <NavigationMenuList>
-            {categories.map((cat) => {
-              const subs = subsOf(cat.id)
-              return (
-                <NavigationMenuItem key={cat.id}>
-                  {subs.length > 0 ? (
-                    <>
-                      <NavigationMenuTrigger>{cat.name}</NavigationMenuTrigger>
-                      <NavigationMenuContent>
-                        <div className="grid grid-cols-2 gap-x-6 gap-y-3 p-6 w-[380px]">
-                          {subs.map((sub) => (
-                            <NavigationMenuLink
-                              key={sub.id}
-                              className="text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
-                            >
-                              {sub.name}
-                            </NavigationMenuLink>
+            {NAV_CATEGORIES.map((cat) => (
+              <NavigationMenuItem key={cat.label}>
+                <NavigationMenuTrigger className="text-sm font-medium">
+                  {cat.label}
+                </NavigationMenuTrigger>
+
+                <NavigationMenuContent>
+                  {/* Multi-column mega menu */}
+                  <div
+                    className="p-6 flex gap-8"
+                    style={{ width: `${Math.min(cat.sections.length, 4) * 200}px` }}
+                  >
+                    {cat.sections.map((sec) => (
+                      <div key={sec.heading} className="min-w-[160px]">
+                        {/* Section heading — bold */}
+                        <p className="text-xs font-bold uppercase tracking-widest text-zinc-900 mb-3 border-b pb-1.5">
+                          {sec.heading}
+                        </p>
+                        <ul className="space-y-1.5">
+                          {sec.items.map((item) => (
+                            <li key={item}>
+                              <NavigationMenuLink
+                                className="block text-sm text-zinc-500 hover:text-zinc-900 cursor-pointer transition-colors leading-snug"
+                              >
+                                {item}
+                              </NavigationMenuLink>
+                            </li>
                           ))}
-                        </div>
-                      </NavigationMenuContent>
-                    </>
-                  ) : (
-                    <NavigationMenuLink className="px-4 py-2 text-sm font-medium cursor-pointer hover:text-foreground/70 transition-colors">
-                      {cat.name}
-                    </NavigationMenuLink>
-                  )}
-                </NavigationMenuItem>
-              )
-            })}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            ))}
           </NavigationMenuList>
         </NavigationMenu>
       </div>

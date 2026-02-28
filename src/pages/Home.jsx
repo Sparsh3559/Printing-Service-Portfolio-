@@ -4,8 +4,8 @@ import Navbar from "../components/Navbar"
 import Hero from "../components/Hero"
 import WhatsAppButton from "../components/WhatsAppButton"
 import Footer from "../components/Footer"
-import Trustbar from "../components/Trustbar"
-import Promosection from "../components/Promosection"
+import TrustBar from "../components/TrustBar"
+import PromoSection from "../components/PromoSection"
 import { services } from "../data/services"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
@@ -42,10 +42,10 @@ export default function Home() {
       <Hero />
 
       {/* ── Trust Bar ── */}
-      <Trustbar />
+      <TrustBar />
 
       {/* ── Services Carousel ── */}
-      <section className="py-20 bg-white overflow-hidden">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-end justify-between mb-12">
             <div>
@@ -66,9 +66,10 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Carousel — no overflow clipping so side cards show */}
         <div
-          className="relative flex items-center justify-center"
-          style={{ height: "420px", gap: "20px" }}
+          className="relative flex items-center justify-center w-full"
+          style={{ height: "440px" }}
           onMouseDown={onDragStart}
           onMouseUp={onDragEnd}
           onMouseLeave={() => setIsDragging(false)}
@@ -80,24 +81,32 @@ export default function Home() {
             const isCenter = offset === 0
             const isAdjacent = Math.abs(offset) === 1
             const isFar = Math.abs(offset) === 2
+
+            // Fixed pixel widths for predictable positioning
+            const cw = 480  // center
+            const aw = 240  // adjacent
+            const fw = 160  // far
+            const gap = 16
+
+            const translateX =
+              offset === 0  ? 0 :
+              offset === -1 ? -(cw / 2 + aw / 2 + gap) :
+              offset ===  1 ?  (cw / 2 + aw / 2 + gap) :
+              offset === -2 ? -(cw / 2 + aw + fw / 2 + gap * 2) :
+                               (cw / 2 + aw + fw / 2 + gap * 2)
+
             return (
               <div
                 key={service.id + "-" + offset}
                 onClick={() => { if (offset < 0) prev(); else if (offset > 0) next() }}
                 className="absolute rounded-2xl overflow-hidden transition-all duration-500 ease-out"
                 style={{
-                  width: isCenter ? "clamp(300px, 38vw, 520px)" : isAdjacent ? "clamp(180px, 22vw, 300px)" : "clamp(120px, 14vw, 200px)",
-                  height: isCenter ? "420px" : isAdjacent ? "340px" : "260px",
-                  opacity: isFar ? 0.3 : isAdjacent ? 0.72 : 1,
+                  width: isCenter ? cw : isAdjacent ? aw : fw,
+                  height: isCenter ? 440 : isAdjacent ? 360 : 280,
+                  opacity: isFar ? 0.4 : isAdjacent ? 0.75 : 1,
                   cursor: isCenter ? "default" : "pointer",
                   zIndex: isCenter ? 10 : isAdjacent ? 5 : 1,
-                  transform: `translateX(${
-                    offset === 0 ? "0" :
-                    offset === -1 ? "calc(-clamp(300px, 38vw, 520px) / 2 - clamp(180px, 22vw, 300px) / 2 - 20px)" :
-                    offset === 1 ? "calc(clamp(300px, 38vw, 520px) / 2 + clamp(180px, 22vw, 300px) / 2 + 20px)" :
-                    offset === -2 ? "calc(-clamp(300px, 38vw, 520px) / 2 - clamp(180px, 22vw, 300px) - clamp(120px, 14vw, 200px) / 2 - 40px)" :
-                    "calc(clamp(300px, 38vw, 520px) / 2 + clamp(180px, 22vw, 300px) + clamp(120px, 14vw, 200px) / 2 + 40px)"
-                  }) scale(${isCenter ? 1 : isAdjacent ? 0.97 : 0.92})`,
+                  transform: `translateX(${translateX}px)`,
                 }}
               >
                 <img src={service.image} alt={service.title} draggable={false} className="w-full h-full object-cover" />
@@ -130,7 +139,7 @@ export default function Home() {
       </section>
 
       {/* ── Women's Day Promo ── */}
-      <Promosection
+      <PromoSection
         tag="Women's Day Special"
         heading="Women's Day Gifts for Your Employees"
         description="Thoughtfully curated gifts that show you value your women workforce. Premium hampers, personalized gifts, and elegant accessories. Order as low as single quantity."
@@ -163,7 +172,7 @@ export default function Home() {
       />
 
       {/* ── Corporate Gifting Promo ── */}
-      <Promosection
+      <PromoSection
         tag="Corporate Solutions"
         heading="Corporate Gifting for Every Occasion"
         description="Build lasting impressions with premium branded merchandise. From onboarding kits to festive hampers — crafted for teams of all sizes. Order in bulk or single pieces."
