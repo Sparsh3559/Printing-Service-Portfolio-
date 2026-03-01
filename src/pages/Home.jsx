@@ -8,7 +8,7 @@ import Trustbar from "../components/Trustbar"
 import Promosection from "../components/Promosection"
 import HowWeWork from "../components/HowWeWork"
 import Testimonials from "../components/Testimonials"
-import SideStrips from "../components/SideStripes";
+import SideStrips from "../components/SideStrips";
 import { services } from "../data/services"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
