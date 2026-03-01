@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
-import TShirtPrinting from "./pages/TshirtPrinting";
-import MugPrinting from "./pages/Drinkware";
+import Apparels from "./pages/Apparels";
+import Drinkware from "./pages/Drinkware";
 import CorporatePrinting from "./pages/CorporatePrinting";
 import BannerPrinting from "./pages/BannerPrinting";
 
@@ -22,8 +22,8 @@ function App() {
 
         {/* Client */}
         <Route path="/" element={<Home />} />
-        <Route path="/tshirt-printing" element={<TShirtPrinting />} />
-        <Route path="/mug-printing" element={<MugPrinting />} />
+        <Route path="/tshirt-printing" element={<Apparels />} />
+        <Route path="/mug-printing" element={<Drinkware />} />
         <Route path="/corporate-printing" element={<CorporatePrinting />} />
         <Route path="/banner-printing" element={<BannerPrinting />} />
 
