@@ -11,6 +11,8 @@ import AddProduct from "./pages/admin/products/AddProduct";
 import ManageProducts from "./pages/admin/products/ManageProducts";
 import ManageBanners from "./pages/admin/banners/ManageBanners";
 import ManageCategories from "./pages/admin/categories/ManageCategories";
+import ProductPage from "./pages/ProductPage";
+import CategoryPage from "./pages/CategoryPage";
 
 
 import "./App.css";
@@ -33,6 +35,8 @@ function App() {
         <Route path="/admin/products" element={<ManageProducts />} />
         <Route path="/admin/categories" element={<ManageCategories />} />
         <Route path="/admin/banners" element={<ManageBanners />} />
+        <Route path="/product/:id" element={<ProductPage />} />
+        <Route path="/category/:id" element={<CategoryPage />} />
 
       </Routes>
     </BrowserRouter>

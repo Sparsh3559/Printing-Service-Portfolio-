@@ -114,7 +114,7 @@ export default function Footer() {
 
       {/* ── Bottom bar ── */}
       <div className="border-t border-white/10 text-center text-xs text-white/40 py-5">
-        © {new Date().getFullYear()} Print Hub. All rights reserved.
+        © {new Date().getFullYear()} Mekal Enterprises. All rights reserved.
       </div>
     </footer>
   )
