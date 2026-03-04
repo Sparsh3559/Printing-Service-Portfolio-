@@ -21,6 +21,7 @@ export default function ProductPage() {
       setLoading(true)
       setNotFound(false)
 
+      // Try new slug format first (~ encodes original hyphens)
       const productName = slugToName(slug)
 
       const { data, error } = await supabase
@@ -30,26 +31,57 @@ export default function ProductPage() {
         .limit(1)
         .single()
 
-      if (error || !data) {
-        console.error("Product fetch error:", error?.message, "| name searched:", productName)
-        setNotFound(true)
-        setLoading(false)
+      if (!error && data) {
+        // ✅ Found with new slug format
+        await fetchRelated(data)
         return
       }
 
-      setProduct(data)
+      // ⚠️ Fallback: try legacy slug format (all hyphens → spaces, no ~ encoding)
+      // This handles old URLs like /product/Polyester-Round-Neck-T-Shirt
+      const legacyName = decodeURIComponent(slug).replace(/-/g, " ")
 
-      // Fetch related products from same category
+      console.warn(
+        "New slug lookup failed, trying legacy format:",
+        { tried: productName, fallback: legacyName, error: error?.message }
+      )
+
+      const { data: fallback, error: err2 } = await supabase
+        .from("Products")
+        .select("*, Categories(id, name)")
+        .ilike("name", legacyName)
+        .limit(1)
+        .single()
+
+      if (!err2 && fallback) {
+        // ✅ Found with legacy slug format
+        await fetchRelated(fallback)
+        return
+      }
+
+      // ❌ Not found with either format
+      console.error(
+        "Product not found with either slug format:",
+        { newName: productName, legacyName, error: err2?.message }
+      )
+      setNotFound(true)
+      setLoading(false)
+    }
+
+    async function fetchRelated(productData) {
+      setProduct(productData)
+
       const { data: rel } = await supabase
         .from("Products")
         .select("name, image_url, tag")
-        .eq("category_id", data.category_id)
-        .neq("name", data.name)
+        .eq("category_id", productData.category_id)
+        .neq("name", productData.name)
         .limit(6)
 
       if (rel) setRelated(rel)
       setLoading(false)
     }
+
     fetchProduct()
   }, [slug])
 
