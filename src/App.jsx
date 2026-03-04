@@ -14,7 +14,6 @@ import ManageCategories from "./pages/admin/categories/ManageCategories";
 import ProductPage from "./pages/ProductPage";
 import CategoryPage from "./pages/CategoryPage";
 
-
 import "./App.css";
 
 function App() {
@@ -29,18 +28,20 @@ function App() {
         <Route path="/corporate-printing" element={<CorporatePrinting />} />
         <Route path="/banner-printing" element={<BannerPrinting />} />
 
+        {/* Product & Category — :slug is the product name e.g. Polo-Matty-240-GSM */}
+        <Route path="/product/:slug" element={<ProductPage />} />
+        <Route path="/category/:id" element={<CategoryPage />} />
+
         {/* Admin — flat routes, each page wraps itself in AdminLayout */}
         <Route path="/admin" element={<Dashboard />} />
         <Route path="/admin/add-product" element={<AddProduct />} />
         <Route path="/admin/products" element={<ManageProducts />} />
         <Route path="/admin/categories" element={<ManageCategories />} />
         <Route path="/admin/banners" element={<ManageBanners />} />
-        <Route path="/product/:id" element={<ProductPage />} />
-        <Route path="/category/:id" element={<CategoryPage />} />
 
       </Routes>
     </BrowserRouter>
-  );
+  ); 
 }
 
 export default App;

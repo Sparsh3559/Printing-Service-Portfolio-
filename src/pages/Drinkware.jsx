@@ -1,8 +1,10 @@
-import { useRef } from "react"
+import { useRef, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import SideStrips from "../components/SideStrips"
+import { supabase } from "@/lib/supabase"
+import { nameToSlug } from "../lib/slugutils"
 import { ChevronLeft, ChevronRight, ArrowUpRight, MessageCircle } from "lucide-react"
 
 const whatsappNumber = "919999999999"
@@ -10,75 +12,67 @@ const openWhatsApp = (msg = "Hello, I want details about your Drinkware products
   window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, "_blank")
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// HOW TO CONNECT TO SUPABASE:
-// 1. Go to /admin/categories and add your categories (e.g. "Water Bottles")
-// 2. Copy the ID from Supabase and paste it as categoryId below
-// 3. Go to /admin/add-product and add products
-// 4. Copy each product's ID and paste as productId below
-// ─────────────────────────────────────────────────────────────────────────────
-
-const categories = [
-  { label: "Water Bottles",     image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=400", categoryId: null },
-  { label: "Tumbler & Thermos", image: "https://images.unsplash.com/photo-1577937927133-66ef06acdf18?q=80&w=400", categoryId: null },
-  { label: "Ceramic Mugs",      image: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=400", categoryId: null },
+const categoryDefs = [
+  { label: "Water Bottles",     image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=400" },
+  { label: "Tumbler & Thermos", image: "https://images.unsplash.com/photo-1577937927133-66ef06acdf18?q=80&w=400" },
+  { label: "Ceramic Mugs",      image: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=400" },
 ]
 
-const productSections = [
+const sectionDefs = [
   {
     title: "Water Bottles", subtitle: "Custom printed bottles for every need",
-    categoryId: null,
+    categoryName: "Water Bottles",
     products: [
-      { name: "Sublimation Sipper Water Bottle 600ml / 700ml", image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=600", tag: "Best Seller", productId: null },
-      { name: "Temperature Bottle",                            image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=600", tag: null,          productId: null },
-      { name: "Stainless Steel Water Bottle",                  image: "https://images.unsplash.com/photo-1523362628745-0c100150b504?q=80&w=600", tag: "Popular",    productId: null },
-      { name: "Stainless Steel Sports Water Bottle",           image: "https://images.unsplash.com/photo-1574482620811-1aa16ffe3c82?q=80&w=600", tag: null,          productId: null },
-      { name: "Metallic Bottle",                               image: "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?q=80&w=600", tag: null,          productId: null },
-      { name: "Corporate Stainless Steel Water Bottle",        image: "https://images.unsplash.com/photo-1553531889-65d9c51c4b49?q=80&w=600", tag: "Corporate",   productId: null },
-      { name: "Premium Sporty Hydration Stainless Steel Water Bottle", image: "https://images.unsplash.com/photo-1545937022-3b4f6e97a4e1?q=80&w=600", tag: "Premium", productId: null },
-      { name: "Premium Stainless Steel Water Bottle",          image: "https://images.unsplash.com/photo-1611735341450-74d61e660ad2?q=80&w=600", tag: null,          productId: null },
-      { name: "Office Water Bottle",                           image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=600", tag: null,          productId: null },
+      { name: "Sublimation Sipper Water Bottle 600ml / 700ml", image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=600", tag: "Best Seller" },
+      { name: "Temperature Bottle",                            image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=600", tag: null },
+      { name: "Stainless Steel Water Bottle",                  image: "https://images.unsplash.com/photo-1523362628745-0c100150b504?q=80&w=600", tag: "Popular" },
+      { name: "Stainless Steel Sports Water Bottle",           image: "https://images.unsplash.com/photo-1574482620811-1aa16ffe3c82?q=80&w=600", tag: null },
+      { name: "Metallic Bottle",                               image: "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?q=80&w=600", tag: null },
+      { name: "Corporate Stainless Steel Water Bottle",        image: "https://images.unsplash.com/photo-1553531889-65d9c51c4b49?q=80&w=600", tag: "Corporate" },
+      { name: "Premium Sporty Hydration Stainless Steel Water Bottle", image: "https://images.unsplash.com/photo-1545937022-3b4f6e97a4e1?q=80&w=600", tag: "Premium" },
+      { name: "Premium Stainless Steel Water Bottle",          image: "https://images.unsplash.com/photo-1611735341450-74d61e660ad2?q=80&w=600", tag: null },
+      { name: "Office Water Bottle",                           image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=600", tag: null },
     ],
   },
   {
     title: "Tumbler & Thermos", subtitle: "Keep it hot or cold — all day long",
-    categoryId: null,
+    categoryName: "Tumbler & Thermos",
     products: [
-      { name: "Sublimation Thermos",                               image: "https://images.unsplash.com/photo-1577937927133-66ef06acdf18?q=80&w=600", tag: "Best Seller", productId: null },
-      { name: "Vacuum Flask Set",                                   image: "https://images.unsplash.com/photo-1585155967849-91c736589c84?q=80&w=600", tag: null,          productId: null },
-      { name: "Cup Tumbler",                                        image: "https://images.unsplash.com/photo-1596952954288-16862d37405b?q=80&w=600", tag: null,          productId: null },
-      { name: "Vacuum Insulated Steel Tumbler with Handle & Straw", image: "https://images.unsplash.com/photo-1572635148818-ef6fd45eb394?q=80&w=600", tag: "Popular",    productId: null },
+      { name: "Sublimation Thermos",                               image: "https://images.unsplash.com/photo-1577937927133-66ef06acdf18?q=80&w=600", tag: "Best Seller" },
+      { name: "Vacuum Flask Set",                                   image: "https://images.unsplash.com/photo-1585155967849-91c736589c84?q=80&w=600", tag: null },
+      { name: "Cup Tumbler",                                        image: "https://images.unsplash.com/photo-1596952954288-16862d37405b?q=80&w=600", tag: null },
+      { name: "Vacuum Insulated Steel Tumbler with Handle & Straw", image: "https://images.unsplash.com/photo-1572635148818-ef6fd45eb394?q=80&w=600", tag: "Popular" },
     ],
   },
   {
     title: "Ceramic Mugs", subtitle: "Custom printed mugs for gifting & branding",
-    categoryId: null,
+    categoryName: "Ceramic Mugs",
     products: [
-      { name: "Simple White Coffee Mug 11oz", image: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=600", tag: "Best Seller", productId: null },
-      { name: "Simple White Coffee Mug 6oz",  image: "https://images.unsplash.com/photo-1572635148818-ef6fd45eb394?q=80&w=600", tag: null,          productId: null },
-      { name: "Simple Heart Handle Mug",      image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=600", tag: null,          productId: null },
-      { name: "Simple Full Heart Handle Mug", image: "https://images.unsplash.com/photo-1521302080334-4bebac2763a6?q=80&w=600", tag: null,          productId: null },
-      { name: "Page Mug",                     image: "https://images.unsplash.com/photo-1483648969698-5e7dcaa3444f?q=80&w=600", tag: null,          productId: null },
-      { name: "Heart Handle Page Mug",        image: "https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?q=80&w=600", tag: null,          productId: null },
-      { name: "Heart Handle 3 Tone Mug",      image: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=600", tag: null,          productId: null },
-      { name: "3 Tone Two Color Mug",         image: "https://images.unsplash.com/photo-1572635148818-ef6fd45eb394?q=80&w=600", tag: null,          productId: null },
-      { name: "Magic Mug",                    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=600", tag: "Popular",    productId: null },
-      { name: "Heart Handle Magic Mug",       image: "https://images.unsplash.com/photo-1521302080334-4bebac2763a6?q=80&w=600", tag: null,          productId: null },
-      { name: "Full Heart Handle Magic Mug",  image: "https://images.unsplash.com/photo-1483648969698-5e7dcaa3444f?q=80&w=600", tag: null,          productId: null },
-      { name: "Neon Mug",                     image: "https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?q=80&w=600", tag: null,          productId: null },
-      { name: "Silver & Gold Mug",            image: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=600", tag: "Premium",    productId: null },
-      { name: "Frosted Mug",                  image: "https://images.unsplash.com/photo-1572635148818-ef6fd45eb394?q=80&w=600", tag: null,          productId: null },
-      { name: "Glass Mug",                    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=600", tag: null,          productId: null },
-      { name: "Beer Mug",                     image: "https://images.unsplash.com/photo-1521302080334-4bebac2763a6?q=80&w=600", tag: null,          productId: null },
-      { name: "Tea Mug",                      image: "https://images.unsplash.com/photo-1483648969698-5e7dcaa3444f?q=80&w=600", tag: null,          productId: null },
+      { name: "Simple White Coffee Mug 11oz", image: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=600", tag: "Best Seller" },
+      { name: "Simple White Coffee Mug 6oz",  image: "https://images.unsplash.com/photo-1572635148818-ef6fd45eb394?q=80&w=600", tag: null },
+      { name: "Simple Heart Handle Mug",      image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=600", tag: null },
+      { name: "Simple Full Heart Handle Mug", image: "https://images.unsplash.com/photo-1521302080334-4bebac2763a6?q=80&w=600", tag: null },
+      { name: "Page Mug",                     image: "https://images.unsplash.com/photo-1483648969698-5e7dcaa3444f?q=80&w=600", tag: null },
+      { name: "Heart Handle Page Mug",        image: "https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?q=80&w=600", tag: null },
+      { name: "Heart Handle 3 Tone Mug",      image: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=600", tag: null },
+      { name: "3 Tone Two Color Mug",         image: "https://images.unsplash.com/photo-1572635148818-ef6fd45eb394?q=80&w=600", tag: null },
+      { name: "Magic Mug",                    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=600", tag: "Popular" },
+      { name: "Heart Handle Magic Mug",       image: "https://images.unsplash.com/photo-1521302080334-4bebac2763a6?q=80&w=600", tag: null },
+      { name: "Full Heart Handle Magic Mug",  image: "https://images.unsplash.com/photo-1483648969698-5e7dcaa3444f?q=80&w=600", tag: null },
+      { name: "Neon Mug",                     image: "https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?q=80&w=600", tag: null },
+      { name: "Silver & Gold Mug",            image: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=600", tag: "Premium" },
+      { name: "Frosted Mug",                  image: "https://images.unsplash.com/photo-1572635148818-ef6fd45eb394?q=80&w=600", tag: null },
+      { name: "Glass Mug",                    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=600", tag: null },
+      { name: "Beer Mug",                     image: "https://images.unsplash.com/photo-1521302080334-4bebac2763a6?q=80&w=600", tag: null },
+      { name: "Tea Mug",                      image: "https://images.unsplash.com/photo-1483648969698-5e7dcaa3444f?q=80&w=600", tag: null },
     ],
   },
 ]
 
-// ── Product Card ──────────────────────────────────────────────────────────────
-function ProductCard({ name, image, tag, productId }) {
-  const cardBody = (
-    <>
+// ── Product Card — navigates directly by name slug, zero DB calls ─────────────
+function ProductCard({ name, image, tag }) {
+  return (
+    <Link to={`/product/${nameToSlug(name)}`} className="flex-shrink-0 w-56 group">
       <div className="relative rounded-2xl overflow-hidden bg-zinc-100 mb-3">
         <img src={image} alt={name}
           className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -89,15 +83,9 @@ function ProductCard({ name, image, tag, productId }) {
         )}
       </div>
       <p className="text-sm font-medium text-zinc-800 leading-snug">{name}</p>
-      <p className="text-xs text-zinc-400 mt-0.5">{productId ? "View details →" : "Coming soon"}</p>
-    </>
+      <p className="text-xs text-zinc-400 mt-0.5">View details →</p>
+    </Link>
   )
-
-  if (productId) {
-    return <Link to={`/product/${productId}`} className="flex-shrink-0 w-56 group">{cardBody}</Link>
-  }
-
-  return <div className="flex-shrink-0 w-56 group">{cardBody}</div>
 }
 
 // ── Section ───────────────────────────────────────────────────────────────────
@@ -139,6 +127,21 @@ function ProductSection({ title, subtitle, categoryId, products }) {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function Drinkware() {
+  const [categoryMap, setCategoryMap] = useState({})
+
+  useEffect(() => {
+    async function fetchCategories() {
+      const names = [...new Set([...categoryDefs.map(c => c.label), ...sectionDefs.map(s => s.categoryName)])]
+      const { data } = await supabase.from("Categories").select("id, name").in("name", names)
+      if (data) {
+        const map = {}
+        data.forEach(c => { map[c.name] = c.id })
+        setCategoryMap(map)
+      }
+    }
+    fetchCategories()
+  }, [])
+
   return (
     <>
       <SideStrips />
@@ -167,14 +170,15 @@ export default function Drinkware() {
 
       <div className="max-w-7xl mx-auto px-6 py-10">
         <p className="text-zinc-600 text-sm leading-relaxed max-w-3xl">
-          Explore our wide range of custom printed drinkware — from sublimation water bottles and stainless steel flasks to ceramic mugs and magic mugs. Perfect for corporate gifting, event merchandise, and personal branding.
+          Explore our wide range of custom printed drinkware — from sublimation water bottles and stainless steel flasks to ceramic mugs and magic mugs. Order as low as single quantity.
         </p>
       </div>
 
       {/* Category circles */}
       <div className="max-w-7xl mx-auto px-6 mb-14">
         <div className="flex gap-8 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {categories.map((cat) => {
+          {categoryDefs.map((cat) => {
+            const catId = categoryMap[cat.label]
             const circle = (
               <>
                 <div className="w-20 h-20 rounded-full overflow-hidden ring-2 ring-zinc-100 group-hover:ring-[#065999] transition-all duration-300">
@@ -183,14 +187,17 @@ export default function Drinkware() {
                 <span className="text-xs text-center text-zinc-600 font-medium w-24 leading-tight">{cat.label}</span>
               </>
             )
-            return cat.categoryId
-              ? <Link key={cat.label} to={`/category/${cat.categoryId}`} className="flex flex-col items-center gap-2 flex-shrink-0 group">{circle}</Link>
+            return catId
+              ? <Link key={cat.label} to={`/category/${catId}`} className="flex flex-col items-center gap-2 flex-shrink-0 group">{circle}</Link>
               : <div key={cat.label} className="flex flex-col items-center gap-2 flex-shrink-0 group cursor-default">{circle}</div>
           })}
         </div>
       </div>
 
-      {productSections.map((s) => <ProductSection key={s.title} {...s} />)}
+      {sectionDefs.map((s) => (
+        <ProductSection key={s.title} title={s.title} subtitle={s.subtitle}
+          categoryId={categoryMap[s.categoryName] || null} products={s.products} />
+      ))}
 
       <section className="mx-6 mb-16 rounded-3xl overflow-hidden" style={{ backgroundColor: "#065999" }}>
         <div className="px-10 py-14 flex flex-col md:flex-row items-center justify-between gap-6">

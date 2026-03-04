@@ -1,8 +1,10 @@
-import { useRef } from "react"
-import { Link } from "react-router-dom"
+import { useRef, useEffect, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import SideStrips from "../components/SideStrips"
+import { supabase } from "@/lib/supabase"
+import { nameToSlug } from "../lib/slugutils"
 import { ChevronLeft, ChevronRight, ArrowUpRight, MessageCircle } from "lucide-react"
 
 const whatsappNumber = "919999999999"
@@ -10,83 +12,75 @@ const openWhatsApp = (msg = "Hello, I want details about your Custom Apparel.") 
   window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, "_blank")
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// HOW TO CONNECT TO SUPABASE:
-// 1. Go to /admin/categories and add your categories (e.g. "Polo T-Shirts")
-// 2. Copy the ID from Supabase table and paste it as categoryId below
-// 3. Go to /admin/add-product and add products
-// 4. Copy each product's ID from Supabase and paste as productId below
-// ─────────────────────────────────────────────────────────────────────────────
-
-const categories = [
-  { label: "Polo T-Shirts",     image: "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?q=80&w=400", categoryId: null },
-  { label: "Round Neck",        image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=400", categoryId: null },
-  { label: "Winter Collection", image: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?q=80&w=400", categoryId: null },
-  { label: "Sports Apparel",    image: "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?q=80&w=400", categoryId: null },
-  { label: "Caps",              image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=400", categoryId: null },
+const categoryDefs = [
+  { label: "Polo T-Shirts",     image: "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?q=80&w=400" },
+  { label: "Round Neck",        image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=400" },
+  { label: "Winter Collection", image: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?q=80&w=400" },
+  { label: "Sports Apparel",    image: "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?q=80&w=400" },
+  { label: "Caps",              image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=400" },
 ]
 
-const productSections = [
+const sectionDefs = [
   {
     title: "Polo T-Shirts", subtitle: "Premium collar tees for corporate & casual wear",
-    categoryId: null,
+    categoryName: "Polo T-Shirts",
     products: [
-      { name: "Polo Matty 240 GSM",            image: "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?q=80&w=600", tag: "Best Seller", productId: null },
-      { name: "Polo Matty 180 GSM",            image: "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?q=80&w=600", tag: null,          productId: null },
-      { name: "Spoon Matty",                   image: "https://images.unsplash.com/photo-1562157873-818bc0726f68?q=80&w=600", tag: null,          productId: null },
-      { name: "Shape Matty",                   image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=600", tag: null,          productId: null },
-      { name: "Premium Cotton Collar T-Shirt", image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=600", tag: "Premium",     productId: null },
-      { name: "Collar Tipping Polo T-Shirt",   image: "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=600", tag: null,          productId: null },
+      { name: "Polo Matty 240 GSM",            image: "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?q=80&w=600", tag: "Best Seller" },
+      { name: "Polo Matty 180 GSM",            image: "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?q=80&w=600", tag: null },
+      { name: "Spoon Matty",                   image: "https://images.unsplash.com/photo-1562157873-818bc0726f68?q=80&w=600", tag: null },
+      { name: "Shape Matty",                   image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=600", tag: null },
+      { name: "Premium Cotton Collar T-Shirt", image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=600", tag: "Premium" },
+      { name: "Collar Tipping Polo T-Shirt",   image: "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=600", tag: null },
     ],
   },
   {
     title: "Round Neck T-Shirts", subtitle: "Everyday comfort in every fabric & weight",
-    categoryId: null,
+    categoryName: "Round Neck",
     products: [
-      { name: "Round Neck Cotton T-Shirt",             image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=600", tag: "Best Seller", productId: null },
-      { name: "French Terry T-Shirt",                  image: "https://images.unsplash.com/photo-1562157873-818bc0726f68?q=80&w=600", tag: null,          productId: null },
-      { name: "Off Shoulder T-Shirt",                  image: "https://images.unsplash.com/photo-1485462537746-965f33f7f6a7?q=80&w=600", tag: null,          productId: null },
-      { name: "Down Sleeve Round Neck Cotton T-Shirt", image: "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=600", tag: null,          productId: null },
-      { name: "Polyester Round Neck T-Shirt",          image: "https://images.unsplash.com/photo-1554568218-0f1715e72254?q=80&w=600", tag: null,          productId: null },
-      { name: "Dot Net Round Neck T-Shirt",            image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=600", tag: null,          productId: null },
-      { name: "Dryfit Round Neck T-Shirt",             image: "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?q=80&w=600", tag: "Popular",    productId: null },
-      { name: "Polyester Holi Fabric T-Shirt",         image: "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?q=80&w=600", tag: null,          productId: null },
+      { name: "Round Neck Cotton T-Shirt",             image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=600", tag: "Best Seller" },
+      { name: "French Terry T-Shirt",                  image: "https://images.unsplash.com/photo-1562157873-818bc0726f68?q=80&w=600", tag: null },
+      { name: "Off Shoulder T-Shirt",                  image: "https://images.unsplash.com/photo-1485462537746-965f33f7f6a7?q=80&w=600", tag: null },
+      { name: "Down Sleeve Round Neck Cotton T-Shirt", image: "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=600", tag: null },
+      { name: "Polyester Round Neck T-Shirt",          image: "https://images.unsplash.com/photo-1554568218-0f1715e72254?q=80&w=600", tag: null },
+      { name: "Dot Net Round Neck T-Shirt",            image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=600", tag: null },
+      { name: "Dryfit Round Neck T-Shirt",             image: "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?q=80&w=600", tag: "Popular" },
+      { name: "Polyester Holi Fabric T-Shirt",         image: "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?q=80&w=600", tag: null },
     ],
   },
   {
     title: "Winter Collection", subtitle: "Hoodies & sweatshirts for the cold season",
-    categoryId: null,
+    categoryName: "Winter Collection",
     products: [
-      { name: "Hoodies",     image: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?q=80&w=600", tag: "Best Seller", productId: null },
-      { name: "Sweat Shirt", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=600", tag: null,          productId: null },
+      { name: "Hoodies",     image: "https://images.unsplash.com/photo-1556821840-3a63f15732ce?q=80&w=600", tag: "Best Seller" },
+      { name: "Sweat Shirt", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=600", tag: null },
     ],
   },
   {
     title: "Sports Apparel", subtitle: "Performance wear for teams & tournaments",
-    categoryId: null,
+    categoryName: "Sports Apparel",
     products: [
-      { name: "Custom Sport Round Neck T-Shirt",      image: "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?q=80&w=600", tag: "Best Seller", productId: null },
-      { name: "Custom Sport Collar T-Shirt",          image: "https://images.unsplash.com/photo-1517466787929-bc90951d0974?q=80&w=600", tag: null,          productId: null },
-      { name: "Custom Sport Stand Collar T-Shirt",    image: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?q=80&w=600", tag: null,          productId: null },
-      { name: "Customer Sport Kit Jersey",            image: "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?q=80&w=600", tag: "Popular",    productId: null },
-      { name: "Custom Sport Sandow",                  image: "https://images.unsplash.com/photo-1554568218-0f1715e72254?q=80&w=600", tag: null,          productId: null },
-      { name: "Sport Honeycomb T-Shirt Stand Collar", image: "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?q=80&w=600", tag: null,          productId: null },
+      { name: "Custom Sport Round Neck T-Shirt",      image: "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?q=80&w=600", tag: "Best Seller" },
+      { name: "Custom Sport Collar T-Shirt",          image: "https://images.unsplash.com/photo-1517466787929-bc90951d0974?q=80&w=600", tag: null },
+      { name: "Custom Sport Stand Collar T-Shirt",    image: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?q=80&w=600", tag: null },
+      { name: "Customer Sport Kit Jersey",            image: "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?q=80&w=600", tag: "Popular" },
+      { name: "Custom Sport Sandow",                  image: "https://images.unsplash.com/photo-1554568218-0f1715e72254?q=80&w=600", tag: null },
+      { name: "Sport Honeycomb T-Shirt Stand Collar", image: "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?q=80&w=600", tag: null },
     ],
   },
   {
     title: "Caps", subtitle: "Cotton & sporty caps with custom logo printing",
-    categoryId: null,
+    categoryName: "Caps",
     products: [
-      { name: "Cotton Cap", image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=600", tag: "Best Seller", productId: null },
-      { name: "Sporty Cap", image: "https://images.unsplash.com/photo-1534215754734-18e55d13e346?q=80&w=600", tag: null,          productId: null },
+      { name: "Cotton Cap", image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=600", tag: "Best Seller" },
+      { name: "Sporty Cap", image: "https://images.unsplash.com/photo-1534215754734-18e55d13e346?q=80&w=600", tag: null },
     ],
   },
 ]
 
-// ── Product Card ──────────────────────────────────────────────────────────────
-function ProductCard({ name, image, tag, productId }) {
-  const cardBody = (
-    <>
+// ── Product Card — navigates directly by name slug, zero DB calls ─────────────
+function ProductCard({ name, image, tag }) {
+  return (
+    <Link to={`/product/${nameToSlug(name)}`} className="flex-shrink-0 w-56 group">
       <div className="relative rounded-2xl overflow-hidden bg-zinc-100 mb-3">
         <img src={image} alt={name}
           className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -97,19 +91,9 @@ function ProductCard({ name, image, tag, productId }) {
         )}
       </div>
       <p className="text-sm font-medium text-zinc-800 leading-snug">{name}</p>
-      <p className="text-xs text-zinc-400 mt-0.5">{productId ? "View details →" : "Coming soon"}</p>
-    </>
+      <p className="text-xs text-zinc-400 mt-0.5">View details →</p>
+    </Link>
   )
-
-  if (productId) {
-    return (
-      <Link to={`/product/${productId}`} className="flex-shrink-0 w-56 group">
-        {cardBody}
-      </Link>
-    )
-  }
-
-  return <div className="flex-shrink-0 w-56 group">{cardBody}</div>
 }
 
 // ── Section ───────────────────────────────────────────────────────────────────
@@ -151,6 +135,21 @@ function ProductSection({ title, subtitle, categoryId, products }) {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function Apparels() {
+  const [categoryMap, setCategoryMap] = useState({})
+
+  useEffect(() => {
+    async function fetchCategories() {
+      const names = [...new Set([...categoryDefs.map(c => c.label), ...sectionDefs.map(s => s.categoryName)])]
+      const { data } = await supabase.from("Categories").select("id, name").in("name", names)
+      if (data) {
+        const map = {}
+        data.forEach(c => { map[c.name] = c.id })
+        setCategoryMap(map)
+      }
+    }
+    fetchCategories()
+  }, [])
+
   return (
     <>
       <SideStrips />
@@ -179,14 +178,15 @@ export default function Apparels() {
 
       <div className="max-w-7xl mx-auto px-6 py-10">
         <p className="text-zinc-600 text-sm leading-relaxed max-w-3xl">
-          Discover our wide range of customised clothing and apparel, perfect for every occasion. Our collection includes polo t-shirts, round neck tees, hoodies, jerseys, and caps.
+          Discover our wide range of customised clothing and apparel — polo t-shirts, round neck tees, hoodies, jerseys, and caps for corporate gifting, sports events, and everyday wear.
         </p>
       </div>
 
       {/* Category circles */}
       <div className="max-w-7xl mx-auto px-6 mb-14">
         <div className="flex gap-6 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {categories.map((cat) => {
+          {categoryDefs.map((cat) => {
+            const catId = categoryMap[cat.label]
             const circle = (
               <>
                 <div className="w-20 h-20 rounded-full overflow-hidden ring-2 ring-zinc-100 group-hover:ring-[#065999] transition-all duration-300">
@@ -195,14 +195,17 @@ export default function Apparels() {
                 <span className="text-xs text-center text-zinc-600 font-medium w-20 leading-tight">{cat.label}</span>
               </>
             )
-            return cat.categoryId
-              ? <Link key={cat.label} to={`/category/${cat.categoryId}`} className="flex flex-col items-center gap-2 flex-shrink-0 group">{circle}</Link>
+            return catId
+              ? <Link key={cat.label} to={`/category/${catId}`} className="flex flex-col items-center gap-2 flex-shrink-0 group">{circle}</Link>
               : <div key={cat.label} className="flex flex-col items-center gap-2 flex-shrink-0 group cursor-default">{circle}</div>
           })}
         </div>
       </div>
 
-      {productSections.map((s) => <ProductSection key={s.title} {...s} />)}
+      {sectionDefs.map((s) => (
+        <ProductSection key={s.title} title={s.title} subtitle={s.subtitle}
+          categoryId={categoryMap[s.categoryName] || null} products={s.products} />
+      ))}
 
       <section className="mx-6 mb-16 rounded-3xl overflow-hidden" style={{ backgroundColor: "#065999" }}>
         <div className="px-10 py-14 flex flex-col md:flex-row items-center justify-between gap-6">
