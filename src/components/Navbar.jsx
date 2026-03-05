@@ -13,6 +13,9 @@ import {
 } from "@/components/ui/navigation-menu"
 import { ChevronDown, ChevronRight } from "lucide-react"
 
+// ── Slug helper ───────────────────────────────────────────────────────────────
+const toSlug = (str) =>
+  str.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
 
 // ── Hardcoded category data ───────────────────────────────────────────────────
 const NAV_CATEGORIES = [
@@ -145,47 +148,66 @@ export default function Navbar() {
               <h2 className="text-lg font-bold px-3 mb-5">Categories</h2>
 
               {NAV_CATEGORIES.map((cat) => {
+                const catSlug = toSlug(cat.label)
                 const isOpen = expandedMobile[cat.label]
                 return (
                   <div key={cat.label}>
-                    {/* Parent */}
-                    <button
-                      onClick={() => toggleMobile(cat.label)}
-                      className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-zinc-50 text-sm font-semibold transition-colors"
-                    >
-                      <span>{cat.label}</span>
-                      {isOpen
-                        ? <ChevronDown size={15} className="text-zinc-400" />
-                        : <ChevronRight size={15} className="text-zinc-400" />}
-                    </button>
+                    {/* Parent — click label to go to category page, chevron to expand */}
+                    <div className="flex items-center">
+                      <Link
+                        to={`/category/${catSlug}`}
+                        onClick={() => setOpen(false)}
+                        className="flex-1 px-3 py-2.5 text-sm font-semibold hover:bg-zinc-50 rounded-lg transition-colors"
+                      >
+                        {cat.label}
+                      </Link>
+                      <button
+                        onClick={() => toggleMobile(cat.label)}
+                        className="px-2 py-2.5 rounded-lg hover:bg-zinc-50 transition-colors"
+                      >
+                        {isOpen
+                          ? <ChevronDown size={15} className="text-zinc-400" />
+                          : <ChevronRight size={15} className="text-zinc-400" />}
+                      </button>
+                    </div>
 
-                    {/* Sections */}
+                    {/* Sub-category sections */}
                     {isOpen && (
                       <div className="ml-3 border-l pl-3 mt-1 space-y-2 mb-2">
                         {cat.sections.map((sec) => {
+                          const secSlug = toSlug(sec.heading)
                           const secKey = cat.label + sec.heading
                           const secOpen = expandedSection[secKey] ?? true
                           return (
                             <div key={sec.heading}>
-                              <button
-                                onClick={() => toggleSection(secKey)}
-                                className="w-full flex items-center justify-between px-2 py-1.5 text-xs font-bold uppercase tracking-wider text-zinc-500 hover:text-zinc-900 transition-colors"
-                              >
-                                {sec.heading}
-                                {secOpen
-                                  ? <ChevronDown size={12} />
-                                  : <ChevronRight size={12} />}
-                              </button>
+                              <div className="flex items-center">
+                                <Link
+                                  to={`/category/${catSlug}/${secSlug}`}
+                                  onClick={() => setOpen(false)}
+                                  className="flex-1 px-2 py-1.5 text-xs font-bold uppercase tracking-wider text-zinc-500 hover:text-zinc-900 transition-colors"
+                                >
+                                  {sec.heading}
+                                </Link>
+                                <button
+                                  onClick={() => toggleSection(secKey)}
+                                  className="px-1 text-zinc-400 hover:text-zinc-700"
+                                >
+                                  {secOpen
+                                    ? <ChevronDown size={12} />
+                                    : <ChevronRight size={12} />}
+                                </button>
+                              </div>
                               {secOpen && (
                                 <div className="ml-2 space-y-0.5">
                                   {sec.items.map((item) => (
-                                    <button
+                                    <Link
                                       key={item}
+                                      to={`/product/${toSlug(item)}`}
                                       onClick={() => setOpen(false)}
-                                      className="w-full text-left px-2 py-1.5 text-sm text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 rounded transition-colors"
+                                      className="block px-2 py-1.5 text-sm text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 rounded transition-colors"
                                     >
                                       {item}
-                                    </button>
+                                    </Link>
                                   ))}
                                 </div>
                               )}
@@ -207,6 +229,7 @@ export default function Navbar() {
           alt="Mekal Enterprises"
           className="h-12 w-auto object-contain"
         />
+
         {/* Search */}
         <div className="hidden md:flex flex-1 max-w-xl mx-6">
           <Input
@@ -226,37 +249,69 @@ export default function Navbar() {
       <div className="hidden md:flex justify-center border-t border-white/20" style={{ backgroundColor: "#065999" }}>
         <NavigationMenu className="max-w-full">
           <NavigationMenuList className="flex-wrap justify-center">
-            {NAV_CATEGORIES.map((cat) => (
-              <NavigationMenuItem key={cat.label}>
-                <NavigationMenuTrigger className="text-sm font-medium text-white bg-transparent hover:bg-white/10 data-[state=open]:bg-white/10">
-                  {cat.label}
-                </NavigationMenuTrigger>
+            {NAV_CATEGORIES.map((cat) => {
+              const catSlug = toSlug(cat.label)
+              return (
+                <NavigationMenuItem key={cat.label}>
+                  <NavigationMenuTrigger
+                    className="text-sm font-medium text-white bg-transparent hover:bg-white/10 data-[state=open]:bg-white/10"
+                    // Allow clicking the label itself to navigate to category page
+                    onPointerDown={(e) => {
+                      // Only navigate on direct click (not just hover/keyboard open)
+                      if (e.pointerType === "mouse" && e.button === 0) {
+                        // Navigation is handled by the Link below via the rendered label
+                      }
+                    }}
+                  >
+                    {/* Wrap label in Link but stop propagation so the dropdown still works */}
+                    <Link
+                      to={`/category/${catSlug}`}
+                      className="mr-1 hover:underline underline-offset-2"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {cat.label}
+                    </Link>
+                  </NavigationMenuTrigger>
 
-                <NavigationMenuContent>
-                  {/* Mega menu — max 4 cols per row, centered */}
-                  <div className="p-6 w-[860px]">
-                    <div className="grid grid-cols-4 gap-x-8 gap-y-6">
-                      {cat.sections.map((sec) => (
-                        <div key={sec.heading}>
-                          <p className="text-xs font-bold uppercase tracking-widest text-zinc-900 mb-3 border-b pb-1.5">
-                            {sec.heading}
-                          </p>
-                          <ul className="space-y-1.5">
-                            {sec.items.map((item) => (
-                              <li key={item}>
-                                <NavigationMenuLink className="block text-sm text-zinc-500 hover:text-zinc-900 cursor-pointer transition-colors leading-snug">
-                                  {item}
-                                </NavigationMenuLink>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
+                  <NavigationMenuContent>
+                    {/* Mega menu */}
+                    <div className="p-6 w-[860px]">
+                      <div className="grid grid-cols-4 gap-x-8 gap-y-6">
+                        {cat.sections.map((sec) => {
+                          const secSlug = toSlug(sec.heading)
+                          return (
+                            <div key={sec.heading}>
+                              {/* Sub-category heading → sub-category page */}
+                              <Link
+                                to={`/category/${catSlug}/${secSlug}`}
+                                className="block text-xs font-bold uppercase tracking-widest text-zinc-900 mb-3 border-b pb-1.5 hover:text-[#065999] transition-colors"
+                              >
+                                {sec.heading}
+                              </Link>
+                              <ul className="space-y-1.5">
+                                {sec.items.map((item) => (
+                                  <li key={item}>
+                                    {/* Product item → product page */}
+                                    <NavigationMenuLink asChild>
+                                      <Link
+                                        to={`/product/${toSlug(item)}`}
+                                        className="block text-sm text-zinc-500 hover:text-zinc-900 cursor-pointer transition-colors leading-snug"
+                                      >
+                                        {item}
+                                      </Link>
+                                    </NavigationMenuLink>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )
+                        })}
+                      </div>
                     </div>
-                  </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            ))}
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              )
+            })}
           </NavigationMenuList>
         </NavigationMenu>
       </div>
