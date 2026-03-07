@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Phone, Mail, MapPin } from "lucide-react"
-import mekalLogo from "../assets/images/mekal logo.jpg"
+
 
 export default function Footer() {
   const whatsappNumber = "919999999999" // replace with real number
@@ -30,7 +30,7 @@ export default function Footer() {
         {/* Brand */}
         <div>
           <img
-            src={mekalLogo}
+            src="/mekal_logo.png"
             alt="Mekal Enterprises"
             className="h-16 w-auto object-contain mb-4"
             style={{ filter: "brightness(0) invert(1)" }}
