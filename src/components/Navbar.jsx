@@ -157,7 +157,7 @@ export default function Navbar() {
                           return (
                             <div key={sub.id}>
                               <div className="flex items-center justify-between">
-                                <Link to={`/category/${sub.id}`} onClick={() => setOpen(false)}
+                                <Link to={`/category/${cat.id}`} onClick={() => setOpen(false)}
                                   className="flex-1 px-2 py-1.5 text-xs font-bold uppercase tracking-wider text-zinc-500 hover:text-zinc-900 transition-colors">
                                   {sub.name}
                                 </Link>
@@ -193,7 +193,7 @@ export default function Navbar() {
         </Sheet>
 
         {/* Logo */}
-        <Link to="/"><img src="/mekal_logo.png" alt="Mekal Enterprises" className="h-20 w-auto object-contain" /></Link>
+        <Link to="/"><img src="/mekal_logo.png" alt="Mekal Enterprises" className="h-12 w-auto object-contain" /></Link>
 
         {/* ── Live Search ── */}
         <div ref={searchRef} className="hidden md:flex flex-1 max-w-xl mx-6 relative">
@@ -286,8 +286,8 @@ export default function Navbar() {
                       <div className="grid grid-cols-4 gap-x-8 gap-y-6">
                         {cat.subcategories.map(sub => (
                           <div key={sub.id}>
-                            {/* Bold subcategory heading → subcategory page */}
-                            <Link to={`/category/${sub.id}`}
+                            {/* Bold subcategory heading → parent category page */}
+                            <Link to={`/category/${cat.id}`}
                               className="block text-xs font-bold uppercase tracking-widest text-zinc-900 hover:text-[#065999] mb-3 border-b pb-1.5 transition-colors">
                               {sub.name}
                             </Link>
