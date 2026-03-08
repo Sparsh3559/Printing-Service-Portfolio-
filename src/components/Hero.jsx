@@ -43,11 +43,10 @@ export default function HeroSlider() {
     const { data, error } = await supabase
       .from("Banners")
       .select("*")
-      .eq("is_active", true)
       .order("id")
 
     if (error || !data?.length) {
-      // No banners yet — use fallback slides so page never looks blank
+      console.error("Banner fetch error:", error, "data:", data)
       setSlides(FALLBACK_SLIDES)
       setLoading(false)
       return
@@ -56,7 +55,7 @@ export default function HeroSlider() {
     const withUrls = data.map(slide => {
       if (slide.image_url && !slide.image_url.startsWith("http")) {
         const { data: urlData } = supabase.storage
-          .from("product-images")
+          .from("banners")
           .getPublicUrl(slide.image_url)
         return { ...slide, image_url: urlData.publicUrl }
       }
