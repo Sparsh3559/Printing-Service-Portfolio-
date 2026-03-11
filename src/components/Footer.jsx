@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import { Phone, Mail, MapPin, Instagram, Facebook, Linkedin } from "lucide-react"
-import mekalLogo from "../assets/images/mekal logo.jpg"
+
 
 export default function Footer() {
   const whatsappNumber = "919999999999"
@@ -24,7 +24,7 @@ export default function Footer() {
 
           {/* Brand — full width on mobile */}
           <div className="col-span-2 md:col-span-1">
-            <img src={mekalLogo} alt="Mekal Enterprises"
+            <img src="/mekal_logo.png" alt="Mekal Enterprises"
               className="h-12 md:h-16 w-auto object-contain mb-3 md:mb-4"
               style={{ filter: "brightness(0) invert(1)" }} />
             <p className="text-sm leading-relaxed text-white/70 mb-4 max-w-xs">
