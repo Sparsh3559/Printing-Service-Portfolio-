@@ -5,20 +5,21 @@ import Footer from "../components/Footer"
 import SideStrips from "../components/SideStrips"
 import { supabase } from "@/lib/supabase"
 import { nameToSlug, slugToName } from "../lib/slugutils"
-import { MessageCircle, ArrowLeft, Loader2 } from "lucide-react"
+import { MessageCircle, ArrowLeft, Loader2, ChevronLeft, ChevronRight } from "lucide-react"
 
 const whatsappNumber = "919999999999"
 
 export default function ProductPage() {
   const { slug } = useParams()
-  const [product,  setProduct]  = useState(null)
-  const [related,  setRelated]  = useState([])
-  const [loading,  setLoading]  = useState(true)
-  const [notFound, setNotFound] = useState(false)
+  const [product,    setProduct]    = useState(null)
+  const [related,    setRelated]    = useState([])
+  const [loading,    setLoading]    = useState(true)
+  const [notFound,   setNotFound]   = useState(false)
+  const [activeImg,  setActiveImg]  = useState(0)
 
   useEffect(() => {
     async function fetchProduct() {
-      setLoading(true); setNotFound(false)
+      setLoading(true); setNotFound(false); setActiveImg(0)
       const productName = slugToName(slug)
       const { data, error } = await supabase
         .from("Products").select("*, Categories(id, name)")
@@ -60,6 +61,17 @@ export default function ProductPage() {
     <Footer /></>
   )
 
+  // Build image list — prefer images[] array, fallback to image_url
+  const fallback = "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?q=80&w=800"
+  const images   = product.images?.length
+    ? product.images
+    : product.image_url
+    ? [product.image_url]
+    : [fallback]
+
+  const prevImg = () => setActiveImg(i => (i - 1 + images.length) % images.length)
+  const nextImg = () => setActiveImg(i => (i + 1) % images.length)
+
   return (
     <>
       <SideStrips />
@@ -83,33 +95,75 @@ export default function ProductPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-12">
-        <Link
-          to={product.Categories ? `/category/${product.Categories.id}` : "/"}
+        <Link to={product.Categories ? `/category/${product.Categories.id}` : "/"}
           className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-900 mb-5 md:mb-8 transition-colors">
           <ArrowLeft size={15} /> Back
         </Link>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-14 items-start">
 
-          {/* Image */}
-          <div className="rounded-2xl overflow-hidden bg-zinc-100 aspect-square relative">
-            <img
-              src={product.image_url || "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?q=80&w=800"}
-              alt={product.name}
-              className="w-full h-full object-cover"
-            />
-            {product.tag && (
-              <span className="absolute top-3 left-3 text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-800 px-3 py-1 rounded-full shadow-sm">
-                {product.tag}
-              </span>
+          {/* ── Image Gallery ── */}
+          <div>
+            {/* Main image */}
+            <div className="relative rounded-2xl overflow-hidden bg-zinc-100 aspect-square mb-3">
+              <img
+                key={activeImg}
+                src={images[activeImg]}
+                alt={product.name}
+                className="w-full h-full object-cover transition-opacity duration-300"
+              />
+              {product.tag && (
+                <span className="absolute top-3 left-3 text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-800 px-3 py-1 rounded-full shadow-sm">
+                  {product.tag}
+                </span>
+              )}
+
+              {/* Prev / Next arrows (only if multiple images) */}
+              {images.length > 1 && (
+                <>
+                  <button onClick={prevImg}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-colors">
+                    <ChevronLeft size={16} className="text-zinc-700" />
+                  </button>
+                  <button onClick={nextImg}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-colors">
+                    <ChevronRight size={16} className="text-zinc-700" />
+                  </button>
+
+                  {/* Dot indicator */}
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                    {images.map((_, i) => (
+                      <button key={i} onClick={() => setActiveImg(i)}
+                        className={`rounded-full transition-all duration-200 ${
+                          i === activeImg ? "w-5 h-1.5 bg-white" : "w-1.5 h-1.5 bg-white/60 hover:bg-white"
+                        }`} />
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Thumbnail strip (only if 2+ images) */}
+            {images.length > 1 && (
+              <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                {images.map((url, i) => (
+                  <button key={i} onClick={() => setActiveImg(i)}
+                    className={`flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden bg-zinc-100 transition-all ${
+                      i === activeImg
+                        ? "ring-2 ring-[#5fc7f4] ring-offset-2"
+                        : "ring-1 ring-zinc-200 hover:ring-zinc-400 opacity-70 hover:opacity-100"
+                    }`}>
+                    <img src={url} alt={`View ${i + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
             )}
           </div>
 
-          {/* Info */}
+          {/* ── Product Info ── */}
           <div className="md:sticky md:top-24">
             {product.Categories && (
-              <Link
-                to={`/category/${product.Categories.id}`}
+              <Link to={`/category/${product.Categories.id}`}
                 className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400 hover:text-[#065999] transition-colors mb-2 md:mb-3 block">
                 {product.Categories.name}
               </Link>
@@ -150,7 +204,7 @@ export default function ProductPage() {
               {related.map(r => (
                 <Link key={r.name} to={`/product/${nameToSlug(r.name)}`} className="group">
                   <div className="relative rounded-xl overflow-hidden bg-zinc-100 mb-2 aspect-square">
-                    <img src={r.image_url || ""} alt={r.name}
+                    <img src={r.image_url || fallback} alt={r.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     {r.tag && (
                       <span className="absolute top-1.5 left-1.5 text-[8px] md:text-[9px] font-bold uppercase bg-white text-zinc-700 px-1.5 py-0.5 rounded-full">
