@@ -1,19 +1,6 @@
 import { Link } from "react-router-dom"
 import { ArrowUpRight } from "lucide-react"
 
-/**
- * PromoSection — reusable split promo with stepped category tiles
- *
- * Props:
- *  - tag: string           e.g. "Women's Day"
- *  - heading: string
- *  - description: string
- *  - ctaText: string
- *  - ctaPath: string
- *  - heroImage: string     URL for the large right image
- *  - tiles: Array<{ label, image, path }>   4 items
- *  - bgColor: string       Tailwind bg class for the top split, default "bg-amber-50"
- */
 export default function PromoSection({
   tag,
   heading,
@@ -22,67 +9,63 @@ export default function PromoSection({
   ctaPath = "/",
   heroImage,
   tiles = [],
-  bgColor = "bg-amber-50",
 }) {
   return (
     <section className="overflow-hidden">
 
       {/* ── Top split: text left / image right ── */}
-      <div className={`${bgColor} grid grid-cols-1 md:grid-cols-2`}>
+      <div className="grid grid-cols-1 md:grid-cols-2" style={{ backgroundColor: "#e8f6fd" }}>
 
         {/* Left — text */}
-        <div className="flex flex-col justify-center px-8 md:px-14 py-14">
+        <div className="flex flex-col justify-center px-8 md:px-14 py-12 md:py-16">
           {tag && (
-            <span className="inline-block text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-4">
+            <span className="inline-block text-xs font-semibold uppercase tracking-widest mb-3"
+              style={{ color: "#5fc7f4" }}>
               {tag}
             </span>
           )}
-          <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 leading-tight mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4"
+            style={{ color: "#065999" }}>
             {heading}
           </h2>
-          <p className="text-zinc-600 text-sm leading-relaxed mb-8 max-w-sm">
+          <p className="text-sm leading-relaxed mb-8 max-w-sm" style={{ color: "#065999cc" }}>
             {description}
           </p>
-          <Link
-            to={ctaPath}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-zinc-900 hover:gap-3 transition-all duration-200"
-          >
+          <Link to={ctaPath}
+            className="inline-flex items-center gap-2 text-sm font-bold px-6 py-3 rounded-full w-fit transition-all duration-200 hover:gap-3"
+            style={{ backgroundColor: "#065999", color: "#fff" }}>
             {ctaText}
-            <ArrowUpRight size={16} />
+            <ArrowUpRight size={15} />
           </Link>
         </div>
 
         {/* Right — hero image */}
-        <div className="relative h-72 md:h-auto overflow-hidden">
-          <img
-            src={heroImage}
-            alt={heading}
-            className="w-full h-full object-cover"
-          />
+        <div className="relative h-64 md:h-auto overflow-hidden">
+          <img src={heroImage} alt={heading} className="w-full h-full object-cover" />
+          {/* Subtle brand overlay */}
+          <div className="absolute inset-0 opacity-10"
+            style={{ background: "linear-gradient(135deg, #065999, #5fc7f4)" }} />
         </div>
       </div>
 
-      {/* ── Stepped tiles ── */}
+      {/* ── Equal-height tiles ── */}
       <div className="grid grid-cols-2 md:grid-cols-4">
         {tiles.map((tile, i) => (
-          <Link
-            to={tile.path}
-            key={i}
-            className="group relative overflow-hidden border-r border-zinc-100 last:border-r-0"
-            style={{
-              // stepped heights — each tile taller than the previous
-              height: `${220 + i * 30}px`,
-            }}
-          >
-            {/* BG image */}
-            <img
-              src={tile.image}
-              alt={tile.label}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
+          <Link key={i} to={tile.path}
+            className="group relative overflow-hidden"
+            style={{ height: "240px" }}>
+            <img src={tile.image} alt={tile.label}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
 
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+            {/* Theme-coloured gradient overlay */}
+            <div className="absolute inset-0 transition-opacity duration-300"
+              style={{
+                background: "linear-gradient(to top, rgba(6,89,153,0.85) 0%, rgba(6,89,153,0.2) 50%, transparent 100%)"
+              }} />
+
+            {/* Hover tint */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300"
+              style={{ backgroundColor: "#5fc7f4" }} />
 
             {/* Label */}
             <div className="absolute bottom-0 left-0 right-0 p-4">
@@ -91,8 +74,9 @@ export default function PromoSection({
               </p>
             </div>
 
-            {/* Step indicator */}
-            <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+            {/* Number badge */}
+            <div className="absolute top-3 right-3 w-6 h-6 rounded-full flex items-center justify-center"
+              style={{ backgroundColor: "rgba(95,199,244,0.3)", backdropFilter: "blur(4px)" }}>
               <span className="text-white text-[10px] font-bold">{i + 1}</span>
             </div>
           </Link>
