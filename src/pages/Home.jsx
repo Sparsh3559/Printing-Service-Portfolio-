@@ -90,12 +90,6 @@ function ServiceCarousel({ services, current, setCurrent, total, prev, next, isM
                 <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between"
                   style={{ padding: isMobile ? "14px 16px" : "24px" }}>
                   <div>
-                    <p
-                      className="uppercase tracking-widest font-medium"
-                      style={{ fontSize: isMobile ? "9px" : "11px", color: "#5fc7f4", marginBottom: "4px" }}
-                    >
-                      {String(current + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-                    </p>
                     <h3
                       className="text-white font-bold leading-tight"
                       style={{ fontSize: isMobile ? "15px" : "24px" }}
@@ -126,22 +120,7 @@ function ServiceCarousel({ services, current, setCurrent, total, prev, next, isM
         })}
       </div>
 
-      {/* ── Dots ── */}
-      <div className="flex items-center justify-center gap-2 mt-6">
-        {services.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrent(i)}
-            className="rounded-full transition-all duration-300"
-            style={{
-              width:           i === current ? "2rem" : "0.5rem",
-              height:          "0.5rem",
-              backgroundColor: i === current ? "#065999" : "#5fc7f4",
-              opacity:         i === current ? 1 : 0.5,
-            }}
-          />
-        ))}
-      </div>
+
     </div>
   )
 }
