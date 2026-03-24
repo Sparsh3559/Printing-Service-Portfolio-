@@ -24,7 +24,7 @@ export default function PromoSection({
               {tag}
             </span>
           )}
-          <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4"
+          <h2 className="text-2xl md:text-4xl font-bold leading-tight mb-4"
             style={{ color: "#065999" }}>
             {heading}
           </h2>
@@ -42,6 +42,7 @@ export default function PromoSection({
         {/* Right — hero image */}
         <div className="relative h-64 md:h-auto overflow-hidden">
           <img src={heroImage} alt={heading} className="w-full h-full object-cover" />
+          {/* Subtle brand overlay */}
           <div className="absolute inset-0 opacity-10"
             style={{ background: "linear-gradient(135deg, #065999, #5fc7f4)" }} />
         </div>
@@ -52,7 +53,7 @@ export default function PromoSection({
         {tiles.map((tile, i) => (
           <Link key={i} to={tile.path}
             className="group relative overflow-hidden"
-            style={{ height: "240px" }}>
+            style={{ height: "clamp(150px, 28vw, 240px)" }}>
             <img src={tile.image} alt={tile.label}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
 
@@ -71,6 +72,12 @@ export default function PromoSection({
               <p className="text-white text-xs uppercase tracking-[0.15em] font-semibold leading-snug">
                 {tile.label}
               </p>
+            </div>
+
+            {/* Number badge */}
+            <div className="absolute top-3 right-3 w-6 h-6 rounded-full flex items-center justify-center"
+              style={{ backgroundColor: "rgba(95,199,244,0.3)", backdropFilter: "blur(4px)" }}>
+              <span className="text-white text-[10px] font-bold">{i + 1}</span>
             </div>
           </Link>
         ))}
