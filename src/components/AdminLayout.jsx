@@ -1,223 +1,147 @@
-import { Link } from "react-router-dom"
-import { Phone, Mail, Instagram, Facebook, Linkedin, Youtube, Twitter } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import {
+  LayoutDashboard, PackagePlus, Package,
+  Image, Tag, LogOut, ChevronRight,
+} from "lucide-react"
+import { supabase } from "@/lib/supabase"
 
-/* ─── Location Section ─────────────────────────────────────────────────────── */
-function LocationSection() {
-  const valueProps = [
-    {
-      title: "Even Low Quantities @ Best Prices",
-      desc: "We offer low / single product quantities at affordable prices.",
-    },
-    {
-      title: "High Quality Products and Easy Design",
-      desc: "Our wide selection of high-quality products and online design tools make it easy for you to customize and order your favourite products.",
-    },
-    {
-      title: "Free Replacement or Full Refund",
-      desc: "We stand by everything we sell. So if you're not satisfied, we'll make it right.",
-    },
-  ]
+const BRAND   = "#5fc7f4"
+const DARK    = "#065999"
 
-  return (
-    <section className="py-12 px-4 bg-white">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+const navItems = [
+  { to: "/admin",             label: "Dashboard",       icon: LayoutDashboard },
+  { to: "/admin/add-product", label: "Add Product",     icon: PackagePlus     },
+  { to: "/admin/products",    label: "Manage Products", icon: Package         },
+  { to: "/admin/categories",  label: "Categories",      icon: Tag             },
+  { to: "/admin/banners",     label: "Banners",         icon: Image           },
+]
 
-          {/* ── Left: Company text ── */}
-          <div>
-            <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-3">
-              Mekal Enterprises: The Leader in Customisation
-            </h2>
-            <p className="text-gray-600 text-sm leading-relaxed mb-8">
-              For more than 10 years, Mekal Enterprises has helped business owners, entrepreneurs
-              and individuals create their identities with custom designs and professional marketing.
-              Our online printing services are intended to help you find high-quality customised
-              products you need – visiting cards, personalized clothing, gifting products, and much more.
-            </p>
+export default function AdminLayout({ children }) {
+  const { pathname } = useLocation()
+  const navigate     = useNavigate()
+  const [userEmail, setUserEmail]   = useState("")
+  const [loggingOut, setLoggingOut] = useState(false)
 
-            {/* Value propositions */}
-            <div className="space-y-5">
-              {valueProps.map(vp => (
-                <div key={vp.title}>
-                  <h3 className="font-bold text-gray-800 text-sm md:text-base mb-1">{vp.title}</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">{vp.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setUserEmail(data.session?.user?.email || "")
+    })
+  }, [])
 
-          {/* ── Right: Map ── */}
-          <div>
-            <h3 className="text-lg font-bold text-gray-800 mb-3">Location</h3>
-            <div className="rounded-2xl overflow-hidden shadow-xl border border-gray-100" style={{ height: "380px" }}>
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3994.042952435717!2d76.03016567555798!3d22.966320918424515!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396317c4317fe813%3A0x6ad9188d8f033095!2zTUVLQUwgRU5URVJQUklTRVPihKLvuI8!5e1!3m2!1sen!2sin!4v1774326786901!5m2!1sen!2sin"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Mekal Enterprises Location – Indore"
-              />
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ─── Footer ────────────────────────────────────────────────────────────────── */
-export default function Footer() {
-  const allProducts = [
-    "Custom Apparel",
-    "Custom Drinkware",
-    "Stationery, Letterheads & Notebooks",
-    "Stamps and Ink",
-    "Signs, Posters & Marketing Materials",
-    "Corporate Gifts",
-    "Custom Package Water Bottle",
-    "Custom Bags",
-    "Machine",
-    "Blank Products",
-  ]
-
-  const customerSupport = [
-    { label: "Help Desk",                to: "/" },
-    { label: "Privacy Policy",           to: "/" },
-    { label: "Return & Shipping Policy", to: "/" },
-    { label: "Terms & Conditions",       to: "/" },
-    { label: "Payment",                  to: "/" },
-    { label: "Contact Us",               to: "/" },
-    { label: "FAQs",                     to: "/" },
-  ]
-
-  const companyInfo = [
-    { label: "About Us",               to: "/" },
-    { label: "Working with Printstop", to: "/" },
-    { label: "Mekal Blog",             to: "/" },
-    { label: "Privacy Policy",         to: "/" },
-  ]
-
-  const socials = [
-    { icon: <Instagram size={16} />, href: "#", label: "Instagram"   },
-    { icon: <Facebook  size={16} />, href: "#", label: "Facebook"    },
-    { icon: <Twitter   size={16} />, href: "#", label: "X / Twitter" },
-    { icon: <Youtube   size={16} />, href: "#", label: "YouTube"     },
-    { icon: <Linkedin  size={16} />, href: "#", label: "LinkedIn"    },
-  ]
+  async function handleLogout() {
+    setLoggingOut(true)
+    await supabase.auth.signOut()
+    navigate("/admin/login")
+  }
 
   return (
-    <>
-      <LocationSection />
+    <div className="min-h-screen flex" style={{ backgroundColor: "#f0f9ff" }}>
 
-      <footer style={{ backgroundColor: "#5fc7f4" }} className="text-white relative">
+      {/* ── Sidebar ── */}
+      <aside
+        className="w-64 flex flex-col flex-shrink-0 shadow-lg"
+        style={{ backgroundColor: DARK }}
+      >
+        {/* Top accent bar */}
+        <div className="h-1 w-full" style={{ backgroundColor: BRAND }} />
 
-        {/* ── Wave divider ── */}
-        <div className="w-full overflow-hidden leading-none -mt-1">
-          <svg viewBox="0 0 1440 60" preserveAspectRatio="none"
-            className="w-full h-10 md:h-16" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,30 C240,60 480,0 720,30 C960,60 1200,0 1440,30 L1440,0 L0,0 Z" fill="white" />
-          </svg>
-        </div>
-
-        {/* ── Logo + tagline + contact bar ── */}
-        <div className="text-center py-8 border-b border-white/20 px-4">
+        {/* Logo area */}
+        <div className="px-6 py-5 border-b" style={{ borderColor: "rgba(95,199,244,0.2)" }}>
           <img
             src="/mekal_logo.png"
-            alt="Mekal Enterprises"
-            className="h-20 md:h-24 w-auto object-contain mx-auto mb-4"
+            alt="Mekal"
+            className="h-16 w-auto object-contain"
+            onError={e => { e.target.style.display = "none" }}
           />
-          <p className="text-sm md:text-base text-white font-medium max-w-2xl mx-auto mb-4 leading-relaxed">
-            We are the best Gifting Solutions Company in India.&nbsp;
-            We have a wide range of products for any budget provided to us.
+          <p className="text-xs mt-2 font-semibold uppercase tracking-widest" style={{ color: BRAND }}>
+            Admin Panel
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-sm text-white/80">
-            <a href="tel:+919999999999"
-              className="flex items-center gap-2 hover:text-white transition-colors">
-              <Phone size={14} className="flex-shrink-0" />
-              +91 99999 99999&nbsp;&nbsp;|&nbsp;&nbsp;+91 99999 99999
-            </a>
-            <span className="hidden sm:block text-white/30">•</span>
-            <a href="mailto:mekal.enterprises@gmail.com"
-              className="flex items-center gap-2 hover:text-white transition-colors">
-              <Mail size={14} className="flex-shrink-0" />
-              mekal.enterprises@gmail.com
-            </a>
+        </div>
+
+        {/* Nav links */}
+        <nav className="flex flex-col gap-0.5 px-3 py-4 flex-1">
+          {navItems.map(({ to, label, icon: Icon }) => {
+            const isActive = to === "/admin"
+              ? pathname === "/admin"
+              : pathname.startsWith(to)
+
+            return (
+              <Link
+                key={to}
+                to={to}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group"
+                style={isActive
+                  ? { backgroundColor: BRAND, color: DARK }
+                  : { color: "rgba(255,255,255,0.65)" }
+                }
+                onMouseEnter={e => { if (!isActive) e.currentTarget.style.backgroundColor = "rgba(95,199,244,0.12)" }}
+                onMouseLeave={e => { if (!isActive) e.currentTarget.style.backgroundColor = "transparent" }}
+              >
+                <Icon size={16} />
+                <span className="flex-1">{label}</span>
+                {isActive && <ChevronRight size={14} style={{ color: DARK }} />}
+              </Link>
+            )
+          })}
+        </nav>
+
+        {/* User + logout */}
+        <div className="px-3 pb-5 pt-3 border-t" style={{ borderColor: "rgba(95,199,244,0.2)" }}>
+          {userEmail && (
+            <div className="px-3 py-2 mb-1 rounded-lg" style={{ backgroundColor: "rgba(95,199,244,0.08)" }}>
+              <p className="text-[11px] font-medium truncate" style={{ color: BRAND }} title={userEmail}>
+                {userEmail}
+              </p>
+            </div>
+          )}
+          <button
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all disabled:opacity-50"
+            style={{ color: "rgba(255,255,255,0.55)" }}
+            onMouseEnter={e => { e.currentTarget.style.backgroundColor = "rgba(239,68,68,0.15)"; e.currentTarget.style.color = "#f87171" }}
+            onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "rgba(255,255,255,0.55)" }}
+          >
+            <LogOut size={16} />
+            {loggingOut ? "Signing out…" : "Sign Out"}
+          </button>
+        </div>
+      </aside>
+
+      {/* ── Main area ── */}
+      <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
+
+        {/* Top header bar */}
+        <header
+          className="flex items-center justify-between px-8 py-4 border-b bg-white shadow-sm flex-shrink-0"
+        >
+          {/* Page title derived from current path */}
+          <div>
+            <h1 className="text-lg font-bold" style={{ color: DARK }}>
+              {navItems.find(n =>
+                n.to === "/admin" ? pathname === "/admin" : pathname.startsWith(n.to)
+              )?.label ?? "Admin"}
+            </h1>
+            <p className="text-xs text-zinc-400 mt-0.5">Mekal Enterprises</p>
           </div>
-        </div>
 
-        {/* ── Three-column links + socials ── */}
-        <div className="max-w-7xl mx-auto px-5 md:px-8 py-10">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
-
-            {/* All Products */}
-            <div>
-              <h4 className="text-white font-semibold mb-5 text-xs uppercase tracking-widest">
-                All Products
-              </h4>
-              <ul className="space-y-2.5 text-sm text-white/75">
-                {allProducts.map(item => (
-                  <li key={item}>
-                    <span className="hover:text-white cursor-pointer transition-colors">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Customer Support */}
-            <div>
-              <h4 className="text-white font-semibold mb-5 text-xs uppercase tracking-widest">
-                Customer Support
-              </h4>
-              <ul className="space-y-2.5 text-sm text-white/75">
-                {customerSupport.map(item => (
-                  <li key={item.label}>
-                    <Link to={item.to} className="hover:text-white transition-colors">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Company Info + Socials */}
-            <div>
-              <h4 className="text-white font-semibold mb-5 text-xs uppercase tracking-widest">
-                Company Info
-              </h4>
-              <ul className="space-y-2.5 text-sm text-white/75 mb-8">
-                {companyInfo.map(item => (
-                  <li key={item.label}>
-                    <Link to={item.to} className="hover:text-white transition-colors">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-
-              {/* Social icons */}
-              <div className="flex flex-wrap gap-3 mt-2">
-                {socials.map(s => (
-                  <a key={s.label} href={s.href} aria-label={s.label}
-                    className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/20 transition-colors">
-                    {s.icon}
-                  </a>
-                ))}
-              </div>
-            </div>
-
+          {/* Right side — accent pill */}
+          <div
+            className="flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold"
+            style={{ backgroundColor: `${BRAND}22`, color: DARK }}
+          >
+            <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: BRAND }} />
+            Live
           </div>
-        </div>
+        </header>
 
-        {/* ── Bottom bar ── */}
-        <div className="border-t border-white/20 text-center text-xs text-white/50 py-4 px-4">
-          © {new Date().getFullYear()} Mekal Enterprises. All rights reserved.
-        </div>
+        {/* Page content */}
+        <main className="flex-1 p-8 overflow-auto">
+          {children}
+        </main>
+      </div>
 
-      </footer>
-    </>
+    </div>
   )
 }
