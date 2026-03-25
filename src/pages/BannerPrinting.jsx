@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { MessageCircle } from "lucide-react"
 
 export default function BannerPrinting() {
-  const number = "919131387559"
+  const number = "+919131387559"
 
   const openWhatsApp = () => {
     window.open(

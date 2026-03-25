@@ -9,7 +9,7 @@ import { ChevronLeft, ChevronRight, MessageCircle, Loader2, ArrowLeft } from "lu
 
 const BRAND    = "#5fc7f4"
 const DARK     = "#065999"
-const WHATSAPP = "919131387559"
+const WHATSAPP = "+919131387559"
 
 function openWhatsApp(msg) {
   window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank")

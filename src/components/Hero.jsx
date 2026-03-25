@@ -138,7 +138,7 @@ export default function HeroSlider() {
             </span>
           )}
           <button
-            onClick={() => window.open(`https://wa.me/919131387559?text=${encodeURIComponent("Hello, I want to know more about your printing services.")}`, "_blank")}
+            onClick={() => window.open(`https://wa.me/+919131387559?text=${encodeURIComponent("Hello, I want to know more about your printing services.")}`, "_blank")}
             className="inline-flex items-center gap-1.5 bg-green-500 hover:bg-green-400 text-white font-semibold text-xs md:text-sm px-4 md:px-6 py-2 md:py-3 rounded-full transition-colors">
             <MessageCircle size={14} /> WhatsApp Us
           </button>

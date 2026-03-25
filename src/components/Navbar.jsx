@@ -221,7 +221,7 @@ export default function Navbar() {
                   )
                 })}
                 <div className="pt-4 mt-4 border-t">
-                  <a href="https://wa.me/919999999999" target="_blank" rel="noreferrer"
+                  <a href="https://wa.me/+919131387559" target="_blank" rel="noreferrer"
                     className="flex items-center gap-3 px-3 py-3 text-sm font-semibold text-green-700 rounded-xl hover:bg-green-50">
                     💬 Chat on WhatsApp
                   </a>
@@ -281,7 +281,7 @@ export default function Navbar() {
             className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-black/10 text-[#065999]">
             <Search size={20} />
           </button>
-          <a href="https://wa.me/919999999999" target="_blank" rel="noreferrer"
+          <a href="https://wa.me/+919131387559" target="_blank" rel="noreferrer"
             className="hidden md:inline-flex items-center gap-1.5 text-xs font-semibold text-[#065999] hover:bg-black/10 px-3 py-2 rounded-xl transition-colors">
             💬 Support
           </a>

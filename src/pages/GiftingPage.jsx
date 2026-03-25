@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabase"
 import { nameToSlug } from "../lib/slugutils"
 import { MessageCircle, ChevronLeft, ChevronRight, Loader2, ArrowRight } from "lucide-react"
 
-const WHATSAPP = "919131387559"
+const WHATSAPP = "+919131387559"
 
 function openWhatsApp(msg) {
   window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank")
