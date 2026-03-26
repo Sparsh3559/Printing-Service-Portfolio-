@@ -1,5 +1,76 @@
 import { Link } from "react-router-dom"
-import { Phone, Mail, Instagram, Facebook, Linkedin, Youtube, Twitter } from "lucide-react"
+import { Phone, Mail, Instagram, Facebook, Linkedin, Youtube, Twitter, MapPin } from "lucide-react"
+
+// ── Location Section ──────────────────────────────────────────────────────────
+function LocationSection() {
+  const valueProps = [
+    {
+      title: "Even Low Quantities @ Best Prices",
+      desc:  "We offer low / single product quantities at affordable prices.",
+    },
+    {
+      title: "High Quality Products and Easy Design",
+      desc:  "Our wide selection of high-quality products and online design tools make it easy for you to customize and order your favourite products.",
+    },
+    {
+      title: "Free Replacement or Full Refund",
+      desc:  "We stand by everything we sell. So if you're not satisfied, we'll make it right.",
+    },
+  ]
+
+  return (
+    <section className="py-12 px-4 bg-white">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+
+          {/* Left — company info */}
+          <div>
+            <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-3">
+              Mekal Enterprises: The Leader in Customisation
+            </h2>
+            <p className="text-gray-600 text-sm leading-relaxed mb-8">
+              For more than 10 years, Mekal Enterprises has helped business owners, entrepreneurs
+              and individuals create their identities with custom designs and professional marketing.
+              Our online printing services are intended to help you find high-quality customised
+              products you need – visiting cards, personalized clothing, gifting products, and much more.
+            </p>
+            <div className="space-y-5">
+              {valueProps.map(vp => (
+                <div key={vp.title}>
+                  <h3 className="font-bold text-gray-800 text-sm md:text-base mb-1">{vp.title}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{vp.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right — map */}
+          <div>
+            <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+              <MapPin size={18} style={{ color: "#065999" }} /> Our Location
+            </h3>
+            <div className="rounded-2xl overflow-hidden shadow-xl border border-gray-100" style={{ height: "380px" }}>
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3994.042952435717!2d76.03016567555798!3d22.966320918424515!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396317c4317fe813%3A0x6ad9188d8f033095!2zTUVLQUwgRU5URVJQUklTRVPihKLvuI8!5e1!3m2!1sen!2sin!4v1774326786901!5m2!1sen!2sin"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Mekal Enterprises Location"
+              />
+            </div>
+            <p className="text-xs text-gray-400 mt-2 flex items-center gap-1">
+              <MapPin size={11} /> Dewas, Madhya Pradesh, India
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  )
+}
 
 // ── Wave image from client ────────────────────────────────────────────────────
 const WAVE_URL = "https://mzkizexagitatacuwwxj.supabase.co/storage/v1/object/public/products/products/wave%20(1)-Photoroom.png"
@@ -55,7 +126,10 @@ export default function Footer() {
   ]
 
   return (
-    <footer style={{ backgroundColor: "#5fc7f4" }} className="text-white relative">
+    <>
+      <LocationSection />
+
+      <footer style={{ backgroundColor: "#5fc7f4" }} className="text-white relative">
 
       {/* ── Wave divider ── */}
       <div className="w-full overflow-hidden leading-none -mt-1">
@@ -179,5 +253,6 @@ export default function Footer() {
       </div>
 
     </footer>
+    </>
   )
 }
