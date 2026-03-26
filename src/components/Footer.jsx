@@ -118,7 +118,7 @@ export default function Footer() {
   ]
 
   const socials = [
-    { icon: <Instagram size={16} />, href: "#", label: "Instagram"   },
+    { icon: <Instagram size={16} />, href: "https://www.instagram.com/mekal.in?igsh=bDVvdXNiaW02Nzlh", label: "Instagram"   },
     { icon: <Facebook  size={16} />, href: "#", label: "Facebook"    },
     { icon: <Twitter   size={16} />, href: "#", label: "X / Twitter" },
     { icon: <Youtube   size={16} />, href: "#", label: "YouTube"     },
