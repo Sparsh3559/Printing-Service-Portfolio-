@@ -75,16 +75,8 @@ function LocationSection() {
 // ── Wave image from client ────────────────────────────────────────────────────
 const WAVE_URL = "https://mzkizexagitatacuwwxj.supabase.co/storage/v1/object/public/products/products/wave%20(1)-Photoroom.png"
 
-function Wave({ flip = false }) {
-  return (
-    <img
-      src={WAVE_URL}
-      alt=""
-      className="h-20 md:h-24 w-auto object-contain opacity-90"
-      style={{ transform: flip ? "scaleX(-1)" : "none" }}
-    />
-  )
-}
+// Logo blue from the Mekal logo: #1a5fa8 (the deep navy-blue in the wave marks)
+const LOGO_BLUE = "#1a5fa8"
 
 export default function Footer() {
   const allProducts = [
@@ -125,9 +117,10 @@ export default function Footer() {
     <>
       <LocationSection />
 
-      <footer style={{ backgroundColor: "#5fc7f4" }} className="text-white relative">
+      {/* Footer background now uses the logo's deep navy-blue */}
+      <footer style={{ backgroundColor: LOGO_BLUE }} className="text-white relative">
 
-      {/* ── Wave divider ── */}
+      {/* ── Wave divider — fill matches new footer background ── */}
       <div className="w-full overflow-hidden leading-none -mt-1">
         <svg viewBox="0 0 1440 60" preserveAspectRatio="none"
           className="w-full h-10 md:h-16" xmlns="http://www.w3.org/2000/svg">
@@ -136,9 +129,9 @@ export default function Footer() {
       </div>
 
       {/* ── Logo + waves + contact ── */}
-      <div className="text-center py-8 border-b border-white/20 px-4">
+      <div className="text-center py-8 border-b px-4" style={{ borderColor: "rgba(255,255,255,0.2)" }}>
 
-        {/* Logo flanked by decorative waves — tight, looks like one unit */}
+        {/* Logo flanked by decorative waves */}
         <div className="flex items-center justify-center mb-4">
           <img
             src={WAVE_URL}
@@ -158,20 +151,29 @@ export default function Footer() {
           />
         </div>
 
-        <p className="text-sm md:text-base text-white font-medium max-w-2xl mx-auto mb-4 leading-relaxed">
+        {/* ── Navy text: changed from text-white to navy (#0d1b3e) via inline style ── */}
+        <p className="text-sm md:text-base font-medium max-w-2xl mx-auto mb-4 leading-relaxed"
+           style={{ color: "#0d1b3e" }}>
           We are the best Gifting Solutions Company in India.&nbsp;
           We have a wide range of products for any budget provided to us.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-sm text-white/80">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-sm"
+             style={{ color: "rgba(13,27,62,0.75)" }}>
           <a href="tel:+919131387559"
-            className="flex items-center gap-2 hover:text-white transition-colors">
+            className="flex items-center gap-2 transition-colors"
+            style={{ color: "inherit" }}
+            onMouseEnter={e => e.currentTarget.style.color = "#0d1b3e"}
+            onMouseLeave={e => e.currentTarget.style.color = "rgba(13,27,62,0.75)"}>
             <Phone size={14} className="flex-shrink-0" />
             +91 9131387559
           </a>
-          <span className="hidden sm:block text-white/30">•</span>
+          <span style={{ color: "rgba(13,27,62,0.3)" }} className="hidden sm:block">•</span>
           <a href="mailto:mekal.enterprises@gmail.com"
-            className="flex items-center gap-2 hover:text-white transition-colors">
+            className="flex items-center gap-2 transition-colors"
+            style={{ color: "inherit" }}
+            onMouseEnter={e => e.currentTarget.style.color = "#0d1b3e"}
+            onMouseLeave={e => e.currentTarget.style.color = "rgba(13,27,62,0.75)"}>
             <Mail size={14} className="flex-shrink-0" />
             mekal.enterprises@gmail.com
           </a>
@@ -184,13 +186,15 @@ export default function Footer() {
 
           {/* All Products */}
           <div>
-            <h4 className="text-white font-semibold mb-5 text-xs uppercase tracking-widest">
+            <h4 className="font-semibold mb-5 text-xs uppercase tracking-widest"
+                style={{ color: "#0d1b3e" }}>
               All Products
             </h4>
-            <ul className="space-y-2.5 text-sm text-white/75">
+            <ul className="space-y-2.5 text-sm" style={{ color: "rgba(13,27,62,0.75)" }}>
               {allProducts.map(item => (
                 <li key={item.label}>
-                  <Link to={item.to} className="hover:text-white transition-colors">
+                  <Link to={item.to} className="transition-colors hover:opacity-100"
+                        style={{ color: "inherit" }}>
                     {item.label}
                   </Link>
                 </li>
@@ -200,13 +204,15 @@ export default function Footer() {
 
           {/* Customer Support */}
           <div>
-            <h4 className="text-white font-semibold mb-5 text-xs uppercase tracking-widest">
+            <h4 className="font-semibold mb-5 text-xs uppercase tracking-widest"
+                style={{ color: "#0d1b3e" }}>
               Customer Support
             </h4>
-            <ul className="space-y-2.5 text-sm text-white/75">
+            <ul className="space-y-2.5 text-sm" style={{ color: "rgba(13,27,62,0.75)" }}>
               {customerSupport.map(item => (
                 <li key={item.label}>
-                  <Link to={item.to} className="hover:text-white transition-colors">
+                  <Link to={item.to} className="transition-colors"
+                        style={{ color: "inherit" }}>
                     {item.label}
                   </Link>
                 </li>
@@ -216,13 +222,15 @@ export default function Footer() {
 
           {/* Company Info + Socials */}
           <div>
-            <h4 className="text-white font-semibold mb-5 text-xs uppercase tracking-widest">
+            <h4 className="font-semibold mb-5 text-xs uppercase tracking-widest"
+                style={{ color: "#0d1b3e" }}>
               Company Info
             </h4>
-            <ul className="space-y-2.5 text-sm text-white/75 mb-8">
+            <ul className="space-y-2.5 text-sm mb-8" style={{ color: "rgba(13,27,62,0.75)" }}>
               {companyInfo.map(item => (
                 <li key={item.label}>
-                  <Link to={item.to} className="hover:text-white transition-colors">
+                  <Link to={item.to} className="transition-colors"
+                        style={{ color: "inherit" }}>
                     {item.label}
                   </Link>
                 </li>
@@ -234,7 +242,13 @@ export default function Footer() {
               {socials.map(s => (
                 <a key={s.label} href={s.href} aria-label={s.label}
                   target="_blank" rel="noreferrer"
-                  className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/20 transition-colors">
+                  className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
+                  style={{
+                    border: "1px solid rgba(13,27,62,0.35)",
+                    color: "#0d1b3e",
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = "rgba(13,27,62,0.15)"}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}>
                   {s.icon}
                 </a>
               ))}
@@ -245,7 +259,8 @@ export default function Footer() {
       </div>
 
       {/* ── Bottom bar ── */}
-      <div className="border-t border-white/20 text-center text-xs text-white/50 py-4 px-4">
+      <div className="border-t text-center text-xs py-4 px-4"
+           style={{ borderColor: "rgba(13,27,62,0.2)", color: "rgba(13,27,62,0.5)" }}>
         © {new Date().getFullYear()} Mekal Enterprises. All rights reserved.
       </div>
 
