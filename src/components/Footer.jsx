@@ -109,8 +109,16 @@ export default function Footer() {
     { icon: <Twitter   size={16} />, href: "#", label: "X / Twitter" },
     { icon: <Youtube   size={16} />, href: "https://www.youtube.com/@MekalEnterprises", label: "YouTube"     },
     { icon: <Linkedin  size={16} />, href: "https://www.linkedin.com/company/mekal-enterprises/", label: "LinkedIn"    },
-    { icon: <span className="text-[9px] font-bold leading-none">IM</span>, href: "https://www.indiamart.com/mekal-enterprises/photos.html", label: "IndiaMart" },
-    { icon: <span className="text-[9px] font-bold leading-none">JD</span>, href: "https://www.justdial.com/Dewas/Mekal-Enterprises-Mekal-Enteerprises-Mishrilal-Nagar/9999P7272-7272-230421193507-M5G2_BZDET", label: "JustDial" },
+    {
+      icon: <img src="https://img.logokit.com/indiamart.com" alt="IndiaMart" style={{ width: 20, height: 20, objectFit: "contain" }} />,
+      href: "https://www.indiamart.com/mekal-enterprises/photos.html",
+      label: "IndiaMart",
+    },
+    {
+      icon: <img src="https://img.logokit.com/justdial.com" alt="JustDial" style={{ width: 20, height: 20, objectFit: "contain" }} />,
+      href: "https://www.justdial.com/Dewas/Mekal-Enterprises-Mekal-Enteerprises-Mishrilal-Nagar/9999P7272-7272-230421193507-M5G2_BZDET",
+      label: "JustDial",
+    },
   ]
 
   return (
