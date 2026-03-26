@@ -101,19 +101,13 @@ export default function Footer() {
   ]
 
   const customerSupport = [
-    { label: "Help Desk",                to: "/help" },
     { label: "Privacy Policy",           to: "/privacy-policy" },
-    { label: "Return & Shipping Policy", to: "/shipping-policy" },
-    { label: "Terms & Conditions",       to: "/terms" },
-    { label: "Payment",                  to: "/payment" },
     { label: "Contact Us",               to: "/contact" },
-    { label: "FAQs",                     to: "/faqs" },
   ]
 
   const companyInfo = [
     { label: "About Us",          to: "/about" },
     { label: "Working with Mekal",to: "/about" },
-    { label: "Mekal Blog",        to: "/" },
     { label: "Privacy Policy",    to: "/privacy-policy" },
   ]
 
