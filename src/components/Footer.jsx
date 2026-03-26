@@ -110,12 +110,37 @@ export default function Footer() {
     { icon: <Youtube   size={16} />, href: "https://www.youtube.com/@MekalEnterprises", label: "YouTube"     },
     { icon: <Linkedin  size={16} />, href: "https://www.linkedin.com/company/mekal-enterprises/", label: "LinkedIn"    },
     {
-      icon: <img src="https://img.logokit.com/indiamart.com" alt="IndiaMart" style={{ width: 20, height: 20, objectFit: "contain" }} />,
+      icon: (
+        /* IndiaMart — red oval with white M + two red figures on top */
+        <svg viewBox="0 0 36 36" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+          {/* oval body */}
+          <ellipse cx="18" cy="22" rx="14" ry="9" fill="#cc0000"/>
+          {/* white M */}
+          <text x="18" y="27" textAnchor="middle" fontSize="11" fontWeight="900"
+                fontFamily="Arial,sans-serif" fill="white">M</text>
+          {/* left figure head */}
+          <circle cx="12" cy="10" r="3" fill="#cc0000"/>
+          {/* right figure head */}
+          <circle cx="24" cy="10" r="3" fill="#cc0000"/>
+          {/* left figure body arc */}
+          <path d="M9,13 Q12,17 15,14" stroke="#cc0000" strokeWidth="2" fill="none"/>
+          {/* right figure body arc */}
+          <path d="M27,13 Q24,17 21,14" stroke="#cc0000" strokeWidth="2" fill="none"/>
+        </svg>
+      ),
       href: "https://www.indiamart.com/mekal-enterprises/photos.html",
       label: "IndiaMart",
     },
     {
-      icon: <img src="https://img.logokit.com/justdial.com" alt="JustDial" style={{ width: 20, height: 20, objectFit: "contain" }} />,
+      icon: (
+        /* JustDial — "Just" in blue, "dial" in orange, compact */
+        <svg viewBox="0 0 44 18" width="28" height="12" xmlns="http://www.w3.org/2000/svg">
+          <text x="0" y="14" fontSize="14" fontWeight="800"
+                fontFamily="Arial,sans-serif" fill="#1565c0">Just</text>
+          <text x="22" y="14" fontSize="14" fontWeight="800"
+                fontFamily="Arial,sans-serif" fill="#f57c00">dial</text>
+        </svg>
+      ),
       href: "https://www.justdial.com/Dewas/Mekal-Enterprises-Mekal-Enteerprises-Mishrilal-Nagar/9999P7272-7272-230421193507-M5G2_BZDET",
       label: "JustDial",
     },
@@ -250,8 +275,13 @@ export default function Footer() {
               {socials.map(s => (
                 <a key={s.label} href={s.href} aria-label={s.label}
                   target="_blank" rel="noreferrer"
-                  className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
+                  className="flex items-center justify-center transition-colors"
                   style={{
+                    width:        s.label === "JustDial" ? "auto" : "36px",
+                    height:       "36px",
+                    minWidth:     s.label === "JustDial" ? "58px" : undefined,
+                    padding:      s.label === "JustDial" ? "0 10px" : undefined,
+                    borderRadius: s.label === "JustDial" ? "18px" : "50%",
                     border: "1px solid rgba(26,95,168,0.4)",
                     color: "#1a5fa8",
                   }}
