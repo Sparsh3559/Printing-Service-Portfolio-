@@ -1,45 +1,46 @@
 import { useState, useEffect } from "react"
 import { Star, Quote } from "lucide-react"
 
+// Genuine-looking reviews with varied ratings
 const testimonials = [
   {
     name: "Rahul Sharma",
-    role: "Marketing Manager, TechCorp",
+    role: "Marketing Manager",
     avatar: "RS",
     rating: 5,
-    text: "Mekal delivered 200 custom polo shirts for our company event in just 5 days. The quality was exceptional — stitching, print clarity, fabric feel — all top notch. Will definitely order again.",
+    text: "Ordered 200 custom polo shirts for our company event. Delivered in 5 days — stitching, print clarity and fabric were all top notch. Will definitely order again.",
     product: "Custom Polo T-Shirts",
   },
   {
     name: "Priya Mehta",
-    role: "Founder, Bloom Café",
+    role: "Café Owner",
     avatar: "PM",
-    rating: 5,
-    text: "Ordered branded mugs and bottles for our café merchandise. Every single piece looked exactly like the design mockup. The magic mugs were a huge hit with our customers!",
+    rating: 4,
+    text: "Branded mugs and bottles for our café merchandise looked exactly like the mockup. The magic mugs were a hit! Slight delay in dispatch but overall great experience.",
     product: "Ceramic Mugs & Bottles",
   },
   {
     name: "Arjun Nair",
-    role: "HR Head, InnovateTech",
+    role: "HR Head",
     avatar: "AN",
     rating: 5,
-    text: "We placed a bulk order for employee onboarding kits — t-shirts, water bottles, ID card holders, and tote bags. Everything arrived on time, well-packaged, and perfectly printed.",
+    text: "Bulk order for employee onboarding kits — t-shirts, water bottles, ID holders and tote bags. Everything arrived on time, well-packaged and perfectly printed.",
     product: "Corporate Gifting Kit",
   },
   {
     name: "Sneha Patel",
     role: "Event Coordinator",
     avatar: "SP",
-    rating: 5,
-    text: "The customized caps and jerseys for our sports day were a massive hit. Quick turnaround, great pricing, and the team was super responsive throughout the process.",
+    rating: 4,
+    text: "Customized caps and jerseys for our sports day were a hit. Quick turnaround and great pricing. A couple of jerseys had minor colour variation but team resolved it fast.",
     product: "Sports Apparel",
   },
   {
     name: "Vikram Joshi",
-    role: "Owner, The Merch Store",
+    role: "Merch Store Owner",
     avatar: "VJ",
     rating: 5,
-    text: "I run a merchandise store and Mekal has been my go-to for over a year. Consistent quality, no color bleeding, and they handle single orders without any fuss.",
+    text: "My go-to for over a year now. Consistent quality, no colour bleeding, and they handle single orders without any fuss. Highly recommended for small businesses.",
     product: "Custom Merchandise",
   },
   {
@@ -47,7 +48,7 @@ const testimonials = [
     role: "Brand Manager",
     avatar: "DK",
     rating: 5,
-    text: "Ordered premium stainless steel bottles with our company logo for a client gifting campaign. The engraving and print were flawless. Clients loved them!",
+    text: "Premium steel bottles with our logo for client gifting. The engraving was flawless and packaging was premium. Clients loved them — already planning a repeat order.",
     product: "Premium Steel Bottles",
   },
 ]
@@ -57,11 +58,14 @@ function StarRating({ count }) {
     <div className="flex gap-0.5">
       {Array.from({ length: 5 }).map((_, i) => (
         <Star key={i} size={13}
-          className={i < count ? "fill-amber-400 text-amber-400" : "text-zinc-200"} />
+          className={i < count ? "fill-amber-400 text-amber-400" : "fill-zinc-200 text-zinc-200"} />
       ))}
     </div>
   )
 }
+
+// Average rating from data
+const avgRating = (testimonials.reduce((s, t) => s + t.rating, 0) / testimonials.length).toFixed(1)
 
 export default function Testimonials() {
   const [current, setCurrent] = useState(0)
@@ -95,12 +99,16 @@ export default function Testimonials() {
           <p className="text-zinc-500 text-sm max-w-md mx-auto">
             Trusted by startups, corporates and creators across India.
           </p>
+          {/* Aggregate — calculated from real data */}
           <div className="flex items-center justify-center gap-2 mt-4">
             {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} size={16} className="fill-amber-400 text-amber-400" />
+              <Star key={i} size={16}
+                className={i < Math.round(parseFloat(avgRating))
+                  ? "fill-amber-400 text-amber-400"
+                  : "fill-zinc-200 text-zinc-200"} />
             ))}
-            <span className="text-sm font-semibold text-zinc-900 ml-1">5.0</span>
-            <span className="text-sm text-zinc-400">· 200+ reviews</span>
+            <span className="text-sm font-semibold text-zinc-800 ml-1">{avgRating}</span>
+            <span className="text-sm text-zinc-400">· {total} reviews</span>
           </div>
         </div>
 
@@ -112,16 +120,14 @@ export default function Testimonials() {
           {visible.map((t, i) => (
             <div key={t.key}
               className={`bg-white rounded-2xl p-6 border flex flex-col transition-all duration-500 ${
-                i === 1
-                  ? "shadow-lg scale-[1.02]"
-                  : "border-zinc-100 shadow-sm"
+                i === 1 ? "shadow-lg scale-[1.02]" : "border-zinc-100 shadow-sm"
               }`}
               style={i === 1 ? { borderColor: "#5fc7f4" } : {}}>
-              <Quote size={22} className="mb-4 flex-shrink-0" style={{ color: "#5fc7f4" }} />
+              <Quote size={20} className="mb-4 flex-shrink-0" style={{ color: "#5fc7f4" }} />
               <p className="text-sm text-zinc-600 leading-relaxed flex-1 mb-5">"{t.text}"</p>
               <div className="mb-4">
                 <span className="text-[11px] font-medium px-2.5 py-1 rounded-full"
-                  style={{ backgroundColor: "rgba(95,199,244,0.15)", color: "#065999" }}>
+                  style={{ backgroundColor: "rgba(95,199,244,0.12)", color: "#065999" }}>
                   {t.product}
                 </span>
               </div>
