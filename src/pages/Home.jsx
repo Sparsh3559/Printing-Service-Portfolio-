@@ -9,6 +9,7 @@ import Promosection from "../components/Promosection"
 import HowWeWork from "../components/HowWeWork"
 import Testimonials from "../components/Testimonials"
 import SideStrips from "../components/SideStrips"
+import BrandStrip from "@/components/BrandStrip"
 import { supabase } from "@/lib/supabase"
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
 
@@ -188,6 +189,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <Trustbar />
+      <BrandStrip />
 
       {/* ── Services Section ── */}
       <section className="py-12 md:py-20 bg-white">
