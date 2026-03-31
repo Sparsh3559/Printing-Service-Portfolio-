@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { ChevronDown, ChevronRight, Search, X, Loader2, Menu } from "lucide-react"
+import { ChevronDown, ChevronRight, Search, X, Loader2, Menu, HeadphonesIcon } from "lucide-react"
 import { supabase } from "@/lib/supabase"
 import { nameToSlug } from "@/lib/slugutils"
 
@@ -32,8 +32,8 @@ export default function Navbar() {
   const [navLoaded,       setNavLoaded]       = useState(false)
 
   // Desktop mega-menu state
-  const [activeMenu,  setActiveMenu]  = useState(null) // cat.id or null
-  const [menuLeft,    setMenuLeft]    = useState(0)    // px offset from navbar left edge
+  const [activeMenu,  setActiveMenu]  = useState(null)
+  const [menuLeft,    setMenuLeft]    = useState(0)
   const triggerRefs  = useRef({})
   const navBarRef    = useRef(null)
   const menuCloseRef = useRef(null)
@@ -98,7 +98,6 @@ export default function Navbar() {
       if (searchRef.current && !searchRef.current.contains(e.target)) setShowDrop(false)
       if (mobileSearchRef.current && !mobileSearchRef.current.contains(e.target))
         if (mobileSearch && !query) setMobileSearch(false)
-      // Close mega menu if clicking outside navbar
       if (navBarRef.current && !navBarRef.current.contains(e.target)) setActiveMenu(null)
     }
     document.addEventListener("mousedown", handler)
@@ -124,10 +123,8 @@ export default function Navbar() {
     const triggerRect = triggerEl.getBoundingClientRect()
     const navRect     = navEl.getBoundingClientRect()
 
-    // Desired: dropdown left-aligns with trigger center, clamped to viewport
     const DROPDOWN_W = 820
     let left = triggerRect.left - navRect.left + triggerRect.width / 2 - DROPDOWN_W / 2
-    // Clamp so dropdown doesn't overflow right or left edge
     const maxLeft = navRect.width - DROPDOWN_W - 8
     left = Math.max(8, Math.min(left, maxLeft))
 
@@ -275,15 +272,25 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Right */}
+        {/* Right — customer care icon (WhatsApp) + mobile search */}
         <div className="flex items-center gap-1">
           <button onClick={() => setMobileSearch(s => !s)}
             className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-black/10 text-[#065999]">
             <Search size={20} />
           </button>
-          <a href="https://wa.me/+919131387559" target="_blank" rel="noreferrer"
-            className="hidden md:inline-flex items-center gap-1.5 text-xs font-semibold text-[#065999] hover:bg-black/10 px-3 py-2 rounded-xl transition-colors">
-            💬 Support
+
+          {/* Customer care icon — WhatsApp link */}
+          <a
+            href="https://wa.me/+919131387559"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Customer Care on WhatsApp"
+            className="relative w-10 h-10 flex items-center justify-center rounded-xl hover:bg-black/10 transition-colors group"
+            title="Customer Care"
+          >
+            <HeadphonesIcon size={22} className="text-[#065999]" />
+            {/* Green WhatsApp dot indicator */}
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-green-500 border border-white" />
           </a>
         </div>
       </div>
@@ -322,11 +329,11 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* ── Desktop categories bar — full width spread ── */}
+      {/* ── Desktop categories bar ── */}
       <div className="hidden md:block border-t border-[#065999]/20 relative" style={{ backgroundColor: "#5fc7f4" }}>
 
-        {/* Category triggers — spread full width with justify-between */}
-        <div className="flex items-stretch justify-between px-4">
+        {/* Category triggers */}
+        <div className="flex items-stretch justify-between px-2">
           {!navLoaded && (
             <div className="flex items-center px-4 py-2 text-[#065999]/50 text-xs">
               <Loader2 size={12} className="animate-spin" />
@@ -342,24 +349,23 @@ export default function Navbar() {
               <Link
                 to={`/category/${cat.id}`}
                 onClick={() => setActiveMenu(null)}
-                className={`flex items-center justify-center gap-1 w-full py-2.5 text-[11px] font-semibold text-[#065999] hover:bg-black/10 transition-colors text-center leading-tight px-1 ${activeMenu === cat.id ? "bg-black/10" : ""}`}>
-                {/* Split name at & for clean display */}
+                className={`flex items-center justify-center gap-0.5 w-full py-2.5 text-[12px] font-bold text-[#065999] hover:bg-black/10 transition-colors text-center leading-tight px-0.5 ${activeMenu === cat.id ? "bg-black/10" : ""}`}>
                 {cat.name.includes("&") ? (
-                  <span className="text-center">
-                    {cat.name.split("&")[0].trim()}&nbsp;&amp;<br />{cat.name.split("&").slice(1).join("&").trim()}
+                  <span className="text-center whitespace-nowrap">
+                    {cat.name.split("&")[0].trim()}&nbsp;&amp;&nbsp;{cat.name.split("&").slice(1).join("&").trim()}
                   </span>
                 ) : (
-                  <span>{cat.name}</span>
+                  <span className="whitespace-nowrap">{cat.name}</span>
                 )}
                 {cat.subcategories.length > 0 && (
-                  <ChevronDown size={11} className={`flex-shrink-0 transition-transform ${activeMenu === cat.id ? "rotate-180" : ""}`} />
+                  <ChevronDown size={11} className={`flex-shrink-0 transition-transform ml-0.5 ${activeMenu === cat.id ? "rotate-180" : ""}`} />
                 )}
               </Link>
             </div>
           ))}
         </div>
 
-        {/* ── Mega dropdown — positioned under the active trigger ── */}
+        {/* ── Mega dropdown ── */}
         {activeMenu && activeCat?.subcategories.length > 0 && (
           <div
             onMouseEnter={handleMenuEnter}
@@ -371,7 +377,6 @@ export default function Navbar() {
               minWidth: 480,
             }}>
             <div className="p-5">
-              {/* Header */}
               <div className="flex items-center justify-between mb-4 pb-3 border-b">
                 <Link to={`/category/${activeCat.id}`}
                   onClick={() => setActiveMenu(null)}
@@ -383,7 +388,6 @@ export default function Navbar() {
                 </span>
               </div>
 
-              {/* Subcategory grid */}
               <div className={`grid gap-x-6 gap-y-4 ${activeCat.subcategories.length <= 2 ? "grid-cols-2" : activeCat.subcategories.length <= 3 ? "grid-cols-3" : "grid-cols-4"}`}>
                 {activeCat.subcategories.map(sub => (
                   <div key={sub.id}>

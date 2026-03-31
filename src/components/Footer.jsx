@@ -101,7 +101,7 @@ export default function Footer() {
 
       <footer style={{ backgroundColor: "#5fc7f4" }} className="text-white relative overflow-hidden">
 
-        {/* Wave divider */}
+        {/* Wave divider at top */}
         <div className="w-full overflow-hidden leading-none -mt-1">
           <svg viewBox="0 0 1440 60" preserveAspectRatio="none"
             className="w-full h-10 md:h-16" xmlns="http://www.w3.org/2000/svg">
@@ -109,46 +109,69 @@ export default function Footer() {
           </svg>
         </div>
 
-        {/* Logo + waves — clamped so waves never overflow on small screens */}
-        <div className="text-center py-8 border-b border-white/20 px-4">
-          <div className="flex items-center justify-center mb-4 max-w-xs md:max-w-sm mx-auto">
-            <img
-              src={WAVE_URL}
-              alt=""
-              className="flex-shrink-0 object-contain opacity-90 -mr-2"
-              style={{ height: "clamp(56px, 12vw, 96px)", width: "auto" }}
+        {/* ── Logo flanked by full-width repeating wave ── */}
+        <div className="border-b border-white/20 pb-8 pt-2">
+
+          {/* Wave + Logo row — full bleed, no max-width */}
+          <div className="flex items-center w-full overflow-hidden" style={{ minHeight: "clamp(80px, 18vw, 140px)" }}>
+
+            {/* Left wave — fills all space left of logo, image repeats horizontally */}
+            <div
+              className="flex-1 h-full"
+              style={{
+                minHeight: "clamp(80px, 18vw, 140px)",
+                backgroundImage: `url('${WAVE_URL}')`,
+                backgroundRepeat: "repeat-x",
+                backgroundSize:   "auto 100%",
+                backgroundPosition: "right center",
+                opacity: 0.9,
+              }}
             />
-            <img
-              src="/mekal_logo.png"
-              alt="Mekal Enterprises"
-              className="flex-shrink-0 object-contain relative z-10"
-              style={{ height: "clamp(64px, 14vw, 112px)", width: "auto" }}
-            />
-            <img
-              src={WAVE_URL}
-              alt=""
-              className="flex-shrink-0 object-contain opacity-90 -ml-2"
-              style={{ height: "clamp(56px, 12vw, 96px)", width: "auto", transform: "scaleX(-1)" }}
+
+            {/* Logo — fixed size, sits in the centre */}
+            <div className="flex-shrink-0 px-2 md:px-4 z-10">
+              <img
+                src="/mekal_logo.png"
+                alt="Mekal Enterprises"
+                className="object-contain drop-shadow-lg"
+                style={{ height: "clamp(64px, 14vw, 112px)", width: "auto" }}
+              />
+            </div>
+
+            {/* Right wave — mirror of left */}
+            <div
+              className="flex-1 h-full"
+              style={{
+                minHeight: "clamp(80px, 18vw, 140px)",
+                backgroundImage: `url('${WAVE_URL}')`,
+                backgroundRepeat: "repeat-x",
+                backgroundSize:   "auto 100%",
+                backgroundPosition: "left center",
+                opacity: 0.9,
+                transform: "scaleX(-1)",
+              }}
             />
           </div>
 
-          <p className="text-sm md:text-base text-white font-medium max-w-2xl mx-auto mb-4 leading-relaxed">
-            We are the best Gifting Solutions Company in India.&nbsp;
-            We have a wide range of products for any budget provided to us.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-sm text-white/80">
-            <a href="tel:+919131387559"
-              className="flex items-center gap-2 hover:text-white transition-colors">
-              <Phone size={14} className="flex-shrink-0" />
-              +91 9131387559
-            </a>
-            <span className="hidden sm:block text-white/30">•</span>
-            <a href="mailto:mekal.enterprises@gmail.com"
-              className="flex items-center gap-2 hover:text-white transition-colors">
-              <Mail size={14} className="flex-shrink-0" />
-              mekal.enterprises@gmail.com
-            </a>
+          {/* Contact info below the wave+logo row */}
+          <div className="text-center px-4 mt-5">
+            <p className="text-sm md:text-base text-white font-medium max-w-2xl mx-auto mb-4 leading-relaxed">
+              We are the best Gifting Solutions Company in India.&nbsp;
+              We have a wide range of products for any budget provided to us.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-sm text-white/80">
+              <a href="tel:+919131387559"
+                className="flex items-center gap-2 hover:text-white transition-colors">
+                <Phone size={14} className="flex-shrink-0" />
+                +91 9131387559
+              </a>
+              <span className="hidden sm:block text-white/30">•</span>
+              <a href="mailto:mekal.enterprises@gmail.com"
+                className="flex items-center gap-2 hover:text-white transition-colors">
+                <Mail size={14} className="flex-shrink-0" />
+                mekal.enterprises@gmail.com
+              </a>
+            </div>
           </div>
         </div>
 
