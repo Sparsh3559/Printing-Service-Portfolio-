@@ -8,6 +8,17 @@ import CategoryLandingPage from "./pages/CategoryLandingPage";
 import CorporateGiftings   from "./pages/CorporateGiftings";
 import WomensGifting       from "./pages/WomensGifting";
 
+import {
+  AboutPage,
+  ContactPage,
+  PrivacyPolicyPage,
+  ShippingPolicyPage,
+  TermsPage,
+  FAQsPage,
+  HelpDeskPage,
+  PaymentPage,
+} from "./pages/StaticPages";
+
 import LoginPage           from "./pages/admin/login/LoginPage";
 import AuthGuard           from "./components/AuthGuard";
 import Dashboard           from "./pages/admin/Dashboard";
@@ -24,23 +35,30 @@ function App() {
       <Routes>
 
         {/* ── Public ── */}
-        <Route path="/"                   element={<Home />} />
-        <Route path="/corporate-printing" element={<CorporatePrinting />} />
-        <Route path="/banner-printing"    element={<BannerPrinting />} />
-        <Route path="/product/:slug"      element={<ProductPage />} />
+        <Route path="/"                    element={<Home />} />
+        <Route path="/corporate-printing"  element={<CorporatePrinting />} />
+        <Route path="/banner-printing"     element={<BannerPrinting />} />
+        <Route path="/product/:slug"       element={<ProductPage />} />
 
-        {/* ── Category pages — all dynamic via CategoryLandingPage ── */}
-        {/* Generic route: /category/:id — used by navbar links */}
-        <Route path="/category/:id"       element={<CategoryLandingPage />} />
+        {/* ── Category pages ── */}
+        <Route path="/category/:id"        element={<CategoryLandingPage />} />
+        <Route path="/apparels"            element={<CategoryLandingPage fixedName="Custom Apparel" />} />
+        <Route path="/drinkware"           element={<CategoryLandingPage fixedName="Drinkware" />} />
+        <Route path="/visiting-cards"      element={<CategoryLandingPage fixedName="Visiting Cards & ID Cards" />} />
+        <Route path="/stationery"          element={<CategoryLandingPage fixedName="Stationery, Letterheads & Notebooks" />} />
+        <Route path="/labels-stickers"     element={<CategoryLandingPage fixedName="Labels, Stickers & Carry Bags" />} />
+        <Route path="/corporate-giftings"  element={<CorporateGiftings />} />
+        <Route path="/womens-gifting"      element={<WomensGifting />} />
 
-        {/* Named routes (legacy + convenience) — look up category by name */}
-        <Route path="/apparels"           element={<CategoryLandingPage fixedName="Custom Apparel" />} />
-        <Route path="/drinkware"          element={<CategoryLandingPage fixedName="Drinkware" />} />
-        <Route path="/visiting-cards"     element={<CategoryLandingPage fixedName="Visiting Cards & ID Cards" />} />
-        <Route path="/stationery"         element={<CategoryLandingPage fixedName="Stationery, Letterheads & Notebooks" />} />
-        <Route path="/labels-stickers"    element={<CategoryLandingPage fixedName="Labels, Stickers & Carry Bags" />} />
-        <Route path="/corporate-giftings" element={<CorporateGiftings />} />
-        <Route path="/womens-gifting"     element={<WomensGifting />} />
+        {/* ── Static / Info pages ── */}
+        <Route path="/about"               element={<AboutPage />} />
+        <Route path="/contact"             element={<ContactPage />} />
+        <Route path="/privacy-policy"      element={<PrivacyPolicyPage />} />
+        <Route path="/shipping-policy"     element={<ShippingPolicyPage />} />
+        <Route path="/terms"               element={<TermsPage />} />
+        <Route path="/faqs"                element={<FAQsPage />} />
+        <Route path="/help"                element={<HelpDeskPage />} />
+        <Route path="/payment"             element={<PaymentPage />} />
 
         {/* ── Admin login (public) ── */}
         <Route path="/admin/login" element={<LoginPage />} />
