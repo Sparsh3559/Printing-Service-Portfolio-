@@ -174,23 +174,46 @@ export default function Navbar() {
 
         {/* Logo */}
         <Link to="/" className="flex-shrink-0">
-          <img src="/mekal_logo.png" alt="Mekal Enterprises" className="h-11 w-auto object-contain" />
+          <img src="/mekal_logo.png" alt="Mekal Enterprises" className="h-14 w-auto object-contain" />
         </Link>
 
         {/* Brand name + search — centre column */}
         <div className="flex-1 flex flex-col items-center gap-1 px-4">
-          {/* Big bold brand name */}
-          <span
-            className="font-extrabold tracking-wide leading-none select-none"
+          {/* Big bold brand name — print-house style */}
+          <div
+            className="select-none flex items-baseline gap-3 py-1 px-4"
             style={{
-              color:      DARK,
-              fontSize:   "1.35rem",
-              letterSpacing: "0.04em",
-              textShadow: "0 1px 2px rgba(0,0,0,0.08)",
-              fontFamily: "'Segoe UI', system-ui, sans-serif",
+              borderBottom: `2px solid ${DARK}55`,
+              borderTop:    `2px solid ${DARK}55`,
+              paddingTop:   "4px",
+              paddingBottom:"4px",
             }}>
-            MEKAL ENTERPRISES
-          </span>
+            <span style={{
+              fontFamily:    "'Georgia', 'Times New Roman', serif",
+              fontSize:      "1.55rem",
+              fontWeight:    "900",
+              letterSpacing: "0.18em",
+              color:         DARK,
+              textTransform: "uppercase",
+              lineHeight:    1,
+            }}>MEKAL</span>
+            <span style={{
+              width: "1px",
+              height: "1.1rem",
+              backgroundColor: `${DARK}66`,
+              display: "inline-block",
+              verticalAlign: "middle",
+            }} />
+            <span style={{
+              fontFamily:    "'Georgia', 'Times New Roman', serif",
+              fontSize:      "0.9rem",
+              fontWeight:    "700",
+              letterSpacing: "0.28em",
+              color:         `${DARK}cc`,
+              textTransform: "uppercase",
+              lineHeight:    1,
+            }}>ENTERPRISES</span>
+          </div>
 
           {/* Search bar — identical logic / styles as original */}
           <div ref={searchRef} className="relative w-full max-w-lg">
@@ -298,19 +321,32 @@ export default function Navbar() {
                 return (
                   <div key={cat.id} className="rounded-xl overflow-hidden">
                     {/* ── Level 1: Category ── */}
-                    <div className="flex items-center rounded-xl" style={{ backgroundColor: catOpen ? `${DARK}18` : "transparent" }}>
+                    <div className="flex items-center rounded-xl transition-colors group"
+                      style={{ backgroundColor: catOpen ? `${DARK}18` : "transparent" }}>
                       <Link
                         to={`/category/${cat.id}`}
                         onClick={() => setOpen(false)}
-                        className="flex-1 px-3 py-3 text-sm font-extrabold"
-                        style={{ color: NAVY }}>
+                        className="flex-1 px-3 py-3 text-sm font-extrabold transition-all duration-150 relative"
+                        style={{ color: NAVY }}
+                        onMouseEnter={e => {
+                          e.currentTarget.style.color = "#fff"
+                          e.currentTarget.style.letterSpacing = "0.02em"
+                        }}
+                        onMouseLeave={e => {
+                          e.currentTarget.style.color = NAVY
+                          e.currentTarget.style.letterSpacing = "normal"
+                        }}
+                        onTouchStart={e => { e.currentTarget.style.color = "#fff" }}
+                        onTouchEnd={e => { e.currentTarget.style.color = NAVY }}>
                         {cat.name}
                       </Link>
                       {cat.subcategories.length > 0 && (
                         <button
                           onClick={() => toggleMobile(cat.id)}
-                          className="px-3 py-3"
-                          style={{ color: DARK }}>
+                          className="px-3 py-3 transition-all duration-150 rounded-r-xl"
+                          style={{ color: DARK }}
+                          onMouseEnter={e => { e.currentTarget.style.color = "#fff"; e.currentTarget.style.backgroundColor = `${DARK}25` }}
+                          onMouseLeave={e => { e.currentTarget.style.color = DARK; e.currentTarget.style.backgroundColor = "transparent" }}>
                           {catOpen
                             ? <ChevronDown size={16} />
                             : <ChevronRight size={16} />}
@@ -320,17 +356,25 @@ export default function Navbar() {
 
                     {/* ── Level 2: Subcategories ── */}
                     {catOpen && (
-                      <div className="ml-4 mb-2 mt-1 space-y-1 border-l-2 pl-3" style={{ borderColor: `${DARK}44` }}>
+                      <div className="ml-4 mb-2 mt-1 space-y-0.5 border-l-2 pl-3" style={{ borderColor: `${DARK}44` }}>
                         {cat.subcategories.map(sub => {
                           const subOpen = expandedSection[sub.id] ?? false
                           return (
                             <div key={sub.id}>
-                              <div className="flex items-center rounded-lg" style={{ backgroundColor: subOpen ? `${DARK}12` : "transparent" }}>
-                                <span className="flex-1 px-2 py-2 text-[11px] font-bold uppercase tracking-wider" style={{ color: DARK }}>
+                              <div className="flex items-center rounded-lg transition-colors"
+                                style={{ backgroundColor: subOpen ? `${DARK}12` : "transparent" }}>
+                                <span
+                                  className="flex-1 px-2 py-2 text-[11px] font-bold uppercase tracking-wider cursor-default transition-colors duration-150"
+                                  style={{ color: DARK }}>
                                   {sub.name}<Badge label={sub.badge} />
                                 </span>
                                 {sub.items.length > 0 && (
-                                  <button onClick={() => toggleSection(sub.id)} className="px-2 py-2" style={{ color: DARK }}>
+                                  <button
+                                    onClick={() => toggleSection(sub.id)}
+                                    className="px-2 py-2 rounded-r-lg transition-all duration-150"
+                                    style={{ color: DARK }}
+                                    onMouseEnter={e => { e.currentTarget.style.color = "#fff"; e.currentTarget.style.backgroundColor = `${DARK}20` }}
+                                    onMouseLeave={e => { e.currentTarget.style.color = DARK; e.currentTarget.style.backgroundColor = "transparent" }}>
                                     {subOpen ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
                                   </button>
                                 )}
@@ -338,17 +382,26 @@ export default function Navbar() {
 
                               {/* ── Level 3: Items ── */}
                               {subOpen && (
-                                <div className="ml-3 border-l pl-3 space-y-0.5 pb-1" style={{ borderColor: `${DARK}30` }}>
+                                <div className="ml-2 border-l pl-3 space-y-0.5 pb-1" style={{ borderColor: `${DARK}30` }}>
                                   {sub.items.map(item => (
                                     <Link
                                       key={item.id}
                                       to={`/product/${nameToSlug(item.name)}`}
                                       onClick={() => setOpen(false)}
-                                      className="flex items-center py-2 text-sm rounded-lg px-2 transition-colors"
-                                      style={{ color: `${DARK}dd` }}
-                                      onMouseEnter={e => e.currentTarget.style.backgroundColor = `${DARK}15`}
-                                      onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}>
-                                      <span className="w-1.5 h-1.5 rounded-full mr-2 flex-shrink-0" style={{ backgroundColor: `${DARK}88` }} />
+                                      className="block py-1.5 text-[13px] rounded-lg px-2 transition-all duration-150"
+                                      style={{ color: `${DARK}cc` }}
+                                      onMouseEnter={e => {
+                                        e.currentTarget.style.color = "#fff"
+                                        e.currentTarget.style.backgroundColor = `${DARK}22`
+                                        e.currentTarget.style.paddingLeft = "12px"
+                                      }}
+                                      onMouseLeave={e => {
+                                        e.currentTarget.style.color = `${DARK}cc`
+                                        e.currentTarget.style.backgroundColor = "transparent"
+                                        e.currentTarget.style.paddingLeft = "8px"
+                                      }}
+                                      onTouchStart={e => { e.currentTarget.style.color = "#fff" }}
+                                      onTouchEnd={e => { e.currentTarget.style.color = `${DARK}cc` }}>
                                       {item.name}<Badge label={item.badge} />
                                     </Link>
                                   ))}
@@ -476,21 +529,25 @@ export default function Navbar() {
                   onMouseEnter={e => { if (!isActive) e.currentTarget.style.backgroundColor = "rgba(0,0,0,0.07)" }}
                   onMouseLeave={e => { if (!isActive) e.currentTarget.style.backgroundColor = "transparent" }}>
 
-                  {/* Line 1 */}
-                  <span className="text-[11px] font-bold leading-tight whitespace-nowrap">{line1}</span>
-
-                  {/* Line 2 (only when name has &) + chevron inline */}
+                  {/* For single-line names: text + chevron inline on same row.
+                      For & names: line1 on top, line2+chevron below. */}
                   {line2 ? (
-                    <span className="flex items-center gap-0.5 text-[11px] font-bold leading-tight whitespace-nowrap">
-                      {line2}
+                    <>
+                      <span className="text-[11px] font-bold leading-tight whitespace-nowrap">{line1}</span>
+                      <span className="flex items-center gap-0.5 text-[11px] font-bold leading-tight whitespace-nowrap">
+                        {line2}
+                        {hasSubs && (
+                          <ChevronDown size={10} className={`flex-shrink-0 transition-transform ml-0.5 ${isActive ? "rotate-180" : ""}`} />
+                        )}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="flex items-center gap-1 text-[11px] font-bold leading-tight whitespace-nowrap">
+                      {line1}
                       {hasSubs && (
-                        <ChevronDown size={10} className={`flex-shrink-0 transition-transform ml-0.5 ${isActive ? "rotate-180" : ""}`} />
+                        <ChevronDown size={10} className={`flex-shrink-0 transition-transform ${isActive ? "rotate-180" : ""}`} />
                       )}
                     </span>
-                  ) : (
-                    hasSubs && (
-                      <ChevronDown size={10} className={`flex-shrink-0 transition-transform mt-0.5 ${isActive ? "rotate-180" : ""}`} />
-                    )
                   )}
                 </Link>
               </div>
