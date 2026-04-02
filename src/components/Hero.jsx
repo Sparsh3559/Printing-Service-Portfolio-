@@ -78,11 +78,11 @@ export default function HeroSlider() {
 
   const slide = slides[index]
 
-  // Safe checks — title/subtitle can be null, undefined or empty string
   const hasTitle    = slide.title    && slide.title.trim()    !== ""
   const hasSubtitle = slide.subtitle && slide.subtitle.trim() !== ""
   const hasButton   = slide.button_text && slide.button_text.trim() !== ""
   const hasLink     = slide.link     && slide.link.trim()     !== ""
+  const hasContent  = hasTitle || hasSubtitle || hasButton || hasLink
 
   return (
     <div className="relative w-full overflow-hidden banner-hero">
@@ -102,79 +102,46 @@ export default function HeroSlider() {
             alt="Banner"
             className="w-full h-full object-cover"
           />
-          {/* Gradient only when there is text content to display */}
-          {(hasTitle || hasSubtitle || hasButton) && (
-            <div className="absolute inset-0"
-              style={{ background: "linear-gradient(to right, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.22) 55%, transparent 100%)" }} />
-          )}
+          {/* Subtle gradient only at bottom so the label + buttons don't clash with banner text */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 35%, transparent 60%)"
+            }}
+          />
         </div>
       ))}
 
-      {/* ── Content overlay — only renders when there is something to show ── */}
-      {(hasTitle || hasSubtitle || hasButton || hasLink) && (
-        <div className="absolute inset-0 z-20 flex flex-col justify-center px-5 md:px-20">
+      {/* ── Bottom overlay: label + buttons anchored to bottom-left ── */}
+      <div className="absolute bottom-10 md:bottom-12 left-5 md:left-12 z-20 flex flex-col items-start gap-2 md:gap-3">
 
-          {/* "Mekal Enterprises" label — always shown when content block is visible */}
-          <p className="text-white/60 text-[10px] md:text-xs uppercase tracking-[0.25em] font-semibold mb-2 md:mb-3">
-            Mekal Enterprises
-          </p>
+        {/* "Mekal Enterprises" label */}
+        <p className="text-white/70 text-[9px] md:text-[11px] uppercase tracking-[0.28em] font-semibold">
+          Mekal Enterprises
+        </p>
 
-          {/* Title — only if non-empty */}
-          {hasTitle && (
-            <h1 className="text-xl md:text-5xl font-bold text-white leading-tight mb-2 md:mb-4 max-w-2xl">
-              {slide.title}
-            </h1>
+        {/* Buttons row */}
+        <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+          {/* Explore / link button */}
+          {hasLink && (
+            <Link
+              to={slide.link}
+              className="inline-flex items-center bg-white text-[#065999] font-bold text-xs md:text-sm px-4 md:px-6 py-2 md:py-2.5 rounded-full hover:bg-zinc-100 transition-colors shadow-md">
+              {hasButton ? slide.button_text : "Explore →"}
+            </Link>
           )}
 
-          {/* Subtitle — only on desktop, only if non-empty */}
-          {hasSubtitle && (
-            <p className="text-white/80 text-xs md:text-base max-w-lg mb-4 md:mb-8 hidden md:block">
-              {slide.subtitle}
-            </p>
-          )}
-
-          {/* Buttons */}
-          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
-            {/* Explore / link button — only if there is a link */}
-            {hasLink && (
-              <Link to={slide.link}
-                className="inline-flex items-center bg-white text-[#065999] font-bold text-xs md:text-sm px-4 md:px-6 py-2 md:py-3 rounded-full hover:bg-zinc-100 transition-colors">
-                {hasButton ? slide.button_text : "Explore →"}
-              </Link>
-            )}
-
-            {/* WhatsApp Get Quote — always shown */}
-            <button
-              onClick={() => window.open(
-                `https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Hello, I want to get a quote for custom printing.")}`,
-                "_blank"
-              )}
-              className="inline-flex items-center gap-1.5 bg-green-500 hover:bg-green-400 text-white font-semibold text-xs md:text-sm px-4 md:px-6 py-2 md:py-3 rounded-full transition-colors">
-              <MessageCircle size={14} /> Get Quote
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ── "Mekal Enterprises" shown even when NO text content (image-only banners) ── */}
-      {!hasTitle && !hasSubtitle && !hasButton && !hasLink && (
-        <div className="absolute bottom-10 left-5 md:left-20 z-20">
-          <p className="text-white/50 text-[10px] md:text-xs uppercase tracking-[0.25em] font-semibold">
-            Mekal Enterprises
-          </p>
-          {/* WhatsApp button still present on image-only banners */}
+          {/* WhatsApp Get Quote — always shown */}
           <button
             onClick={() => window.open(
               `https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Hello, I want to get a quote for custom printing.")}`,
               "_blank"
             )}
-            className="mt-3 inline-flex items-center gap-1.5 bg-green-500 hover:bg-green-400 text-white font-semibold rounded-full transition-colors shadow-lg"
-            style={{ fontSize: "clamp(11px, 2.2vw, 14px)", padding: "clamp(8px, 1.8vw, 12px) clamp(14px, 3vw, 24px)" }}>
-            <MessageCircle style={{ width: "clamp(13px, 2vw, 16px)", height: "clamp(13px, 2vw, 16px)" }} />
-            Get Quote
+            className="inline-flex items-center gap-1.5 bg-green-500 hover:bg-green-400 text-white font-semibold text-xs md:text-sm px-4 md:px-6 py-2 md:py-2.5 rounded-full transition-colors shadow-md">
+            <MessageCircle size={14} /> Get Quote
           </button>
         </div>
-      )}
+      </div>
 
       {/* ── Arrows ── */}
       {slides.length > 1 && (
@@ -192,7 +159,7 @@ export default function HeroSlider() {
 
       {/* ── Dots ── */}
       {slides.length > 1 && (
-        <div className="absolute bottom-3 md:bottom-5 left-1/2 -translate-x-1/2 z-30 flex gap-1.5 md:gap-2">
+        <div className="absolute bottom-3 md:bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-1.5 md:gap-2">
           {slides.map((_, i) => (
             <button key={i} onClick={() => setIndex(i)}
               className={`h-1.5 rounded-full transition-all duration-300 ${
