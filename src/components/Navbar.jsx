@@ -169,109 +169,30 @@ export default function Navbar() {
           Row 2: category tabs
          ══════════════════════════════════════════════════════════════════════ */}
 
-      {/* ── Desktop Row 1 ── */}
-      <div className="hidden md:flex items-center px-6 gap-5" style={{ height: "72px" }}>
+      {/* ══════════════════════════════════════════════════════════════════════
+          DESKTOP — Row A: Logo | Brand name | Icons
+         ══════════════════════════════════════════════════════════════════════ */}
+      <div className="hidden md:flex items-center px-6 gap-4" style={{ height: "68px" }}>
 
         {/* Logo */}
         <Link to="/" className="flex-shrink-0 flex items-center">
           <img src="/mekal_logo.png" alt="Mekal Enterprises" className="h-12 w-auto object-contain" />
         </Link>
 
-        {/* Brand name + search — centre column */}
-        <div className="flex-1 flex flex-col items-center justify-center gap-2 px-4">
-          {/* Uniform brand name — same size, same weight, print-house ruled style */}
-          <div
-            className="select-none flex items-center gap-3 px-5"
-            style={{
-              borderTop:    `1.5px solid ${DARK}50`,
-              borderBottom: `1.5px solid ${DARK}50`,
-              paddingTop:   "5px",
-              paddingBottom: "5px",
-            }}>
-            <span style={{
-              fontFamily:    "'Georgia', 'Times New Roman', serif",
-              fontSize:      "1.15rem",
-              fontWeight:    "900",
-              letterSpacing: "0.22em",
-              color:         DARK,
-              textTransform: "uppercase",
-              lineHeight:    1,
-            }}>MEKAL</span>
-            <span style={{
-              width: "1px",
-              height: "1rem",
-              backgroundColor: `${DARK}55`,
-              display: "inline-block",
-              flexShrink: 0,
-            }} />
-            <span style={{
-              fontFamily:    "'Georgia', 'Times New Roman', serif",
-              fontSize:      "1.15rem",
-              fontWeight:    "900",
-              letterSpacing: "0.22em",
-              color:         DARK,
-              textTransform: "uppercase",
-              lineHeight:    1,
-            }}>ENTERPRISES</span>
-          </div>
-
-          {/* Search bar */}
-          <div ref={searchRef} className="relative w-full max-w-lg">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: `${DARK}99` }} />
-            <input
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              onKeyDown={handleSearchKeyDown}
-              onFocus={e => {
-                if (results.length > 0) setShowDrop(true)
-                e.target.style.background = "#fff"
-                e.target.style.color = "#1a1a1a"
-              }}
-              onBlur={e => {
-                e.target.style.background = "rgba(255,255,255,0.35)"
-                e.target.style.color = DARK
-              }}
-              placeholder="Search products..."
-              className="w-full pl-9 pr-9 rounded-xl text-sm font-medium focus:outline-none transition-colors"
-              style={{
-                height:     "36px",
-                background: "rgba(255,255,255,0.35)",
-                border:     "1px solid rgba(255,255,255,0.5)",
-                color:      DARK,
-              }}
-            />
-            {query && (
-              <button onClick={clearSearch} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: `${DARK}99` }}>
-                {searching ? <Loader2 size={13} className="animate-spin" /> : <X size={13} />}
-              </button>
-            )}
-
-            {/* Search dropdown */}
-            {showDrop && results.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-zinc-100 overflow-hidden z-50">
-                <ul>
-                  {results.map(p => (
-                    <li key={p.id}>
-                      <button onClick={() => handleResultClick(p.name)}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-zinc-50 transition-colors text-left border-b last:border-b-0">
-                        <div className="w-9 h-9 rounded-lg overflow-hidden bg-zinc-100 flex-shrink-0">
-                          {p.image_url
-                            ? <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" />
-                            : <div className="w-full h-full bg-zinc-200" />}
-                        </div>
-                        <span className="text-sm text-zinc-800 flex-1 leading-snug">{p.name}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {showDrop && results.length === 0 && query && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-zinc-100 z-50 px-4 py-5 text-sm text-center text-zinc-400">
-                No results for "<span className="font-medium text-zinc-600">{query}</span>"
-              </div>
-            )}
-          </div>
+        {/* Brand name — centred */}
+        <div className="flex-1 flex items-center justify-center select-none">
+          <span style={{
+            fontFamily:    "'Georgia', 'Times New Roman', serif",
+            fontSize:      "1.65rem",
+            fontWeight:    "900",
+            letterSpacing: "0.18em",
+            color:         DARK,
+            textTransform: "uppercase",
+            lineHeight:    1,
+          }}>
+            MEKAL ENTERPRISES
+            <sup style={{ fontSize: "0.55rem", fontWeight: "700", letterSpacing: 0, verticalAlign: "super", marginLeft: "2px" }}>™</sup>
+          </span>
         </div>
 
         {/* Customer care icon */}
@@ -282,6 +203,71 @@ export default function Navbar() {
           <HeadphonesIcon size={22} style={{ color: DARK }} />
           <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-green-500 border border-white" />
         </a>
+      </div>
+
+      {/* ── Divider line ── */}
+      <div className="hidden md:block" style={{ height: "1.5px", backgroundColor: `${DARK}40`, margin: "0 0" }} />
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          DESKTOP — Row B: Search bar (full width, centred)
+         ══════════════════════════════════════════════════════════════════════ */}
+      <div className="hidden md:flex items-center justify-center px-8 py-2.5">
+        <div ref={searchRef} className="relative w-full max-w-2xl">
+          <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: `${DARK}99` }} />
+          <input
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            onKeyDown={handleSearchKeyDown}
+            onFocus={e => {
+              if (results.length > 0) setShowDrop(true)
+              e.target.style.background = "rgba(255,255,255,0.6)"
+              e.target.style.borderColor = `${DARK}99`
+            }}
+            onBlur={e => {
+              e.target.style.background = "rgba(255,255,255,0.3)"
+              e.target.style.borderColor = "rgba(255,255,255,0.55)"
+            }}
+            placeholder="Search products..."
+            className="w-full pl-10 pr-10 rounded-2xl text-sm font-medium focus:outline-none transition-all"
+            style={{
+              height:      "40px",
+              background:  "rgba(255,255,255,0.3)",
+              border:      "1.5px solid rgba(255,255,255,0.55)",
+              color:       DARK,
+            }}
+          />
+          {query && (
+            <button onClick={clearSearch} className="absolute right-4 top-1/2 -translate-y-1/2" style={{ color: `${DARK}99` }}>
+              {searching ? <Loader2 size={13} className="animate-spin" /> : <X size={13} />}
+            </button>
+          )}
+
+          {/* Search dropdown */}
+          {showDrop && results.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-zinc-100 overflow-hidden z-50">
+              <ul>
+                {results.map(p => (
+                  <li key={p.id}>
+                    <button onClick={() => handleResultClick(p.name)}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-zinc-50 transition-colors text-left border-b last:border-b-0">
+                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-zinc-100 flex-shrink-0">
+                        {p.image_url
+                          ? <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" />
+                          : <div className="w-full h-full bg-zinc-200" />}
+                      </div>
+                      <span className="text-sm text-zinc-800 flex-1 leading-snug">{p.name}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {showDrop && results.length === 0 && query && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-zinc-100 z-50 px-4 py-5 text-sm text-center text-zinc-400">
+              No results for "<span className="font-medium text-zinc-600">{query}</span>"
+            </div>
+          )}
+        </div>
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════════
