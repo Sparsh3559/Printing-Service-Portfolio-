@@ -109,21 +109,21 @@ export default function Footer() {
           </svg>
         </div>
 
-        {/* ── Logo flanked by full-width repeating wave ── */}
+        {/* ── Logo flanked by single stretched wave images ── */}
         <div className="border-b border-white/20 pb-8 pt-2">
 
           {/* Wave + Logo row — full bleed, no max-width */}
           <div className="flex items-center w-full overflow-hidden" style={{ minHeight: "clamp(80px, 18vw, 140px)" }}>
 
-            {/* Left wave — fills all space left of logo, image repeats horizontally */}
+            {/* Left wave — single image stretched to fill the entire left half */}
             <div
               className="flex-1 h-full"
               style={{
                 minHeight: "clamp(80px, 18vw, 140px)",
                 backgroundImage: `url('${WAVE_URL}')`,
-                backgroundRepeat: "repeat-x",
-                backgroundSize:   "auto 100%",
-                backgroundPosition: "right center",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "100% 100%",   /* stretch one image across full width of this half */
+                backgroundPosition: "center",
                 opacity: 0.9,
               }}
             />
@@ -138,15 +138,15 @@ export default function Footer() {
               />
             </div>
 
-            {/* Right wave — mirror of left */}
+            {/* Right wave — single image stretched, mirrored */}
             <div
               className="flex-1 h-full"
               style={{
                 minHeight: "clamp(80px, 18vw, 140px)",
                 backgroundImage: `url('${WAVE_URL}')`,
-                backgroundRepeat: "repeat-x",
-                backgroundSize:   "auto 100%",
-                backgroundPosition: "left center",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "100% 100%",   /* stretch one image across full width of this half */
+                backgroundPosition: "center",
                 opacity: 0.9,
                 transform: "scaleX(-1)",
               }}
@@ -155,19 +155,19 @@ export default function Footer() {
 
           {/* Contact info below the wave+logo row */}
           <div className="text-center px-4 mt-5">
-            <p className="text-sm md:text-base text-white font-medium max-w-2xl mx-auto mb-4 leading-relaxed">
+            <p className="text-sm md:text-base font-medium max-w-2xl mx-auto mb-4 leading-relaxed" style={{ color: "#0a2a5e" }}>
               We are the best Gifting Solutions Company in India.&nbsp;
               We have a wide range of products for any budget provided to us.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-sm text-white/80">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-sm" style={{ color: "#0a2a5e" }}>
               <a href="tel:+919131387559"
-                className="flex items-center gap-2 hover:text-white transition-colors">
+                className="flex items-center gap-2 hover:opacity-70 transition-opacity">
                 <Phone size={14} className="flex-shrink-0" />
                 +91 9131387559
               </a>
-              <span className="hidden sm:block text-white/30">•</span>
+              <span className="hidden sm:block opacity-30">•</span>
               <a href="mailto:mekal.enterprises@gmail.com"
-                className="flex items-center gap-2 hover:text-white transition-colors">
+                className="flex items-center gap-2 hover:opacity-70 transition-opacity">
                 <Mail size={14} className="flex-shrink-0" />
                 mekal.enterprises@gmail.com
               </a>
@@ -180,33 +180,33 @@ export default function Footer() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
 
             <div>
-              <h4 className="text-white font-semibold mb-5 text-xs uppercase tracking-widest">All Products</h4>
-              <ul className="space-y-2.5 text-sm text-white/75">
+              <h4 className="font-semibold mb-5 text-xs uppercase tracking-widest" style={{ color: "#0a2a5e" }}>All Products</h4>
+              <ul className="space-y-2.5 text-sm" style={{ color: "#0a2a5e" }}>
                 {allProducts.map(item => (
                   <li key={item.label}>
-                    <Link to={item.to} className="hover:text-white transition-colors">{item.label}</Link>
+                    <Link to={item.to} className="hover:opacity-60 transition-opacity">{item.label}</Link>
                   </li>
                 ))}
               </ul>
             </div>
 
             <div>
-              <h4 className="text-white font-semibold mb-5 text-xs uppercase tracking-widest">Customer Support</h4>
-              <ul className="space-y-2.5 text-sm text-white/75">
+              <h4 className="font-semibold mb-5 text-xs uppercase tracking-widest" style={{ color: "#0a2a5e" }}>Customer Support</h4>
+              <ul className="space-y-2.5 text-sm" style={{ color: "#0a2a5e" }}>
                 {customerSupport.map(item => (
                   <li key={item.label}>
-                    <Link to={item.to} className="hover:text-white transition-colors">{item.label}</Link>
+                    <Link to={item.to} className="hover:opacity-60 transition-opacity">{item.label}</Link>
                   </li>
                 ))}
               </ul>
             </div>
 
             <div>
-              <h4 className="text-white font-semibold mb-5 text-xs uppercase tracking-widest">Company Info</h4>
-              <ul className="space-y-2.5 text-sm text-white/75 mb-8">
+              <h4 className="font-semibold mb-5 text-xs uppercase tracking-widest" style={{ color: "#0a2a5e" }}>Company Info</h4>
+              <ul className="space-y-2.5 text-sm mb-8" style={{ color: "#0a2a5e" }}>
                 {companyInfo.map(item => (
                   <li key={item.label}>
-                    <Link to={item.to} className="hover:text-white transition-colors">{item.label}</Link>
+                    <Link to={item.to} className="hover:opacity-60 transition-opacity">{item.label}</Link>
                   </li>
                 ))}
               </ul>
@@ -214,7 +214,8 @@ export default function Footer() {
                 {socials.map(s => (
                   <a key={s.label} href={s.href} aria-label={s.label}
                     target="_blank" rel="noreferrer"
-                    className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/20 transition-colors text-white">
+                    className="w-9 h-9 rounded-full border flex items-center justify-center hover:bg-white/20 transition-colors"
+                    style={{ borderColor: "rgba(10,42,94,0.4)", color: "#0a2a5e" }}>
                     {s.icon}
                   </a>
                 ))}
@@ -225,7 +226,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-white/20 text-center text-xs text-white/50 py-4 px-4">
+        <div className="border-t border-white/20 text-center text-xs py-4 px-4" style={{ color: "#0a2a5e", opacity: 0.7 }}>
           © {new Date().getFullYear()} Mekal Enterprises. All rights reserved.
         </div>
 
