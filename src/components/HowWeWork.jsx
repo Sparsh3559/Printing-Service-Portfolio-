@@ -19,7 +19,6 @@ const VIDEOS = [
   },
 ]
 
-// Individual video component — uses ref to force play on mount
 function ReelVideo({ src, caption }) {
   const ref = useRef(null)
 
@@ -27,13 +26,11 @@ function ReelVideo({ src, caption }) {
     const el = ref.current
     if (!el) return
     el.muted = true
-    el.play().catch(() => {})           // catch any autoplay policy error silently
+    el.play().catch(() => {})
   }, [src])
 
   return (
-    <div
-      className="relative rounded-[1.8rem] overflow-hidden bg-zinc-800 flex-shrink-0"
-      style={{ aspectRatio: "9/16", height: "100%", maxHeight: "480px", width: "auto" }}>
+    <div className="relative rounded-2xl overflow-hidden bg-zinc-800 flex-1" style={{ aspectRatio: "9/16" }}>
       <video
         ref={ref}
         src={src}
@@ -41,12 +38,12 @@ function ReelVideo({ src, caption }) {
         muted
         playsInline
         autoPlay
-        preload="auto"
+        // preload metadata only — avoids buffering the full video = less lag
+        preload="metadata"
         className="absolute inset-0 w-full h-full object-cover"
       />
-      {/* Bottom gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-      <p className="absolute bottom-4 left-0 right-0 text-center text-white text-[11px] font-medium px-3 leading-tight">
+      <p className="absolute bottom-3 left-0 right-0 text-center text-white text-[11px] font-medium px-3 leading-tight">
         {caption}
       </p>
     </div>
@@ -93,12 +90,35 @@ export default function HowWeWork() {
             ))}
           </div>
 
-          {/* Two phone-shaped reels — 9:16 ratio, height drives width */}
-          <div
-            className="flex gap-4 md:gap-6 justify-center items-center"
-            style={{ height: "480px" }}>
+          {/*
+            Mobile: fixed width per video so both fit side by side within the screen
+            Desktop: flex-1 per video inside a fixed 480px tall container
+          */}
+          <div className="flex gap-3 justify-center items-center lg:items-stretch lg:h-[480px]">
             {VIDEOS.map((v, i) => (
-              <ReelVideo key={i} src={v.src} caption={v.caption} />
+              <div
+                key={i}
+                /* Mobile: fixed 44vw width, auto height via aspect-ratio
+                   Desktop: flex-1, height driven by container         */
+                className="relative rounded-2xl overflow-hidden bg-zinc-800 flex-shrink-0 lg:flex-1 lg:flex-shrink lg:w-auto"
+                style={{ aspectRatio: "9/16", width: "44vw", maxWidth: "270px" }}>
+                <video
+                  ref={null}
+                  src={v.src}
+                  loop
+                  muted
+                  playsInline
+                  autoPlay
+                  preload="metadata"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  // force play via onCanPlay for reliability across browsers
+                  onCanPlay={e => { e.target.muted = true; e.target.play().catch(() => {}) }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                <p className="absolute bottom-3 left-0 right-0 text-center text-white text-[10px] md:text-[11px] font-medium px-2 leading-tight">
+                  {v.caption}
+                </p>
+              </div>
             ))}
           </div>
 
