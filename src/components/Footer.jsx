@@ -89,7 +89,7 @@ export default function Footer() {
   const socials = [
     { icon: <Instagram size={16} />, href: "https://www.instagram.com/mekal.in?igsh=bDVvdXNiaW02Nzlh", label: "Instagram" },
     { icon: <Facebook  size={16} />, href: "https://www.facebook.com/p/Mekal-Enterprises-100067034525784/", label: "Facebook" },
-    { icon: <Youtube   size={16} />, href: "#", label: "YouTube" },
+    { icon: <Youtube   size={16} />, href: "https://www.youtube.com/@MekalEnterprises", label: "YouTube" },
     { icon: <Linkedin  size={16} />, href: "https://www.linkedin.com/company/mekal-enterprises/", label: "LinkedIn" },
     { icon: <span className="text-[9px] font-bold leading-none">IM</span>, href: "https://www.indiamart.com/mekal-enterprises/photos.html", label: "IndiaMart" },
     { icon: <span className="text-[9px] font-bold leading-none">JD</span>, href: "https://www.justdial.com/Dewas/Mekal-Enterprises-Mekal-Enteerprises-Mishrilal-Nagar/9999P7272-7272-230421193507-M5G2_BZDET", label: "JustDial" },
