@@ -135,7 +135,7 @@ export default function HeroSlider() {
           Always anchored to bottom so they never overlap the banner's own text.
          ─────────────────────────────────────────────────────────────────────── */}
       {(hasTitle || hasSubtitle || hasButton || hasLink) && (
-        <div className="absolute bottom-8 md:bottom-10 left-5 md:left-20 z-20 flex flex-col items-start gap-1.5 md:gap-2">
+        <div className="absolute bottom-14 md:bottom-20 left-5 md:left-20 z-20 flex flex-col items-start gap-1.5 md:gap-2">
           <p className="text-white/60 text-[10px] md:text-xs uppercase tracking-[0.25em] font-semibold">
             Mekal Enterprises
           </p>
@@ -160,7 +160,7 @@ export default function HeroSlider() {
 
       {/* ── Image-only banners (no text, no button, no link) ── */}
       {!hasTitle && !hasSubtitle && !hasButton && !hasLink && (
-        <div className="absolute bottom-8 md:bottom-10 left-5 md:left-20 z-20">
+        <div className="absolute bottom-14 md:bottom-20 left-5 md:left-20 z-20">
           <p className="text-white/50 text-[10px] md:text-xs uppercase tracking-[0.25em] font-semibold">
             Mekal Enterprises
           </p>
