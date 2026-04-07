@@ -82,7 +82,7 @@ export default function Footer() {
 
   const companyInfo = [
     { label: "About Us",          to: "/about" },
-    { label: "Working with Mekal",to: "/about" },
+    { label: "Working with Mekal",to: "/working-with-mekal" },
   ]
 
   const socials = [

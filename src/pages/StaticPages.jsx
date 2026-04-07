@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { Phone, Mail, MapPin, MessageCircle, Clock, Shield, Truck, FileText, CreditCard, HelpCircle, ChevronDown, ChevronUp } from "lucide-react"
+import { Phone, Mail, MapPin, MessageCircle, Clock, Shield, Truck, FileText, CreditCard, HelpCircle, ChevronDown, ChevronUp, Briefcase, Rocket, Handshake, Package, Cpu, Users, TrendingUp } from "lucide-react"
 import { useState } from "react"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
@@ -538,6 +538,145 @@ export function FAQsPage() {
       <div className="space-y-3">
         {faqs.map(faq => <FAQItem key={faq.q} q={faq.q} a={faq.a} />)}
       </div>
+    </PageShell>
+  )
+}
+
+// ── Working With Mekal ────────────────────────────────────────────────────────
+export function WorkingWithMekalPage() {
+  const whatWeProvide = [
+    { icon: Briefcase, text: "Complete guidance to start your printing business" },
+    { icon: Package,   text: "Raw material sourcing support (T-shirts, mugs, inks, etc.)" },
+    { icon: Cpu,       text: "Knowledge of printing methods (DTF, sublimation, etc.)" },
+    { icon: Rocket,    text: "Machine and setup guidance" },
+    { icon: TrendingUp,text: "Practical insights from real business experience" },
+    { icon: Handshake, text: "Ongoing support as you grow" },
+  ]
+
+  const whoCanStart = [
+    { emoji: "🎓", label: "Students",         desc: "Looking for a profitable side income" },
+    { emoji: "💡", label: "New Entrepreneurs", desc: "Ready to launch their first venture" },
+    { emoji: "🏪", label: "Small Business Owners", desc: "Wanting to add a new revenue stream" },
+    { emoji: "🌟", label: "Brand Builders",   desc: "Anyone who wants to build their own brand" },
+  ]
+
+  const whyMekal = [
+    { icon: TrendingUp, heading: "Real Industry Experience", body: "Backed by over a decade of hands-on printing business knowledge." },
+    { icon: Handshake,  heading: "Step-by-Step Support",    body: "We guide you from day one through every stage of your setup." },
+    { icon: CreditCard, heading: "Cost-Effective Startup",  body: "Smart guidance that helps you launch without unnecessary investment." },
+    { icon: Rocket,     heading: "Long-Term Growth Focus",  body: "We're invested in your success — not just your first order." },
+  ]
+
+  return (
+    <PageShell title="Working With Mekal" icon={Handshake}>
+
+      {/* Intro */}
+      <div
+        className="rounded-2xl p-6 mb-10 text-center"
+        style={{ background: `linear-gradient(135deg, ${DARK}12 0%, ${BRAND}18 100%)`, border: `1px solid ${BRAND}40` }}
+      >
+        <p className="text-sm md:text-base text-zinc-600 leading-relaxed max-w-xl mx-auto">
+          At <span className="font-bold" style={{ color: DARK }}>Mekal Enterprises</span>, we go beyond printing —
+          we help you <span className="font-semibold" style={{ color: DARK }}>build your own printing business</span> from
+          the ground up. If you've ever thought about starting your own T-shirt printing or custom product business but
+          didn't know where to begin, we are here to guide you at every step.
+        </p>
+      </div>
+
+      {/* What We Provide */}
+      <div className="mb-10">
+        <SectionHeading>💼 What We Provide</SectionHeading>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {whatWeProvide.map(({ icon: Icon, text }) => (
+            <div
+              key={text}
+              className="flex items-start gap-3 rounded-2xl p-4 border"
+              style={{ borderColor: `${BRAND}35`, backgroundColor: `${BRAND}08` }}
+            >
+              <div
+                className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
+                style={{ backgroundColor: `${DARK}12`, color: DARK }}
+              >
+                <Icon size={16} />
+              </div>
+              <p className="text-sm text-zinc-600 leading-snug mt-1">{text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Who Can Start */}
+      <div className="mb-10">
+        <SectionHeading>🚀 Who Can Start?</SectionHeading>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {whoCanStart.map(({ emoji, label, desc }) => (
+            <div
+              key={label}
+              className="rounded-2xl p-4 text-center"
+              style={{ backgroundColor: `${DARK}06`, border: `1px solid ${BRAND}30` }}
+            >
+              <div className="text-2xl mb-2">{emoji}</div>
+              <p className="text-xs font-bold mb-1" style={{ color: DARK }}>{label}</p>
+              <p className="text-xs text-zinc-500 leading-snug">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Why Choose Mekal */}
+      <div className="mb-10">
+        <SectionHeading>🤝 Why Choose Mekal?</SectionHeading>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {whyMekal.map(({ icon: Icon, heading, body }) => (
+            <div
+              key={heading}
+              className="rounded-2xl p-5 border"
+              style={{ borderColor: `${BRAND}35`, backgroundColor: `${BRAND}08` }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <div
+                  className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                  style={{ backgroundColor: `${DARK}15`, color: DARK }}
+                >
+                  <Icon size={14} />
+                </div>
+                <p className="text-sm font-bold" style={{ color: DARK }}>{heading}</p>
+              </div>
+              <p className="text-xs text-zinc-500 leading-relaxed">{body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* CTA */}
+      <div
+        className="rounded-2xl p-6 text-center"
+        style={{ background: `linear-gradient(135deg, ${DARK} 0%, #0a7ac7 100%)` }}
+      >
+        <p className="text-white font-bold text-base mb-1">Ready to Start Your Printing Business?</p>
+        <p className="text-white/70 text-xs mb-5 leading-relaxed max-w-xs mx-auto">
+          Reach out today and take the first step towards building something of your own — with Mekal by your side.
+        </p>
+        <div className="flex flex-wrap gap-3 justify-center">
+          <a
+            href="https://wa.me/919131387559"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-opacity hover:opacity-90"
+            style={{ backgroundColor: "#25D366", color: "#fff" }}
+          >
+            <MessageCircle size={15} /> WhatsApp Us
+          </a>
+          <a
+            href="tel:+919131387559"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-opacity hover:opacity-90"
+            style={{ backgroundColor: "rgba(255,255,255,0.15)", color: "#fff", border: "1px solid rgba(255,255,255,0.3)" }}
+          >
+            <Phone size={15} /> Call Us
+          </a>
+        </div>
+      </div>
+
     </PageShell>
   )
 }

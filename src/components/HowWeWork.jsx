@@ -10,11 +10,11 @@ const steps = [
 // ── Replace these two src values with your Supabase video URLs ────────────────
 const VIDEOS = [
   {
-    src:     "https://mzkizexagitatacuwwxj.supabase.co/storage/v1/object/public/products/products/20260312_204214.mp4",
+    src:     "https://mzkizexagitatacuwwxj.supabase.co/storage/v1/object/public/products/products/IMG_6868.MP4",
     caption: "Our Printing Process",
   },
   {
-    src:     "https://mzkizexagitatacuwwxj.supabase.co/storage/v1/object/public/products/products/your-video-2.mp4",
+    src:     "https://mzkizexagitatacuwwxj.supabase.co/storage/v1/object/public/products/products/IMG_6869.MP4",
     caption: "Quality & Packaging",
   },
 ]
