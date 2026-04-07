@@ -76,7 +76,7 @@ export function HelpDeskPage() {
       <div className="rounded-2xl p-6 mb-8 space-y-4" style={{ backgroundColor: `${DARK}08` }}>
         <SectionHeading>Contact Support</SectionHeading>
         <InfoCard icon={Phone}  label="Call / WhatsApp" value="+91 9131387559" href="tel:+919131387559" />
-        <InfoCard icon={Mail}   label="Email"           value="mekalh2o@gmail.com" href="mailto:mekalh2o@gmail.com" />
+        <InfoCard icon={Mail}   label="Email"           value="mekal.enterprises@gmail.com" href="mailto:mekal.enterprises@gmail.com" />
         <InfoCard icon={Clock}  label="Support Hours"   value="10 AM – 8 PM (Monday to Saturday)" />
       </div>
 
@@ -226,7 +226,7 @@ export function ShippingPolicyPage() {
         <div className="rounded-2xl p-5 text-sm"
           style={{ backgroundColor: `${DARK}08`, color: DARK }}>
           <p className="font-semibold mb-1">Need help with a return?</p>
-          <p className="text-zinc-600">Contact us within 24 hours of delivery at <a href="tel:+919131387559" className="font-semibold underline">+91 9131387559</a> or <a href="mailto:mekalh2o@gmail.com" className="font-semibold underline">mekalh2o@gmail.com</a></p>
+          <p className="text-zinc-600">Contact us within 24 hours of delivery at <a href="tel:+919131387559" className="font-semibold underline">+91 9131387559</a> or <a href="mailto:mekal.enterprises@gmail.com" className="font-semibold underline">mekal.enterprises@gmail.com</a></p>
         </div>
       </div>
     </PageShell>
@@ -381,15 +381,6 @@ export function ContactPage() {
         <MessageCircle size={18} /> Chat on WhatsApp
       </a>
 
-      <div className="rounded-2xl overflow-hidden shadow-lg border border-zinc-100" style={{ height: "320px" }}>
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3994.042952435717!2d76.03016567555798!3d22.966320918424515!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396317c4317fe813%3A0x6ad9188d8f033095!2zTUVLQUwgRU5URVJQUklTRVPihKLvuI8!5e1!3m2!1sen!2sin!4v1774326786901!5m2!1sen!2sin"
-          width="100%" height="100%" style={{ border: 0 }}
-          allowFullScreen loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          title="Mekal Enterprises Location"
-        />
-      </div>
     </PageShell>
   )
 }

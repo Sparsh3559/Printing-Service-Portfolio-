@@ -18,6 +18,7 @@ import {
   FAQsPage,
   HelpDeskPage,
   PaymentPage,
+  WorkingWithMekalPage,
 } from "./pages/StaticPages";
 
 import LoginPage           from "./pages/admin/login/LoginPage";
@@ -69,6 +70,7 @@ function App() {
         <Route path="/faqs"                element={<FAQsPage />} />
         <Route path="/help"                element={<HelpDeskPage />} />
         <Route path="/payment"             element={<PaymentPage />} />
+        <Route path="/working-with-mekal"  element={<WorkingWithMekalPage />} />
 
         {/* ── Admin login (public) ── */}
         <Route path="/admin/login" element={<LoginPage />} />
