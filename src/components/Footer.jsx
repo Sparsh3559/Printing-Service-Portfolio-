@@ -81,8 +81,8 @@ export default function Footer() {
   ]
 
   const companyInfo = [
-    { label: "About Us",          to: "/about" },
-    { label: "Working with Mekal",to: "/working-with-mekal" },
+    { label: "About Us",           to: "/about" },
+    { label: "Working with Mekal", to: "/working-with-mekal" },
   ]
 
   const socials = [
@@ -90,8 +90,16 @@ export default function Footer() {
     { icon: <Facebook  size={16} />, href: "https://www.facebook.com/p/Mekal-Enterprises-100067034525784/", label: "Facebook" },
     { icon: <Youtube   size={16} />, href: "https://www.youtube.com/@MekalEnterprises", label: "YouTube" },
     { icon: <Linkedin  size={16} />, href: "https://www.linkedin.com/company/mekal-enterprises/", label: "LinkedIn" },
-    { icon: <span className="text-[9px] font-bold leading-none">IM</span>, href: "https://www.indiamart.com/mekal-enterprises/photos.html", label: "IndiaMart" },
-    { icon: <span className="text-[9px] font-bold leading-none">JD</span>, href: "https://www.justdial.com/Dewas/Mekal-Enterprises-Mekal-Enteerprises-Mishrilal-Nagar/9999P7272-7272-230421193507-M5G2_BZDET", label: "JustDial" },
+    {
+      icon: <img src="data:image/png;base64,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" alt="IndiaMart" style={{ width: 20, height: 20, objectFit: "contain" }} />,
+      href: "https://www.indiamart.com/mekal-enterprises/photos.html",
+      label: "IndiaMart",
+    },
+    {
+      icon: <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAADLElEQVR42u2VT2hcRRzHP7+Z9/Zv0nSTVkoRtaQeqqXWlDYVarDYnhp6KPYiRVKQFtSD4MGr9KIXvetV8GYJioJCBUFD0dooqC2WGNLSlN26JMtu3759+2Z+Ht4m3WrRgkoP7heGefP7zW++M7+Z3/cJoNwHGO4TBsQD4gHxf0QsAnIPezEGkDtMVsBI1v8RsuY3BhFZt2n2IWhPxOSv5EwE9G5e+RsRvNMf3F4MhrftIRgepfHjF6CKqu/LgGSx3vHA5HM0fjpH0lrBiFAKLSd3j3C16QlwnL3cxIiuU41X8hx+pMDi1mdYqd9kbm6ul2oxKIp57DC5/SdQ71D1WTLV95oD7yhueojw0GtUJqZRApwKiuXMPs/MDsuR7Tm8CqkXul5IPewaE96Zsvx24zrVWg2RtRP34LoJ2m6xefI4jSvn8VGDyr5jxFe+pjBxjNzQRgqVrax0Inj8KAdXv+XV8SViLRMlET/Xy1xeTXmwUuDtqZBOalloGQp0qbWV+YsXSDx9xCKIsVlvA8xTM1BfJrA3CCdPMrR7mtgbOgvniX75Ct3zPEPz7/PB3l/5rpHHJB02hilHtoccFeWVJ8q4tMV8NeCN/Z7PF3J4VYbKZVZaEaAYQcClqHeYbowD0riJtpv4uIVLmtS/+RDXqmGCgHjpeyIfsHPUM1pQps+mHP+oQyMt0Ox6xvLCk5uVFz6Dl85FXKoaxIDH4L1Dew8zAGV42wThpodhy6NIEmOLo5TGJ5HV60hpA7nAklycJTz4MiPFEW5Zx9UoxDvlzIE8qLClFFN3hrZTbnaU1/daLtSG2FFJqMY5hnOslxJAoIDkyhQOvIimXZqfvoktbqA4dRpjhPjL97D5EvmnT6Gry0TzsxR3TXNp8RozVeGtZ2Gp4ZldzLF0y+F8l08WUt49ZNk5Jnx8rcgPNVhuB3QSl7FqdquqKIEJEGNJ0w4KGBNirMF1OwhgwhL4lNQlWALA4xAEg+J6WuT7xsGf6lrwKL6vqvtFYa1utTdBbBaurjc26/dkBZxm4aKgPT0w/XbWDpn57iJSt6fci/L8U/y7qw1+iwPiAfH/ivh3Xyte7XkJ3FYAAAAASUVORK5CYII=" alt="JustDial" style={{ width: 26, height: 16, objectFit: "contain" }} />,
+      href: "https://www.justdial.com/Dewas/Mekal-Enterprises-Mekal-Enteerprises-Mishrilal-Nagar/9999P7272-7272-230421193507-M5G2_BZDET",
+      label: "JustDial",
+    },
   ]
 
   return (
@@ -100,7 +108,7 @@ export default function Footer() {
 
       <footer style={{ backgroundColor: "#5fc7f4" }} className="text-white relative overflow-hidden">
 
-        {/* Wave divider at top */}
+        {/* ── Wave SVG divider from white to footer ── */}
         <div className="w-full overflow-hidden leading-none -mt-1">
           <svg viewBox="0 0 1440 60" preserveAspectRatio="none"
             className="w-full h-10 md:h-16" xmlns="http://www.w3.org/2000/svg">
@@ -108,65 +116,57 @@ export default function Footer() {
           </svg>
         </div>
 
-        {/* ── Logo flanked by single stretched wave images ── */}
-        <div className="border-b border-white/20 pb-8 pt-2">
+        {/* ── Full-width wave banner: two images side by side, no gap, logo centred above ── */}
+        <div className="relative w-full border-b border-white/20 pb-6">
 
-          {/* Wave + Logo row — full bleed, no max-width */}
-          <div className="flex items-center w-full overflow-hidden" style={{ minHeight: "clamp(80px, 18vw, 140px)" }}>
-
-            {/* Left wave — single image stretched to fill the entire left half */}
-            <div
-              className="flex-1 h-full"
-              style={{
-                minHeight: "clamp(80px, 18vw, 140px)",
-                backgroundImage: `url('${WAVE_URL}')`,
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "100% 100%",   /* stretch one image across full width of this half */
-                backgroundPosition: "center",
-                opacity: 0.9,
-              }}
+          {/* Two wave images joined full-width — zero gap */}
+          <div className="flex w-full" style={{ height: "clamp(80px, 16vw, 130px)" }}>
+            <img
+              src={WAVE_URL}
+              alt=""
+              className="flex-1 object-fill"
+              style={{ minWidth: 0 }}
             />
-
-            {/* Logo — fixed size, sits in the centre */}
-            <div className="flex-shrink-0 px-2 md:px-4 z-10">
-              <img
-                src="/mekal_logo.png"
-                alt="Mekal Enterprises"
-                className="object-contain drop-shadow-lg"
-                style={{ height: "clamp(64px, 14vw, 112px)", width: "auto" }}
-              />
-            </div>
-
-            {/* Right wave — single image stretched, mirrored */}
-            <div
-              className="flex-1 h-full"
-              style={{
-                minHeight: "clamp(80px, 18vw, 140px)",
-                backgroundImage: `url('${WAVE_URL}')`,
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "100% 100%",   /* stretch one image across full width of this half */
-                backgroundPosition: "center",
-                opacity: 0.9,
-                transform: "scaleX(-1)",
-              }}
+            <img
+              src={WAVE_URL}
+              alt=""
+              className="flex-1 object-fill"
+              style={{ minWidth: 0, transform: "scaleX(-1)" }}
             />
           </div>
 
-          {/* Contact info below the wave+logo row */}
-          <div className="text-center px-4 mt-5">
+          {/* Logo centred — sits on top of the wave images */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5">
+            <img
+              src="/mekal_logo.png"
+              alt="Mekal Enterprises"
+              className="object-contain drop-shadow-lg"
+              style={{ height: "clamp(52px, 10vw, 90px)", width: "auto" }}
+            />
+            <span
+              className="font-bold tracking-widest uppercase"
+              style={{
+                color:         "#0a2a5e",
+                fontSize:      "clamp(9px, 1.4vw, 13px)",
+                letterSpacing: "0.22em",
+              }}>
+              Mekal Enterprises
+            </span>
+          </div>
+
+          {/* Contact info */}
+          <div className="text-center px-4 mt-4">
             <p className="text-sm md:text-base font-medium max-w-2xl mx-auto mb-4 leading-relaxed" style={{ color: "#0a2a5e" }}>
               We are the best Gifting Solutions Company in India.&nbsp;
               We have a wide range of products for any budget provided to us.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-sm" style={{ color: "#0a2a5e" }}>
-              <a href="tel:+919131387559"
-                className="flex items-center gap-2 hover:opacity-70 transition-opacity">
+              <a href="tel:+919131387559" className="flex items-center gap-2 hover:opacity-70 transition-opacity">
                 <Phone size={14} className="flex-shrink-0" />
                 +91 9131387559
               </a>
               <span className="hidden sm:block opacity-30">•</span>
-              <a href="mailto:mekal.enterprises@gmail.com"
-                className="flex items-center gap-2 hover:opacity-70 transition-opacity">
+              <a href="mailto:mekal.enterprises@gmail.com" className="flex items-center gap-2 hover:opacity-70 transition-opacity">
                 <Mail size={14} className="flex-shrink-0" />
                 mekal.enterprises@gmail.com
               </a>
@@ -174,7 +174,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Three-column links */}
+        {/* ── Three-column links ── */}
         <div className="max-w-7xl mx-auto px-5 md:px-8 py-10">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
 
@@ -224,7 +224,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar */}
+        {/* ── Bottom bar ── */}
         <div className="border-t border-white/20 text-center text-xs py-4 px-4" style={{ color: "#0a2a5e", opacity: 0.7 }}>
           © {new Date().getFullYear()} Mekal Enterprises. All rights reserved.
         </div>

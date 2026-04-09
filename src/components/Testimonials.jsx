@@ -1,53 +1,36 @@
 import { useState, useEffect } from "react"
 import { Star, Quote } from "lucide-react"
+import { supabase } from "@/lib/supabase"
 
-// Genuine-looking reviews with varied ratings
-const testimonials = [
+// ── Fallback data (from the testimonials file) ────────────────────────────────
+const FALLBACK = [
   {
-    name: "Rahul Sharma",
-    role: "Marketing Manager",
-    avatar: "RS",
-    rating: 5,
+    name: "Rahul Sharma", role: "Marketing Manager", avatar: "RS", rating: 5,
     text: "Ordered 200 custom polo shirts for our company event. Delivered in 5 days — stitching, print clarity and fabric were all top notch. Will definitely order again.",
     product: "Custom Polo T-Shirts",
   },
   {
-    name: "Priya Mehta",
-    role: "Café Owner",
-    avatar: "PM",
-    rating: 4,
+    name: "Priya Mehta", role: "Café Owner", avatar: "PM", rating: 4,
     text: "Branded mugs and bottles for our café merchandise looked exactly like the mockup. The magic mugs were a hit! Slight delay in dispatch but overall great experience.",
     product: "Ceramic Mugs & Bottles",
   },
   {
-    name: "Arjun Nair",
-    role: "HR Head",
-    avatar: "AN",
-    rating: 5,
+    name: "Arjun Nair", role: "HR Head", avatar: "AN", rating: 5,
     text: "Bulk order for employee onboarding kits — t-shirts, water bottles, ID holders and tote bags. Everything arrived on time, well-packaged and perfectly printed.",
     product: "Corporate Gifting Kit",
   },
   {
-    name: "Sneha Patel",
-    role: "Event Coordinator",
-    avatar: "SP",
-    rating: 4,
+    name: "Sneha Patel", role: "Event Coordinator", avatar: "SP", rating: 4,
     text: "Customized caps and jerseys for our sports day were a hit. Quick turnaround and great pricing. A couple of jerseys had minor colour variation but team resolved it fast.",
     product: "Sports Apparel",
   },
   {
-    name: "Vikram Joshi",
-    role: "Merch Store Owner",
-    avatar: "VJ",
-    rating: 5,
+    name: "Vikram Joshi", role: "Merch Store Owner", avatar: "VJ", rating: 5,
     text: "My go-to for over a year now. Consistent quality, no colour bleeding, and they handle single orders without any fuss. Highly recommended for small businesses.",
     product: "Custom Merchandise",
   },
   {
-    name: "Divya Krishnan",
-    role: "Brand Manager",
-    avatar: "DK",
-    rating: 5,
+    name: "Divya Krishnan", role: "Brand Manager", avatar: "DK", rating: 5,
     text: "Premium steel bottles with our logo for client gifting. The engraving was flawless and packaging was premium. Clients loved them — already planning a repeat order.",
     product: "Premium Steel Bottles",
   },
@@ -64,16 +47,38 @@ function StarRating({ count }) {
   )
 }
 
-// Average rating from data
-const avgRating = (testimonials.reduce((s, t) => s + t.rating, 0) / testimonials.length).toFixed(1)
-
 export default function Testimonials() {
-  const [current, setCurrent] = useState(0)
-  const [paused,  setPaused]  = useState(false)
+  const [testimonials, setTestimonials] = useState(FALLBACK)
+  const [current,      setCurrent]      = useState(0)
+  const [paused,       setPaused]       = useState(false)
+
+  // ── Fetch from Supabase "Reviews" table (exact schema from DB) ──────────────
+  useEffect(() => {
+    async function fetchReviews() {
+      const { data, error } = await supabase
+        .from("Reviews")
+        .select("id, name, review, rating, product, created_at")
+        .eq("is_approved", true)
+        .order("created_at", { ascending: false })
+      if (!error && data?.length) {
+        setTestimonials(data.map(r => ({
+          name:    r.name    || "Customer",
+          role:    "",                        // not in schema — left blank
+          avatar:  (r.name || "?").split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase(),
+          rating:  r.rating  ?? 5,
+          text:    r.review  || "",
+          product: r.product || "",
+        })))
+      }
+      // If error or empty → FALLBACK already set as initial state
+    }
+    fetchReviews()
+  }, [])
+
   const total = testimonials.length
 
   useEffect(() => {
-    if (paused) return
+    if (paused || total < 2) return
     const t = setInterval(() => setCurrent(c => (c + 1) % total), 4500)
     return () => clearInterval(t)
   }, [paused, total])
@@ -83,14 +88,15 @@ export default function Testimonials() {
     key: (current + offset) % total,
   }))
 
+  const avgRating = (testimonials.reduce((s, t) => s + (t.rating || 5), 0) / total).toFixed(1)
+
   return (
     <section className="py-14 md:py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
 
         {/* Header */}
         <div className="text-center mb-10 md:mb-14">
-          <p className="text-[11px] font-semibold tracking-[0.2em] uppercase mb-2"
-            style={{ color: "#5fc7f4" }}>
+          <p className="text-[11px] font-semibold tracking-[0.2em] uppercase mb-2" style={{ color: "#5fc7f4" }}>
             Customer Stories
           </p>
           <h2 className="text-2xl md:text-4xl font-bold mb-3" style={{ color: "#065999" }}>
@@ -99,13 +105,10 @@ export default function Testimonials() {
           <p className="text-zinc-500 text-sm max-w-md mx-auto">
             Trusted by startups, corporates and creators across India.
           </p>
-          {/* Aggregate — calculated from real data */}
           <div className="flex items-center justify-center gap-2 mt-4">
             {Array.from({ length: 5 }).map((_, i) => (
               <Star key={i} size={16}
-                className={i < Math.round(parseFloat(avgRating))
-                  ? "fill-amber-400 text-amber-400"
-                  : "fill-zinc-200 text-zinc-200"} />
+                className={i < Math.round(parseFloat(avgRating)) ? "fill-amber-400 text-amber-400" : "fill-zinc-200 text-zinc-200"} />
             ))}
             <span className="text-sm font-semibold text-zinc-800 ml-1">{avgRating}</span>
             <span className="text-sm text-zinc-400">· {total} reviews</span>
@@ -125,12 +128,14 @@ export default function Testimonials() {
               style={i === 1 ? { borderColor: "#5fc7f4" } : {}}>
               <Quote size={20} className="mb-4 flex-shrink-0" style={{ color: "#5fc7f4" }} />
               <p className="text-sm text-zinc-600 leading-relaxed flex-1 mb-5">"{t.text}"</p>
-              <div className="mb-4">
-                <span className="text-[11px] font-medium px-2.5 py-1 rounded-full"
-                  style={{ backgroundColor: "rgba(95,199,244,0.12)", color: "#065999" }}>
-                  {t.product}
-                </span>
-              </div>
+              {t.product && (
+                <div className="mb-4">
+                  <span className="text-[11px] font-medium px-2.5 py-1 rounded-full"
+                    style={{ backgroundColor: "rgba(95,199,244,0.12)", color: "#065999" }}>
+                    {t.product}
+                  </span>
+                </div>
+              )}
               <div className="flex items-center justify-between pt-4 border-t border-zinc-50">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full text-white text-xs font-bold flex items-center justify-center flex-shrink-0"
@@ -139,10 +144,10 @@ export default function Testimonials() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-zinc-900">{t.name}</p>
-                    <p className="text-xs text-zinc-400">{t.role}</p>
+                    {t.role && <p className="text-xs text-zinc-400">{t.role}</p>}
                   </div>
                 </div>
-                <StarRating count={t.rating} />
+                <StarRating count={t.rating || 5} />
               </div>
             </div>
           ))}
