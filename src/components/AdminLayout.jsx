@@ -3,10 +3,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import { supabase } from "@/lib/supabase"
 import {
   LayoutDashboard, PackagePlus, Package,
-  Tag, Image, LogOut, Menu, X, MessageSquare,
+  Tag, Image, LogOut, Menu, MessageSquare,
 } from "lucide-react"
 
-// Match navbar background exactly
 const SIDEBAR_BG = "#5fc7f4"
 const DARK       = "#065999"
 const NAVY       = "#0a3d62"
@@ -77,18 +76,30 @@ export default function AdminLayout({ children }) {
                   e.currentTarget.style.color = NAVY
                 }
               }}>
-              <Icon
-                size={17}
-                style={{ color: active ? "#fff" : DARK, flexShrink: 0 }}
-              />
+              <Icon size={17} style={{ color: active ? "#fff" : DARK, flexShrink: 0 }} />
               {label}
             </Link>
           )
         })}
       </nav>
 
-      {/* Sign out */}
-      <div className="px-3 py-4 border-t" style={{ borderColor: `${DARK}30` }}>
+      {/* 🔥 User Email + Sign out */}
+      <div className="px-3 py-4 border-t space-y-3" style={{ borderColor: `${DARK}30` }}>
+
+        {/* Email */}
+        {userEmail && (
+          <div
+            className="px-3 py-2 rounded-lg text-xs font-medium"
+            style={{
+              backgroundColor: "rgba(255,255,255,0.4)",
+              color: NAVY, // ✅ Navy blue text
+              wordBreak: "break-all"
+            }}>
+            {userEmail}
+          </div>
+        )}
+
+        {/* Sign out */}
         <button
           onClick={signOut}
           className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150"
@@ -110,7 +121,7 @@ export default function AdminLayout({ children }) {
         <SidebarContent />
       </aside>
 
-      {/* Mobile sidebar overlay */}
+      {/* Mobile sidebar */}
       {sideOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
           <div className="w-56 flex-shrink-0 flex flex-col"><SidebarContent /></div>
