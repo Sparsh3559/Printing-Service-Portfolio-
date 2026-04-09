@@ -522,7 +522,7 @@ export default function Navbar() {
                       For & names: line1 on top, line2+chevron below. */}
                   {line2 ? (
                     <>
-                      <span className="text-[11px] font-bold leading-tight whitespace-nowrap">{line1}</span>
+                      <span className="text-[13px] font-bold leading-tight whitespace-nowrap">{line1}</span>
                       <span className="flex items-center gap-0.5 text-[11px] font-bold leading-tight whitespace-nowrap">
                         {line2}
                         {hasSubs && (
@@ -531,7 +531,7 @@ export default function Navbar() {
                       </span>
                     </>
                   ) : (
-                    <span className="flex items-center gap-1 text-[11px] font-bold leading-tight whitespace-nowrap">
+                    <span className="flex items-center gap-1 text-[13px] font-bold leading-tight whitespace-nowrap">
                       {line1}
                       {hasSubs && (
                         <ChevronDown size={10} className={`flex-shrink-0 transition-transform ${isActive ? "rotate-180" : ""}`} />
