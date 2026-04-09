@@ -1,5 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home                from "./pages/Home";
 import CorporatePrinting   from "./pages/CorporatePrinting";
@@ -18,8 +17,10 @@ import {
   FAQsPage,
   HelpDeskPage,
   PaymentPage,
-  WorkingWithMekalPage,
 } from "./pages/StaticPages";
+
+import FeedbackPage    from "./pages/FeedbackPage";
+import ManageReviews   from "./pages/admin/reviews/ManageReviews";
 
 import LoginPage           from "./pages/admin/login/LoginPage";
 import AuthGuard           from "./components/AuthGuard";
@@ -31,18 +32,9 @@ import ManageCategories    from "./pages/admin/categories/ManageCategories";
 
 import "./App.css";
 
-function ScrollToTop() {
-  const { pathname } = useLocation();
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "instant" });
-  }, [pathname]);
-  return null;
-}
-
 function App() {
   return (
     <BrowserRouter>
-      <ScrollToTop />
       <Routes>
 
         {/* ── Public ── */}
@@ -72,6 +64,8 @@ function App() {
         <Route path="/payment"             element={<PaymentPage />} />
         <Route path="/working-with-mekal"  element={<WorkingWithMekalPage />} />
 
+        <Route path="/leave-feedback"     element={<FeedbackPage />} />
+
         {/* ── Admin login (public) ── */}
         <Route path="/admin/login" element={<LoginPage />} />
 
@@ -90,6 +84,10 @@ function App() {
         } />
         <Route path="/admin/banners" element={
           <AuthGuard><ManageBanners /></AuthGuard>
+        } />
+
+        <Route path="/admin/reviews" element={
+          <AuthGuard><ManageReviews /></AuthGuard>
         } />
 
       </Routes>

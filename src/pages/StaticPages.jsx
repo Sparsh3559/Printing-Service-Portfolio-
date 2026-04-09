@@ -337,7 +337,7 @@ export function PaymentPage() {
               "Full or partial advance payment is required for bulk and custom orders before production begins",
               "For standard orders, 100% advance is required",
               "Balance payment (if any) must be cleared before dispatch",
-              "GST @ 18% applicable on all orders — GSTIN available on request for B2B invoices",
+              "GST applicable on all orders — GSTIN available on request for B2B invoices",
             ].map(p => (
               <li key={p} className="flex items-start gap-2">
                 <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: BRAND }} />

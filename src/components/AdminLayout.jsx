@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
+import { supabase } from "@/lib/supabase"
 import {
   LayoutDashboard, PackagePlus, Package,
-  Image, Tag, LogOut, ChevronRight,
+  Tag, Image, LogOut, Menu, X, MessageSquare,
 } from "lucide-react"
-import { supabase } from "@/lib/supabase"
 
-const BRAND   = "#065999"
-const DARK    = "#5fc7f4"
+const DARK  = "#065999"
+const BRAND = "#5fc7f4"
 
 const navItems = [
   { to: "/admin",             label: "Dashboard",       icon: LayoutDashboard },
@@ -15,133 +15,102 @@ const navItems = [
   { to: "/admin/products",    label: "Manage Products", icon: Package         },
   { to: "/admin/categories",  label: "Categories",      icon: Tag             },
   { to: "/admin/banners",     label: "Banners",         icon: Image           },
+  { to: "/admin/reviews",     label: "Reviews",         icon: MessageSquare   },
 ]
 
 export default function AdminLayout({ children }) {
   const { pathname } = useLocation()
   const navigate     = useNavigate()
-  const [userEmail, setUserEmail]   = useState("")
-  const [loggingOut, setLoggingOut] = useState(false)
+  const [sideOpen,   setSideOpen] = useState(false)
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setUserEmail(data.session?.user?.email || "")
-    })
-  }, [])
-
-  async function handleLogout() {
-    setLoggingOut(true)
+  async function signOut() {
     await supabase.auth.signOut()
     navigate("/admin/login")
   }
 
+  const activeLabel = navItems.find(n =>
+    n.to === "/admin" ? pathname === "/admin" : pathname.startsWith(n.to)
+  )?.label || "Admin"
+
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full" style={{ backgroundColor: DARK }}>
+
+      {/* Logo */}
+      <div className="px-5 py-5 border-b" style={{ borderColor: "rgba(95,199,244,0.2)" }}>
+        <img src="/mekal_logo.png" alt="Mekal" className="h-14 w-auto object-contain mb-2"
+          onError={e => { e.target.style.display = "none" }} />
+        <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: BRAND }}>
+          Admin Panel
+        </p>
+      </div>
+
+      {/* Nav */}
+      <nav className="flex flex-col gap-0.5 px-3 py-4 flex-1 overflow-y-auto">
+        {navItems.map(({ to, label, icon: Icon }) => {
+          const active = to === "/admin" ? pathname === "/admin" : pathname.startsWith(to)
+          return (
+            <Link key={to} to={to} onClick={() => setSideOpen(false)}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                active ? "text-white" : "text-white/60 hover:text-white hover:bg-white/10"
+              }`}
+              style={active ? { backgroundColor: "rgba(95,199,244,0.25)" } : {}}>
+              <Icon size={17} className={active ? "text-white" : "text-white/50"} />
+              {label}
+            </Link>
+          )
+        })}
+      </nav>
+
+      {/* User + Logout */}
+      <div className="px-3 py-4 border-t" style={{ borderColor: "rgba(95,199,244,0.2)" }}>
+        <button onClick={signOut}
+          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-white/60 hover:text-white hover:bg-white/10 transition-all">
+          <LogOut size={16} className="text-white/50" />
+          Sign Out
+        </button>
+      </div>
+    </div>
+  )
+
   return (
-    <div className="min-h-screen flex" style={{ backgroundColor: "#f0f9ff" }}>
+    <div className="flex h-screen bg-zinc-50 overflow-hidden">
 
-      {/* ── Sidebar ── */}
-      <aside
-        className="w-64 flex flex-col flex-shrink-0 shadow-lg"
-        style={{ backgroundColor: DARK }}
-      >
-        {/* Top accent bar */}
-        <div className="h-1 w-full" style={{ backgroundColor: BRAND }} />
-
-        {/* Logo area */}
-        <div className="px-6 py-5 border-b" style={{ borderColor: "rgba(95,199,244,0.2)" }}>
-          <img
-            src="/mekal_logo.png"
-            alt="Mekal"
-            className="h-16 w-auto object-contain"
-            onError={e => { e.target.style.display = "none" }}
-          />
-          <p className="text-xs mt-2 font-semibold uppercase tracking-widest" style={{ color: BRAND }}>
-            Admin Panel
-          </p>
-        </div>
-
-        {/* Nav links */}
-        <nav className="flex flex-col gap-0.5 px-3 py-4 flex-1">
-          {navItems.map(({ to, label, icon: Icon }) => {
-            const isActive = to === "/admin"
-              ? pathname === "/admin"
-              : pathname.startsWith(to)
-
-            return (
-              <Link
-                key={to}
-                to={to}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group"
-                style={isActive
-                  ? { backgroundColor: BRAND, color: DARK }
-                  : { color: "rgba(255,255,255,0.65)" }
-                }
-                onMouseEnter={e => { if (!isActive) e.currentTarget.style.backgroundColor = "rgba(95,199,244,0.12)" }}
-                onMouseLeave={e => { if (!isActive) e.currentTarget.style.backgroundColor = "transparent" }}
-              >
-                <Icon size={16} />
-                <span className="flex-1">{label}</span>
-                {isActive && <ChevronRight size={14} style={{ color: DARK }} />}
-              </Link>
-            )
-          })}
-        </nav>
-
-        {/* User + logout */}
-        <div className="px-3 pb-5 pt-3 border-t" style={{ borderColor: "rgba(95,199,244,0.2)" }}>
-          {userEmail && (
-            <div className="px-3 py-2 mb-1 rounded-lg" style={{ backgroundColor: "rgba(95,199,244,0.08)" }}>
-              <p className="text-[11px] font-medium truncate" style={{ color: BRAND }} title={userEmail}>
-                {userEmail}
-              </p>
-            </div>
-          )}
-          <button
-            onClick={handleLogout}
-            disabled={loggingOut}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all disabled:opacity-50"
-            style={{ color: "rgba(255,255,255,0.55)" }}
-            onMouseEnter={e => { e.currentTarget.style.backgroundColor = "rgba(239,68,68,0.15)"; e.currentTarget.style.color = "#f87171" }}
-            onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "rgba(255,255,255,0.55)" }}
-          >
-            <LogOut size={16} />
-            {loggingOut ? "Signing out…" : "Sign Out"}
-          </button>
-        </div>
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex flex-col w-56 flex-shrink-0">
+        <SidebarContent />
       </aside>
 
-      {/* ── Main area ── */}
-      <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
+      {/* Mobile sidebar overlay */}
+      {sideOpen && (
+        <div className="md:hidden fixed inset-0 z-50 flex">
+          <div className="w-56 flex-shrink-0 flex flex-col"><SidebarContent /></div>
+          <div className="flex-1 bg-black/40" onClick={() => setSideOpen(false)} />
+        </div>
+      )}
 
-        {/* Top header bar */}
-        <header
-          className="flex items-center justify-between px-8 py-4 border-b bg-white shadow-sm flex-shrink-0"
-        >
-          {/* Page title derived from current path */}
-          <div>
-            <h1 className="text-lg font-bold" style={{ color: DARK }}>
-              {navItems.find(n =>
-                n.to === "/admin" ? pathname === "/admin" : pathname.startsWith(n.to)
-              )?.label ?? "Admin"}
-            </h1>
-            <p className="text-xs text-zinc-400 mt-0.5">Mekal Enterprises</p>
-          </div>
+      {/* Main content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
 
-          {/* Right side — accent pill */}
-          <div
-            className="flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold"
-            style={{ backgroundColor: `${BRAND}22`, color: DARK }}
-          >
-            <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: BRAND }} />
-            Live
+        {/* Top bar */}
+        <header className="flex items-center justify-between px-4 md:px-6 h-14 bg-white border-b flex-shrink-0">
+          <div className="flex items-center gap-3">
+            <button onClick={() => setSideOpen(true)}
+              className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-zinc-100">
+              <Menu size={20} />
+            </button>
+            <h1 className="text-sm font-semibold text-zinc-800">{activeLabel}</h1>
           </div>
+          <Link to="/" target="_blank"
+            className="text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-zinc-100 transition-colors text-zinc-500">
+            View Site →
+          </Link>
         </header>
 
         {/* Page content */}
-        <main className="flex-1 p-8 overflow-auto">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6">
           {children}
         </main>
       </div>
-
     </div>
   )
 }
