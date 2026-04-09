@@ -7,6 +7,7 @@ import ProductPage         from "./pages/ProductPage";
 import CategoryLandingPage from "./pages/CategoryLandingPage";
 import CorporateGiftings   from "./pages/CorporateGiftings";
 import WomensGifting       from "./pages/WomensGifting";
+import { WorkingWithMekalPage } from "./pages/StaticPages";
 
 import {
   AboutPage,
