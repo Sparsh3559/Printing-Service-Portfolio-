@@ -116,33 +116,45 @@ export default function Footer() {
           </svg>
         </div>
 
+        {/* ── UPDATED WAVE + LOGO SECTION ── */}
         <div className="relative w-full border-b border-white/20">
 
-          <div className="flex w-full" style={{ height: "clamp(100px, 20vw, 160px)" }}>
+          <div className="relative flex w-full" style={{ height: "clamp(100px, 20vw, 160px)" }}>
             <img src={WAVE_URL} alt="" className="flex-1 object-fill" style={{ minWidth: 0 }} />
             <img src={WAVE_URL} alt="" className="flex-1 object-fill" style={{ minWidth: 0, transform: "scaleX(-1)" }} />
+
+            {/* subtle center blend */}
+            <div
+              style={{
+                position: "absolute",
+                left: "50%",
+                top: 0,
+                transform: "translateX(-50%)",
+                width: "120px",
+                height: "100%",
+                background: "linear-gradient(to right, rgba(0,0,0,0.12), transparent 40%, transparent 60%, rgba(0,0,0,0.12))",
+                pointerEvents: "none",
+              }}
+            />
           </div>
 
-          {/* ✅ UPDATED LOGO POSITION + BLACK FADE */}
-          <div style={{ position: "absolute", left: "50%", top: "42%", transform: "translate(-50%, -50%)", zIndex: 20 }}>
-            <div style={{
+          {/* logo higher, no fade */}
+          <div
+            style={{
               position: "absolute",
-              inset: "-32px",
-              borderRadius: "50%",
-              background: "radial-gradient(circle, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 50%, transparent 72%)",
-              filter: "blur(8px)",
-              zIndex: 0,
-            }} />
+              left: "50%",
+              top: "32%",
+              transform: "translate(-50%, -50%)",
+              zIndex: 20,
+            }}
+          >
             <img
               src="/mekal_logo.png"
               alt="Mekal Enterprises"
               style={{
-                position: "relative",
-                zIndex: 1,
                 height: "clamp(100px, 18vw, 160px)",
                 width: "auto",
                 objectFit: "contain",
-                filter: "drop-shadow(0 6px 20px rgba(6,89,153,0.4))",
               }}
             />
           </div>
@@ -166,6 +178,7 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* rest untouched */}
         <div className="max-w-7xl mx-auto px-5 md:px-8 py-10">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
 
