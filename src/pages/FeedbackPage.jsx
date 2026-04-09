@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import SideStrips from "../components/SideStrips"
@@ -7,9 +7,6 @@ import { Star, Send, Check } from "lucide-react"
 
 const DARK = "#065999"
 const BRAND = "#5fc7f4"
-
-// Existing approved testimonials shown below the form
-import { useEffect } from "react"
 
 function StarPicker({ value, onChange }) {
     const [hovered, setHovered] = useState(0)
@@ -56,9 +53,22 @@ export default function FeedbackPage() {
 
     function validate() {
         const e = {}
+
         if (!form.name.trim()) e.name = "Name is required"
         if (!form.review.trim()) e.review = "Please write your feedback"
         if (form.rating === 0) e.rating = "Please select a rating"
+
+        // ✅ Indian mobile validation
+        if (form.mobile.trim()) {
+            const mobile = form.mobile.replace(/\D/g, "")
+
+            if (mobile.length !== 10) {
+                e.mobile = "Enter a valid 10-digit mobile number"
+            } else if (!/^[6-9]\d{9}$/.test(mobile)) {
+                e.mobile = "Enter a valid Indian mobile number"
+            }
+        }
+
         setErrors(e)
         return Object.keys(e).length === 0
     }
@@ -66,19 +76,25 @@ export default function FeedbackPage() {
     async function handleSubmit(e) {
         e.preventDefault()
         if (!validate()) return
+
         setSubmitting(true)
+
+        const cleanedMobile = form.mobile.replace(/\D/g, "") || null
+
         const { error } = await supabase.from("Reviews").insert({
             name: form.name.trim(),
-            mobile: form.mobile.trim() || null,
+            mobile: cleanedMobile,
             product: form.product.trim() || null,
             review: form.review.trim(),
             rating: form.rating,
         })
+
         if (error) {
             alert("Something went wrong. Please try again.")
             setSubmitting(false)
             return
         }
+
         setSubmitted(true)
         setSubmitting(false)
         setForm({ name: "", mobile: "", product: "", review: "", rating: 0 })
@@ -89,7 +105,6 @@ export default function FeedbackPage() {
             <SideStrips />
             <Navbar />
 
-            {/* Hero strip */}
             <div className="py-10 md:py-12 px-5 text-white text-center"
                 style={{ background: `linear-gradient(135deg, ${DARK} 0%, ${BRAND} 100%)` }}>
                 <h1 className="text-2xl md:text-3xl font-bold mb-1">Share Your Experience</h1>
@@ -98,7 +113,6 @@ export default function FeedbackPage() {
 
             <div className="max-w-2xl mx-auto px-4 md:px-6 py-10 md:py-14">
 
-                {/* ── Form ── */}
                 {submitted ? (
                     <div className="rounded-2xl border-2 p-10 text-center" style={{ borderColor: BRAND }}>
                         <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
@@ -106,9 +120,12 @@ export default function FeedbackPage() {
                             <Check size={28} style={{ color: DARK }} />
                         </div>
                         <h2 className="text-xl font-bold mb-2" style={{ color: DARK }}>Thank You!</h2>
+
+                        {/* ✅ CLEAN TEXT */}
                         <p className="text-zinc-500 text-sm leading-relaxed">
                             Your feedback has been successfully submitted and noted. We appreciate your input and value the time you took to share it with us.
-                            <br /><br />
+                        </p>
+                        <p className="text-zinc-500 text-sm leading-relaxed mt-2">
                             Our team will review it, and we will reach out if any further information is required.
                         </p>
                     </div>
@@ -120,26 +137,25 @@ export default function FeedbackPage() {
                             {/* Name */}
                             <div>
                                 <label className="block text-xs font-semibold text-zinc-500 mb-1">Your Name *</label>
-                                <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                                    placeholder="e.g. Rahul Sharma"
-                                    className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors ${errors.name ? "border-red-400" : "border-zinc-200 focus:border-[#5fc7f4]"}`} />
+                                <input value={form.name}
+                                    onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                                    className={`w-full border rounded-xl px-4 py-3 text-sm ${errors.name ? "border-red-400" : "border-zinc-200"}`} />
                                 {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                             </div>
 
-                            {/* Mobile + Product in 2 cols */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-xs font-semibold text-zinc-500 mb-1">Mobile Number (optional)</label>
-                                    <input value={form.mobile} onChange={e => setForm(f => ({ ...f, mobile: e.target.value }))}
-                                        placeholder="+91 9XXXXXXXXX" type="tel"
-                                        className="w-full border border-zinc-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5fc7f4] transition-colors" />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-semibold text-zinc-500 mb-1">Product Ordered (optional)</label>
-                                    <input value={form.product} onChange={e => setForm(f => ({ ...f, product: e.target.value }))}
-                                        placeholder="e.g. Custom T-Shirts"
-                                        className="w-full border border-zinc-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5fc7f4] transition-colors" />
-                                </div>
+                            {/* Mobile */}
+                            <div>
+                                <label className="block text-xs font-semibold text-zinc-500 mb-1">Mobile Number</label>
+                                <input
+                                    value={form.mobile}
+                                    onChange={e => {
+                                        const value = e.target.value.replace(/\D/g, "").slice(0, 10)
+                                        setForm(f => ({ ...f, mobile: value }))
+                                    }}
+                                    placeholder="9876543210"
+                                    className="w-full border border-zinc-200 rounded-xl px-4 py-3 text-sm"
+                                />
+                                {errors.mobile && <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>}
                             </div>
 
                             {/* Rating */}
@@ -151,57 +167,24 @@ export default function FeedbackPage() {
 
                             {/* Review */}
                             <div>
-                                <label className="block text-xs font-semibold text-zinc-500 mb-1">Your Review / Feedback *</label>
-                                <textarea value={form.review} onChange={e => setForm(f => ({ ...f, review: e.target.value }))}
-                                    rows={5} placeholder="Tell us about your experience with Mekal Enterprises..."
-                                    className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors resize-none ${errors.review ? "border-red-400" : "border-zinc-200 focus:border-[#5fc7f4]"}`} />
+                                <label className="block text-xs font-semibold text-zinc-500 mb-1">Your Review *</label>
+                                <textarea value={form.review}
+                                    onChange={e => setForm(f => ({ ...f, review: e.target.value }))}
+                                    rows={5}
+                                    className={`w-full border rounded-xl px-4 py-3 text-sm ${errors.review ? "border-red-400" : "border-zinc-200"}`} />
                                 {errors.review && <p className="text-red-500 text-xs mt-1">{errors.review}</p>}
                             </div>
 
-                            <p className="text-xs text-zinc-400">Your review will be visible after approval by our team.</p>
-
                             <button type="submit" disabled={submitting}
-                                className="w-full flex items-center justify-center gap-2 text-white font-semibold py-3.5 rounded-2xl transition-all hover:opacity-90 disabled:opacity-60"
+                                className="w-full text-white py-3 rounded-xl"
                                 style={{ backgroundColor: DARK }}>
-                                {submitting ? "Submitting…" : <><Send size={16} /> Submit Feedback</>}
+                                {submitting ? "Submitting…" : "Submit Feedback"}
                             </button>
                         </form>
                     </div>
                 )}
-
-                {/* ── Existing reviews ── */}
-                {reviews.length > 0 && (
-                    <div>
-                        <h2 className="text-base font-bold mb-5" style={{ color: DARK }}>
-                            Customer Reviews ({reviews.length})
-                        </h2>
-                        <div className="space-y-4">
-                            {reviews.map(r => (
-                                <div key={r.id} className="border border-zinc-100 rounded-2xl p-4 bg-white">
-                                    <div className="flex items-start justify-between gap-3 mb-2">
-                                        <div className="flex items-center gap-2.5">
-                                            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                                                style={{ backgroundColor: DARK }}>
-                                                {r.name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-semibold text-zinc-900">{r.name}</p>
-                                                {r.product && <p className="text-xs text-zinc-400">{r.product}</p>}
-                                            </div>
-                                        </div>
-                                        <div className="flex gap-0.5 flex-shrink-0">
-                                            {Array.from({ length: 5 }).map((_, i) => (
-                                                <Star key={i} size={12} className={i < r.rating ? "fill-amber-400 text-amber-400" : "fill-zinc-200 text-zinc-200"} />
-                                            ))}
-                                        </div>
-                                    </div>
-                                    <p className="text-sm text-zinc-600 leading-relaxed">"{r.review}"</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
             </div>
+
             <Footer />
         </>
     )
