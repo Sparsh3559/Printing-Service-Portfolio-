@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { supabase } from "@/lib/supabase"
 import {
@@ -24,6 +24,13 @@ export default function AdminLayout({ children }) {
   const { pathname } = useLocation()
   const navigate     = useNavigate()
   const [sideOpen,   setSideOpen] = useState(false)
+  const [userEmail,  setUserEmail] = useState("")
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setUserEmail(data?.session?.user?.email || "")
+    })
+  }, [])
 
   async function signOut() {
     await supabase.auth.signOut()
